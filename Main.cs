@@ -5,6 +5,7 @@ using FreedomOfFormFoundation.AnatomyEngine.Anatomy;
 using FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones;
 using FreedomOfFormFoundation.AnatomyEngine.Anatomy.Joints;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
+using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
@@ -26,24 +27,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine
             // Add a long bone to the character:
             character.bones.Add(new Anatomy.Bones.LongBone());
             
-            Console.WriteLine("VBO:");
-            
             // Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
-            List<Vertex> VBO = character.bones[0].GetGeometry().GenerateVertexList(32, 32);
+            UVMesh mesh = character.bones[0].GetGeometry().GenerateMesh(32, 32);
             
             // Print the vertex list to see if the contents make sense:
-            foreach (Vertex i in VBO)
+            Console.WriteLine("Vertices:");
+            foreach (Vertex i in mesh.VertexList)
             {
                 Console.WriteLine(i);
             }
             
-            Console.WriteLine("IBO: ");
-            
-            // Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
-            List<int> IBO = character.bones[0].GetGeometry().GenerateIndexList(32, 32);
-            
-            // Print the vertex list to see if the contents make sense:
-            foreach (int i in IBO)
+            // Print the index list to see if the contents make sense:
+            Console.WriteLine("Indices:");
+            foreach (int i in mesh.IndexList)
             {
                 Console.Write(i);
                 Console.Write(" ");

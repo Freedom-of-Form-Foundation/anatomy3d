@@ -25,6 +25,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         ///     contain approximately <paramref name="resolutionU"/> times <paramref name="resolutionV"/> vertices in
         ///     total. The meaning of the coordinates u and v depends on the specific type of surface.
         /// </summary>
-        //public abstract Mesh GenerateMesh(int resolutionU, int resolutionV);
+        public virtual UVMesh GenerateMesh(int resolutionU, int resolutionV, int indexOffset = 0)
+        {
+            return new UVMesh(this, resolutionU, resolutionV, indexOffset);
+        }
     }
 }
