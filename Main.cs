@@ -5,6 +5,7 @@ using FreedomOfFormFoundation.AnatomyEngine.Anatomy;
 using FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones;
 using FreedomOfFormFoundation.AnatomyEngine.Anatomy.Joints;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
@@ -46,6 +47,25 @@ namespace FreedomOfFormFoundation.AnatomyEngine
             }
             
             Console.WriteLine("\nFinished example!");
+            
+            Console.WriteLine("Starting spline example!");
+            
+            // Test out a simple cubic spline:
+            SortedList<float, float> splinePoints = new SortedList<float, float>();
+            splinePoints.Add(-1.0f, 0.5f);
+            splinePoints.Add(0.0f, 0.0f);
+            splinePoints.Add(3.0f, 3.0f);
+            
+            CubicSpline1D spline = new CubicSpline1D(splinePoints);
+            
+            for (int i = -10; i <= 30; i++)
+            {
+                float x = (float)(i)*0.1f;
+                Console.Write(spline.GetValueAt(x));
+                Console.Write(" ");
+            }
+            
+            Console.WriteLine("\nFinished spline example!");
         }
     }
 }
