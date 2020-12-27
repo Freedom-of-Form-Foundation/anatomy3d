@@ -15,12 +15,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         {
             this.shaft = shaft;
             this.startCap = new Hemisphere(
-                                    shaft.Radius,
+                                    shaft.Radius.GetValueAt(0.0f),
                                     shaft.CenterCurve.GetStartPosition(),
                                     shaft.CenterCurve.GetTangentAt(0.0f)
                                 );
             this.endCap = new Hemisphere(
-                                    shaft.Radius,
+                                    shaft.Radius.GetValueAt(1.0f),
                                     shaft.CenterCurve.GetEndPosition(),
                                     -shaft.CenterCurve.GetTangentAt(1.0f)
                                 );

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
@@ -9,10 +10,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         public Cylinder(Curve centerCurve, float radius)
         {
             this.CenterCurve = centerCurve;
+            this.Radius = new ConstantFunction<float, float>(radius);
+        }
+        
+        public Cylinder(Curve centerCurve, ContinuousMap<float, float> radius)
+        {
+            this.CenterCurve = centerCurve;
             this.Radius = radius;
         }
         
-        public float Radius { get; set; }
+        public ContinuousMap<float, float> Radius { get; set; }
         public Curve CenterCurve { get; set; }
         
         public static int CalculateVertexCount(int resolutionU, int resolutionV)
@@ -28,8 +35,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
         {
             List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
-            
-            float radius = Radius;
             
             for (int j = 0; j < (resolutionV + 1); j++)
             {
@@ -54,6 +59,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
                                             0.0f, 0.0f, 0.0f, 0.0f);
                 
                 Matrix4x4 rotationMatrix = identity + K + K*K*(1.0f/(1.0f + Vector3.Dot(up, direction)));
+                
+                float radius = Radius.GetValueAt(v);
                 
                 for (int i = 0; i < resolutionU; i++)
                 {
