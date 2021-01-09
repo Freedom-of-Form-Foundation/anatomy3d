@@ -4,15 +4,15 @@ using FreedomOfFormFoundation.AnatomyEngine.Anatomy;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
-    public class Character
-    {
-        public List<Anatomy.Joint> joints;
-        public List<Anatomy.Bone> bones;
-        
-        public Character()
-        {
-            joints = new List<Anatomy.Joint>();
-            bones = new List<Anatomy.Bone>();
-        }
-    }
+	public class Character
+	{
+		public List<Anatomy.Joint> joints;
+		public List<Anatomy.Bone> bones;
+		
+		public Character()
+		{
+			joints = new List<Anatomy.Joint>();
+			bones = new List<Anatomy.Bone>();
+		}
+	}
 }
