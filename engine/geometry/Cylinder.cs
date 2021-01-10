@@ -36,6 +36,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
 			
+			Console.WriteLine(resolutionV);
+			
 			for (int j = 0; j < (resolutionV + 1); j++)
 			{
 				float v = (float)j/(float)resolutionV;
@@ -79,14 +81,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 					float u = (float)i/(float)resolutionU * 2.0f * (float)Math.PI;
 					
 					// Calculate the position of the rings of vertices:
-					float x = (float)Math.Cos(u);
-					float y = (float)Math.Sin(sign*u);
+					float x = sign*(float)Math.Cos(u);
+					float y = sign*(float)Math.Sin(sign*u);
 					float z = 0;
 					
 					Vector3 position = new Vector3(x, y, z);
 					
 					// Rotate the vector to orient the hemisphere correctly:
-					Vector3 vertexPosition = Vector3.Transform(sign * radius * position, transformationMatrix);
+					Vector3 vertexPosition = Vector3.Transform(sign*radius * position, transformationMatrix);
 					Vector3 normal = Vector3.Transform(sign*position, rotationMatrix);
 					
 					output.Add(new Vertex(vertexPosition, normal));
@@ -106,23 +108,23 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				// Add a ring of triangles:
 				for (int i = 0; i < resolutionU-1; i++)
 				{
-					output.Add(indexOffset + i + resolutionV*j);
-					output.Add(indexOffset + i + resolutionV*(j+1));
-					output.Add(indexOffset + (i+1) + resolutionV*j);
+					output.Add(indexOffset + i + resolutionU*j);
+					output.Add(indexOffset + i + resolutionU*(j+1));
+					output.Add(indexOffset + (i+1) + resolutionU*j);
 
-					output.Add(indexOffset + i + resolutionV*(j+1));
-					output.Add(indexOffset + (i+1) + resolutionV*(j+1));
-					output.Add(indexOffset + (i+1) + resolutionV*j);
+					output.Add(indexOffset + i + resolutionU*(j+1));
+					output.Add(indexOffset + (i+1) + resolutionU*(j+1));
+					output.Add(indexOffset + (i+1) + resolutionU*j);
 				}
 				
 				// Stitch the end of the triangles:
-				output.Add(indexOffset + resolutionU-1 + resolutionV*j);
-				output.Add(indexOffset + resolutionU-1 + resolutionV*(j+1));
-				output.Add(indexOffset + resolutionV*j);
+				output.Add(indexOffset + resolutionU-1 + resolutionU*j);
+				output.Add(indexOffset + resolutionU-1 + resolutionU*(j+1));
+				output.Add(indexOffset + resolutionU*j);
 
-				output.Add(indexOffset + resolutionU-1 + resolutionV*(j+1));
-				output.Add(indexOffset + resolutionV*(j+1));
-				output.Add(indexOffset + resolutionV*j);
+				output.Add(indexOffset + resolutionU-1 + resolutionU*(j+1));
+				output.Add(indexOffset + resolutionU*(j+1));
+				output.Add(indexOffset + resolutionU*j);
 			}
 
 			return output;
