@@ -9,5 +9,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	{
 		public abstract O GetValueAt(I t);
 		
+		public static implicit operator ContinuousMap<I, O>(O m) => new ConstantFunction<I, O>(m);
 	}
 }
