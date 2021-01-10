@@ -78,7 +78,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			this.parameters = ThomasAlgorithm(a, b, c, d);
 		}
 		
-		public override float GetValueAt(float x)
+		public float GetAt(float x, uint derivative)
 		{
 			// The input parameter must lie between the outer points:
 			if ((x < pointsX[0]) || (x > pointsX[pointsX.Count - 1]))
@@ -116,7 +116,39 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			float a = parameters[i-1]*dx - dy;
 			float b = -parameters[i]*dx + dy;
 			float t = (x-x1)/dx;
-			return (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*((1.0f-t)*a + t*b);
+			
+			// Return a different function depending on the derivative level:
+			float returnValue = 0.0f;
+			switch (derivative)
+			{
+				case 0:
+					returnValue = (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*((1.0f-t)*a + t*b);
+					break;
+				case 1:
+					returnValue = (y2 - y1 + 3.0f*(a-b)*t*t + (2.0f*b - 4.0f*a)*t + a)/dx;
+					break;
+				case 2:
+					returnValue = (a*(6.0f*t - 4.0f) + b*(1.0f-3.0f*t))/(dx*dx);
+					break;
+				case 3:
+					returnValue = 6.0f*(a-b)/(dx*dx*dx);
+					break;
+				default:
+					returnValue = 0.0f;
+					break;
+			}
+			
+			return returnValue;
+		}
+		
+		public override float GetValueAt(float x)
+		{
+			return GetAt(x, 0);
+		}
+		
+		public float GetDerivativeAt(float x)
+		{
+			return GetAt(x, 1);
 		}
 		
 		/// <summary>
