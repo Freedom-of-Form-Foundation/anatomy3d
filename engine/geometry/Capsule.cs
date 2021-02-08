@@ -46,5 +46,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			return startCapList.Concat(shaftList).Concat(endCapList).ToList();
 		}
+
+		public Curve GetCenterCurve() {
+			return shaft.CenterCurve;
+		}
 	}
 }
