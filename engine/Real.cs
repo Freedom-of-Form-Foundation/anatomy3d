@@ -15,8 +15,6 @@
  */
 
 using System;
-using System.ComponentModel.Design.Serialization;
-using System.Runtime.CompilerServices;
 
 // IDE configuration: This file will contain some redundant casts because it's
 // designed to allow a field type to be changed to change the behavior of
