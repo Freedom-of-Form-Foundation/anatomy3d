@@ -52,7 +52,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
         /// <param name="v">Value this Real should take.</param>
         public Real(decimal v)
         {
-            _v = v;
+            _v = (double)v;
         }
 
         // Real permits automatic casts <i>from</i> double, float, and decimal. It will not
