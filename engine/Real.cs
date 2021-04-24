@@ -15,6 +15,8 @@
  */
 
 using System;
+using System.ComponentModel.Design.Serialization;
+using System.Runtime.CompilerServices;
 
 // IDE configuration: This file will contain some redundant casts because it's
 // designed to allow a field type to be changed to change the behavior of
@@ -114,5 +116,115 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		{
 			return _v.Equals(o._v);
 		}
+
+		public override bool Equals(object o)
+		{
+			switch (o)
+			{
+				case null:
+					return false;
+				case Real real:
+					return this.Equals(real);
+				default:
+					return false;
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			int h = _v.GetHashCode();
+			return ~(h << 16 | h >> 16);
+		}
+#pragma mark Special value properties
+		public bool IsNaN
+		{
+			get
+			{
+#if REALTYPE_DOUBLE
+				return double.IsNaN(_v);
+#elif REALTYPE_FLOAT
+				return float.IsNaN(_v);
+#elif REALTYPE_DECIMAL
+				return false;
+#else
+				#error Real doesn't know how to calculate IsNaN for its current type.
+#endif
+			}
+		}
+
+		public bool IsInfinity
+		{
+			get
+			{
+#if REALTYPE_DOUBLE
+				return double.IsInfinity(_v);
+#elif REALTYPE_FLOAT
+				return float.IsInfinity(_v);
+#elif REALTYPE_DECIMAL
+				return false;
+#else
+				#error Real doesn't know how to calculate IsInfinity for its current type.
+#endif
+			}
+		}
+
+		public bool IsPositiveInfinity
+		{
+			get
+			{
+#if REALTYPE_DOUBLE
+				return double.IsPositiveInfinity(_v);
+#elif REALTYPE_FLOAT
+				return float.IsPositiveInfinity(_v);
+#elif REALTYPE_DECIMAL
+				return false;
+#else
+#error Real doesn't know how to calculate IsPositiveInfinity for its current type.
+#endif
+			}
+		}
+
+		public bool IsNegativeInfinity
+		{
+			get
+			{
+#if REALTYPE_DOUBLE
+				return double.IsNegativeInfinity(_v);
+#elif REALTYPE_FLOAT
+				return float.IsNegativeInfinity(_v);
+#elif REALTYPE_DECIMAL
+				return false;
+#else
+#error Real doesn't know how to calculate IsNegativeInfinity for its current type.
+#endif
+			}
+		}
+
+		public bool IsFinite => !IsInfinity && !IsNaN;
+
+#pragma mark Unary operators
+		// Note: NaN is neither true nor false.
+		public static bool operator true(Real r) => r._v == 0;
+		public static bool operator false(Real r) => r._v != 0;
+
+		public static Real operator !(Real r)
+		{
+			if (r.IsNaN)
+			{
+				return Real.NaN;
+			}
+
+			if (r._v == 0)
+			{
+				return new Real(1.0);
+			}
+
+			return new Real(0.0);
+		}
+
+		public static Real operator +(Real r) => r;
+		public static Real operator -(Real r) => new Real(-r._v);
+		public static Real operator ++(Real r) => new Real(r._v + 1);
+		public static Real operator --(Real r) => new Real(r._v - 1);
 	}
 }
