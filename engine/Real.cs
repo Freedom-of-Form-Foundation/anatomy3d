@@ -24,6 +24,13 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
+	// Default implementation is DOUBLE but it can be overridden by the compiler.
+	// Specify exactly one of these flags.
+	// Warning: Decimal can't represent infinity or NaN, so using these
+	// constants won't compile if Real is Decimal.
+#if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
+#define REALTYPE_DOUBLE
+#endif
 	/// <summary>
 	/// Struct <c>Real</c> wraps a floating-point representation, which can be changed at compile time to reveal
 	/// numerical instability problems (by using float) or to minimize them (by using double). It also offers a window
@@ -31,11 +38,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 	/// </summary>
 	public struct Real : IComparable<Real>, IEquatable<Real>, IFormattable
 	{
-		/// <summary>
-		/// _v contains the value represented by this Real. To change the effective type of Real,
-		/// change the type of this and the special constants below the constructors.
-		/// </summary>
+#if REALTYPE_DOUBLE
 		private readonly double _v;
+#elif REALTYPE_FLOAT
+		private readonly float _v;
+#elif REALTYPE_DECIMAL
+		private readonly decimal _v;
+#else
+		#error No known underlying type for Real - see Real.cs for details
+#endif
 
 #pragma mark Constructors
 		/// <summary>
@@ -64,6 +75,21 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		{
 			_v = (double) v;
 		}
+
+#pragma mark Constants
+#if REALTYPE_DOUBLE
+		public static readonly Real NaN = new Real(double.NaN);
+		public static readonly Real NegativeInfinity = new Real(double.NegativeInfinity);
+		public static readonly Real PositiveInfinity = new Real(double.PositiveInfinity);
+#elif REALTYPE_FLOAT
+		public static readonly Real NaN = new Real(float.NaN);
+		public static readonly Real NegativeInfinity = new Real(float.NegativeInfinity);
+		public static readonly Real PositiveInfinity = new Real(float.PositiveInfinity);
+#elif REALTYPE_DECIMAL
+		#warning No definition of NaN, NegativeInfinity, or PositiveInfinity available from decimal
+#else
+		#error No known source of constants for Real
+#endif
 
 #pragma mark Conversions
 		// Real permits automatic casts <i>from</i> double, float, and decimal. It will not
