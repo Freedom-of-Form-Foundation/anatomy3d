@@ -236,6 +236,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 #region Convenience functions
 
+		/// <summary>
+		/// Special cases for nearness checks: handles infinities and NaN. Actually an equality
+		/// check in these cases, treating NaN as unequal to NaN.
+		/// </summary>
+		/// <param name="o">Number to compare this to.</param>
+		/// <returns>null if no special case applies; otherwise, result of equality check.</returns>
 		private bool? NearSpecialCases(Real o)
 		{
 			if (IsNaN || o.IsNaN)
@@ -259,8 +265,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 			return null;
 		}
+
+		/// <summary>
+		/// Compares this Real value for being near another one, plus or minus a certain error range. NaN is not near
+		/// anything (including NaN) and infinities are only near the same infinity.
+		/// </summary>
+		/// <param name="o">Value to compare to.</param>
+		/// <param name="slop">Amount of error that can still be considered equal. Nonnegative.</param>
+		/// <returns>Whether this is in the closed range of o ± slop.</returns>
 		public bool IsAbsolutelyNear(Real o, Real slop)
 		{
+			if (slop < 0.0)
+			{
+				throw new ArgumentException("slop cannot be negative.","slop");
+			}
 			bool? sc = NearSpecialCases(o);
 			if (sc != null)
 			{
@@ -269,12 +287,24 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 			Real diff = this - o;
 			if (diff < 0.0) diff = -diff;
-			if (slop < 0.0) slop = -slop;
 			return diff <= slop;
 		}
 
+		/// <summary>
+		/// Compares this Real value for being near another one, with a proportional difference no greater than a
+		/// certain limit. NaN is not near anything (including NaN), infinities are only near the same infinity,
+		/// and zero is only near zero (negative and positive zero are indistinct). Values of different signs are
+		/// not relatively near each other. Proportion is relative to the smaller value.
+		/// </summary>
+		/// <param name="o">Value to compare this to.</param>
+		/// <param name="slop">Proportional difference tolerated between values. Nonnegative.</param>
+		/// <returns>Whether this is near o, within the given proportion.</returns>
 		public bool IsRelativelyNear(Real o, Real slop)
 		{
+			if (slop < 0.0)
+			{
+				throw new ArgumentException("slop cannot be negative.", "slop");
+			}
 			bool? sc = NearSpecialCases(o);
 			if (sc != null)
 			{
@@ -287,12 +317,53 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 				return this == 0.0;
 			}
 
-			Real ratio = this / o;
-			if (ratio < 0.0) ratio = -ratio;
-			if (ratio >= 1.0) return (1.0-ratio) <= slop;
+			Real big, little;
+			if (this < 0.0)
+			{
+				if (o > 0.0) return false;
+				// Negative values; "big" and "little" refer to magnitude and the signs will cancel
+				// out during division, so reverse the obvious semantics for which goes where.
+				if (this > o)
+				{
+					big = o;
+					little = this;
+				}
+				else
+				{
+					big = this;
+					little = o;
+				}
+			}
+			else
+			{
+				if (o < 0.0) return false;
+				if (this > o)
+				{
+					big = this;
+					little = o;
+				}
+				else
+				{
+					big = o;
+					little = this;
+				}
+			}
+
+			Real ratio = big / little;
 			return (ratio - 1.0) <= slop;
 		}
 
+		/// <summary>
+		/// Returns whether this is near the other value, within either an absolute or relative
+		/// range. NaN values are never near anything. Infinite values are only near themselves.
+		/// Otherwise, values are near each other if the absolute value of the difference between
+		/// them is less than the slop value, or if the proportional difference between them is
+		/// less than the slop value (calculated relative to the smaller value).
+		/// </summary>
+		/// <param name="o">Value to compare against.</param>
+		/// <param name="slop">Allowable amount of error, either absolute or proportional, for
+		/// values to be considered near each other. Nonnegative.</param>
+		/// <returns></returns>
 		public bool IsNear(Real o, Real slop) => IsAbsolutelyNear(o, slop) || IsRelativelyNear(o, slop);
 #endregion
 
