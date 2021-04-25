@@ -60,7 +60,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		#error No known underlying type for Real - see Real.cs for details
 #endif
 
-#pragma mark Constructors
+#pragma region Constructors
 		/// <summary>
 		/// Construct a Real with the value provided.
 		/// </summary>
@@ -104,7 +104,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 #endif
 		}
 
-#pragma mark Constants
+#pragma region Constants
 #if REALTYPE_DOUBLE
 		public static readonly Real NaN = new Real(double.NaN);
 		public static readonly Real NegativeInfinity = new Real(double.NegativeInfinity);
@@ -119,7 +119,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		#error No known source of constants for Real
 #endif
 
-#pragma mark Conversions
+#pragma region Conversions
 		// Real permits automatic casts <i>from</i> double, float, and decimal. It will not
 		// automatically cast to them, since this would prevent the compiler from spotting math
 		// being done with native numeric types that needs to be converted to Real.
@@ -130,7 +130,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static explicit operator float(Real r) => (float) r._v;
 		public static explicit operator decimal(Real r) => (decimal) r._v;
 
-#pragma mark Interfaces
+#pragma region Interfaces
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			return _v.ToString(format, formatProvider);
@@ -161,7 +161,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 			int h = _v.GetHashCode();
 			return ~(h << 16 | h >> 16);
 		}
-#pragma mark Special value properties
+#pragma region Special value properties
 		public bool IsNaN
 		{
 			get
@@ -228,7 +228,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 		public bool IsFinite => !IsInfinity && !IsNaN;
 
-#pragma mark Unary operators
+#pragma region Unary operators
 		// Note: NaN is neither true nor false.
 		public static bool operator true(Real r) => r._v == 0;
 		public static bool operator false(Real r) => r._v != 0;
@@ -262,13 +262,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static Real operator ++(Real r) => new Real(r._v + 1);
 		public static Real operator --(Real r) => new Real(r._v - 1);
 
-#pragma mark Binary arithmetic operators
+#pragma region Binary arithmetic operators
 		public static Real operator +(Real left, Real right) => new Real(right._v + left._v);
 		public static Real operator -(Real left, Real right) => new Real(left._v - right._v);
 		public static Real operator *(Real left, Real right) => new Real(left._v * right._v);
 		public static Real operator /(Real left, Real right) => new Real(left._v / right._v);
 		public static Real operator %(Real left, Real right) => new Real(left._v % right._v);
-#pragma mark Binary comparison operators
+#pragma region Binary comparison operators
 		public static bool operator <(Real left, Real right) => left._v < right._v;
 		public static bool operator >(Real left, Real right) => left._v > right._v;
 		public static bool operator ==(Real left, Real right) => left._v == right._v;
