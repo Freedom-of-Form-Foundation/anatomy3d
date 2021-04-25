@@ -14,6 +14,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// Specify REALTYPE_DOUBLE, REALTYPE_FLOAT, or REALTYPE_DECIMAL in your compiler flags to set
+// behavior of Real. Otherwise, defaults are DOUBLE for a production build and FLOAT for a
+// debug build, to reveal numerical instability.
+//
+// It is an error to set these flags in multiples.
+#if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
+ #if DEBUG
+  #define REALTYPE_FLOAT
+ #else
+  #define REALTYPE_DOUBLE
+ #endif
+#endif
+
+// Error check for multiple REALTYPE declarations. This will get unwieldy as-written if we get
+// more than three possible types.
+#if (REALTYPE_DOUBLE && (REALTYPE_FLOAT || REALTYPE_DECIMAL)) || (REALTYPE_FLOAT && REALTYPE_DECIMAL)
+#error "multiple REALTYPE flags defined - define at most one"
+#endif
+
 using System;
 
 // IDE configuration: This file will contain some redundant casts because it's
@@ -24,13 +43,6 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
-	// Default implementation is DOUBLE but it can be overridden by the compiler.
-	// Specify exactly one of these flags.
-	// Warning: Decimal can't represent infinity or NaN, so using these
-	// constants won't compile if Real is Decimal.
-#if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
-#define REALTYPE_DOUBLE
-#endif
 	/// <summary>
 	/// Struct <c>Real</c> wraps a floating-point representation, which can be changed at compile time to reveal
 	/// numerical instability problems (by using float) or to minimize them (by using double). It also offers a window
@@ -55,7 +67,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <param name="v">Value this Real should take.</param>
 		public Real(double v)
 		{
+#if REALTYPE_DOUBLE
 			_v = v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+			_v = (decimal) v;
+#else
+			#error Real doesn't know how to cast from double
+#endif
 		}
 
 		/// <summary>
@@ -73,7 +93,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <param name="v">Value this Real should take.</param>
 		public Real(decimal v)
 		{
+#if REALTYPE_DOUBLE
 			_v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+			_v = v;
+#else
+			#error Real doesn't know how to cast from decimal
+#endif
 		}
 
 #pragma mark Constants
@@ -214,12 +242,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <returns>Logical inversion of <c>r</c>. NaN remains NaN.</returns>
 		public static Real operator !(Real r)
 		{
-			#if !REALTYPE_DECIMAL
+#if !REALTYPE_DECIMAL
 			if (r.IsNaN)
 			{
 				return Real.NaN;
 			}
-			#endif
+#endif
 
 			if (r._v == 0)
 			{
