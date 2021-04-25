@@ -104,6 +104,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 #endif
 		}
 #endregion
+
 #region Constants
 #if REALTYPE_DOUBLE
 		public static readonly Real NaN = new Real(double.NaN);
@@ -119,6 +120,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		#error No known source of constants for Real
 #endif
 #endregion
+
 #region Conversions
 		// Real permits automatic casts <i>from</i> double, float, and decimal. It will not
 		// automatically cast to them, since this would prevent the compiler from spotting math
@@ -130,6 +132,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static explicit operator float(Real r) => (float) r._v;
 		public static explicit operator decimal(Real r) => (decimal) r._v;
 #endregion
+
 #region Interfaces
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
@@ -162,6 +165,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 			return ~(h << 16 | h >> 16);
 		}
 #endregion
+
 #region Special value properties
 		public bool IsNaN
 		{
@@ -229,6 +233,69 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 		public bool IsFinite => !IsInfinity && !IsNaN;
 #endregion
+
+#region Convenience functions
+
+		private bool? NearSpecialCases(Real o)
+		{
+			if (IsNaN || o.IsNaN)
+			{
+				// NaN is not similar to anything else - even itself
+				return false;
+			}
+
+			if (IsInfinity)
+			{
+				// Infinities are only near the exactly identical infinity,
+				// regardless of the slop factor.
+				return Equals(o);
+			}
+
+			if (o.IsInfinity)
+			{
+				// this isn't infinity or we would have gotten into the previous case.
+				return false;
+			}
+
+			return null;
+		}
+		public bool IsAbsolutelyNear(Real o, Real slop)
+		{
+			bool? sc = NearSpecialCases(o);
+			if (sc != null)
+			{
+				return sc.Value;
+			}
+
+			Real diff = this - o;
+			if (diff < 0.0) diff = -diff;
+			if (slop < 0.0) slop = -slop;
+			return diff <= slop;
+		}
+
+		public bool IsRelativelyNear(Real o, Real slop)
+		{
+			bool? sc = NearSpecialCases(o);
+			if (sc != null)
+			{
+				return sc.Value;
+			}
+
+			if (o == 0.0)
+			{
+				// Zero is not relatively near anything else.
+				return this == 0.0;
+			}
+
+			Real ratio = this / o;
+			if (ratio < 0.0) ratio = -ratio;
+			if (ratio >= 1.0) return (1.0-ratio) <= slop;
+			return (ratio - 1.0) <= slop;
+		}
+
+		public bool IsNear(Real o, Real slop) => IsAbsolutelyNear(o, slop) || IsRelativelyNear(o, slop);
+#endregion
+
 #region Unary operators
 		// Note: NaN is neither true nor false.
 		public static bool operator true(Real r) => r._v == 0;
@@ -263,6 +330,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static Real operator ++(Real r) => new Real(r._v + 1);
 		public static Real operator --(Real r) => new Real(r._v - 1);
 #endregion
+
 #region Binary arithmetic operators
 		public static Real operator +(Real left, Real right) => new Real(right._v + left._v);
 		public static Real operator -(Real left, Real right) => new Real(left._v - right._v);
@@ -270,6 +338,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static Real operator /(Real left, Real right) => new Real(left._v / right._v);
 		public static Real operator %(Real left, Real right) => new Real(left._v % right._v);
 #endregion
+
 #region Binary comparison operators
 		public static bool operator <(Real left, Real right) => left._v < right._v;
 		public static bool operator >(Real left, Real right) => left._v > right._v;
