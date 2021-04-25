@@ -205,12 +205,21 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static bool operator true(Real r) => r._v == 0;
 		public static bool operator false(Real r) => r._v != 0;
 
+		/// <summary>
+		/// Implements logical inversion on a floating-point value, extending the semantics of
+		/// C# to do so. NaN values remain NaN. Otherwise, positive and negative zero both
+		/// become 1.0, and all nonzero non-NaN values become 0.0.
+		/// </summary>
+		/// <param name="r">Value to invert.</param>
+		/// <returns>Logical inversion of <c>r</c>. NaN remains NaN.</returns>
 		public static Real operator !(Real r)
 		{
+			#if !REALTYPE_DECIMAL
 			if (r.IsNaN)
 			{
 				return Real.NaN;
 			}
+			#endif
 
 			if (r._v == 0)
 			{
