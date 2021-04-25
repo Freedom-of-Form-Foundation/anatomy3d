@@ -233,5 +233,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static Real operator -(Real r) => new Real(-r._v);
 		public static Real operator ++(Real r) => new Real(r._v + 1);
 		public static Real operator --(Real r) => new Real(r._v - 1);
+
+#pragma mark Binary arithmetic operators
+		public static Real operator +(Real left, Real right) => new Real(right._v + left._v);
+		public static Real operator -(Real left, Real right) => new Real(left._v - right._v);
+		public static Real operator *(Real left, Real right) => new Real(left._v * right._v);
+		public static Real operator /(Real left, Real right) => new Real(left._v / right._v);
+		public static Real operator %(Real left, Real right) => new Real(left._v % right._v);
+#pragma mark Binary comparison operators
+		public static bool operator <(Real left, Real right) => left._v < right._v;
+		public static bool operator >(Real left, Real right) => left._v > right._v;
+		public static bool operator ==(Real left, Real right) => left._v == right._v;
+		public static bool operator !=(Real left, Real right) => left._v != right._v;
+		public static bool operator <=(Real left, Real right) => left._v <= right._v;
+		public static bool operator >=(Real left, Real right) => left._v >= right._v;
 	}
 }
