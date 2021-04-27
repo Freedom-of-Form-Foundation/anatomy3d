@@ -167,6 +167,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 			}
 		}
 
+		/// <summary>
+		/// Calculate a hash code for this value.
+		///
+		/// Rearranges and inverts the bits of the hash of the underlying type to make it hash
+		/// differently.
+		/// </summary>
+		/// <returns>An arbitrary 32-bit integer, equal between equal instances of this type
+		/// with no particular guarantees otherwise, but with an attempt to be scattered. Allows
+		/// this type to be used as a key in a hashed data structure (although, frankly, it would
+		/// be a pretty weird key type).</returns>
 		public override int GetHashCode()
 		{
 			int h = _v.GetHashCode();
