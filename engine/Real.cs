@@ -396,8 +396,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 
 #region Unary operators
 		// Note: NaN is neither true nor false.
-		public static bool operator true(Real r) => r._v == 0;
-		public static bool operator false(Real r) => r._v != 0;
+		public static bool operator true(Real r)
+		{
+#if !REALTYPE_DECIMAL
+			if (r.IsNaN) return false;
+#endif
+			return r._v != 0;
+		}
+
+		public static bool operator false(Real r) => r._v == 0.0;
 
 		/// <summary>
 		/// Implements logical inversion on a floating-point value, extending the semantics of
