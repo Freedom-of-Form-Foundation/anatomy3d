@@ -111,6 +111,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 			#error Real doesn't know how to cast from decimal
 #endif
 		}
+
+		/// <summary>
+		/// Construct a Real that is a copy of another Real.
+		/// </summary>
+		/// <param name="r">Value to copy.</param>
+		public Real(Real r)
+		{
+			_v = r._v;
+		}
 #endregion
 
 #region Constants
