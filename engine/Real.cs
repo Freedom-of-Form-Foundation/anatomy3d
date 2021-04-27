@@ -246,7 +246,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		{
 			if (IsNaN || o.IsNaN)
 			{
-				// NaN is not similar to anything else - even itself
+				// NaN is not similar to anything else - even itself.
 				return false;
 			}
 
