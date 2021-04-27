@@ -84,7 +84,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <param name="v">Value this Real should take.</param>
 		public Real(float v)
 		{
+#if REALTYPE_DOUBLE
+			_v = (double) v;
+#elif REALTYPE_FLOAT
 			_v = v;
+#elif REALTYPE_DECIMAL
+			_v = (decimal) v;
+#else
+			#error Real doesn't know how to cast from float
+#endif
 		}
 
 		/// <summary>
