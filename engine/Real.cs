@@ -275,12 +275,21 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 #endregion
 
 #region Conversions
-		// Real permits automatic casts <i>from</i> double, float, and decimal. It will not
+		// Real permits automatic casts <i>from</i> all native numeric types. It will not
 		// automatically cast to them, since this would prevent the compiler from spotting math
 		// being done with native numeric types that needs to be converted to Real.
 		public static implicit operator Real(double d) => new Real(d);
 		public static implicit operator Real(float f) => new Real(f);
 		public static implicit operator Real(decimal m) => new Real(m);
+		public static implicit operator Real(sbyte x) => new Real(x);
+		public static implicit operator Real(byte x) => new Real(x);
+		public static implicit operator Real(short x) => new Real(x);
+		public static implicit operator Real(ushort x) => new Real(x);
+		public static implicit operator Real(int x) => new Real(x);
+		public static implicit operator Real(uint x) => new Real(x);
+		public static implicit operator Real(long x) => new Real(x);
+		public static implicit operator Real(ulong x) => new Real(x);
+
 		public static explicit operator double(Real r) => (double) r._v;
 		public static explicit operator float(Real r) => (float) r._v;
 		public static explicit operator decimal(Real r) => (decimal) r._v;
