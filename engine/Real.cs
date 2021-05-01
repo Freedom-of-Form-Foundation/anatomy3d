@@ -113,6 +113,142 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		}
 
 		/// <summary>
+		/// Construct a Real with the sbyte value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(sbyte v)
+		{
+#if REALTYPE_DOUBLE
+			_v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+			_v = (decimal) v;
+#else
+			#error Real doesn't know how to cast from sbyte
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the byte value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(byte v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from byte
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the short value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(short v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from short
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the ushort value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(ushort v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from ushort
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the int value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(int v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from int
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the uint value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(uint v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from uint
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the long value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(long v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from long
+#endif
+		}
+
+		/// <summary>
+		/// Construct a Real with the ulong value provided.
+		/// </summary>
+		/// <param name="v">Value this Real should take.</param>
+		public Real(ulong v)
+		{
+#if REALTYPE_DOUBLE
+            _v = (double) v;
+#elif REALTYPE_FLOAT
+			_v = (float) v;
+#elif REALTYPE_DECIMAL
+            _v = (decimal) v;
+#else
+             #error Real doesn't know how to cast from ulong
+#endif
+		}
+
+		/// <summary>
 		/// Construct a Real that is a copy of another Real.
 		/// </summary>
 		/// <param name="r">Value to copy.</param>
