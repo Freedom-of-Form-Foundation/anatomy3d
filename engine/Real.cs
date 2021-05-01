@@ -290,10 +290,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static implicit operator Real(long x) => new Real(x);
 		public static implicit operator Real(ulong x) => new Real(x);
 
-		public static explicit operator double(Real r) => (double) r._v;
-		public static explicit operator float(Real r) => (float) r._v;
-		public static explicit operator decimal(Real r) => (decimal) r._v;
-#endregion
+		public static explicit operator double(Real real) => (double) real._v;
+		public static explicit operator float(Real real) => (float) real._v;
+		public static explicit operator decimal(Real real) => (decimal) real._v;
+		public static explicit operator sbyte(Real real) => (sbyte) real._v;
+		public static explicit operator byte(Real real) => (byte) real._v;
+		public static explicit operator short(Real real) => (short) real._v;
+		public static explicit operator ushort(Real real) => (ushort) real._v;
+		public static explicit operator int(Real real) => (int) real._v;
+		public static explicit operator uint(Real real) => (uint) real._v;
+		public static explicit operator long(Real real) => (long) real._v;
+		public static explicit operator ulong(Real real) => (ulong) real._v;
+
+		#endregion
 
 #region Interfaces
 		public string ToString(string format, IFormatProvider formatProvider)
