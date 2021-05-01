@@ -10,17 +10,31 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public Cylinder(Curve centerCurve, float radius)
 		{
 			this.CenterCurve = centerCurve;
-			this.Radius = new ConstantFunction<float, float>(radius);
+			this.Radius = new ConstantFunction<Vector2, float>(radius);
+			this.StartAngle = 0.0f;
+			this.EndAngle = 2.0f * (float)Math.PI;
 		}
 		
-		public Cylinder(Curve centerCurve, ContinuousMap<float, float> radius)
+		public Cylinder(Curve centerCurve, ContinuousMap<Vector2, float> radius)
 		{
 			this.CenterCurve = centerCurve;
 			this.Radius = radius;
+			this.StartAngle = 0.0f;
+			this.EndAngle = 2.0f * (float)Math.PI;
 		}
 		
-		public ContinuousMap<float, float> Radius { get; set; }
+		public Cylinder(Curve centerCurve, ContinuousMap<Vector2, float> radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		{
+			this.CenterCurve = centerCurve;
+			this.Radius = radius;
+			this.StartAngle = startAngle;
+			this.EndAngle = endAngle;
+		}
+		
+		public ContinuousMap<Vector2, float> Radius { get; set; }
 		public Curve CenterCurve { get; set; }
+		public ContinuousMap<float, float> StartAngle { get; set; }
+		public ContinuousMap<float, float> EndAngle { get; set; }
 		
 		public static int CalculateVertexCount(int resolutionU, int resolutionV)
 		{
@@ -32,66 +46,61 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return resolutionU * resolutionV * 6;
 		}
 		
+		public Vector3 GetNormalAt(Vector2 uv)
+		{
+			float u = uv.X;
+			float v = uv.Y;
+			
+			Vector3 curveTangent = Vector3.Normalize(CenterCurve.GetTangentAt(v));
+			Vector3 curveNormal = Vector3.Normalize(CenterCurve.GetNormalAt(v));
+			Vector3 curveBinormal = Vector3.Cross(curveTangent, curveNormal);
+			
+			float startAngle = StartAngle.GetValueAt(v);
+			float endAngle = EndAngle.GetValueAt(v);
+			
+			return (float)Math.Cos(u)*curveNormal + (float)Math.Sin(u)*curveBinormal;
+		}
+		
+		public Vector3 GetPositionAt(Vector2 uv)
+		{
+			float v = uv.Y;
+				
+			Vector3 translation = CenterCurve.GetPositionAt(v);
+			float radius = Radius.GetValueAt(uv);
+			
+			return translation + radius*GetNormalAt(uv);
+		}
+		
 		public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
 		{
 			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
-			
-			Console.WriteLine(resolutionV);
 			
 			for (int j = 0; j < (resolutionV + 1); j++)
 			{
 				float v = (float)j/(float)resolutionV;
 				
-				// Generate a rotation matrix to rotate each circle in the cylinder
-				// to align with the tangent vector of the center curve. The matrix
-				// rotates the 'up' vector onto the 'direction' vector, using
-				// Rodrigues' Rotation Formula:
-				Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
+				// Find the values at each ring:
+				Vector3 curveTangent = Vector3.Normalize(CenterCurve.GetTangentAt(v));
+				Vector3 curveNormal = Vector3.Normalize(CenterCurve.GetNormalAt(v));
+				Vector3 curveBinormal = Vector3.Cross(curveTangent, curveNormal);
 				
-				// To prevent division by zero, flip the direction if facing the other way:
-				float sign = 1.0f;
-				if(Vector3.Dot(up, CenterCurve.GetTangentAt(v)) < 0.0f)
-				{
-					sign = -1.0f;
-				}
+				Vector3 translation = CenterCurve.GetPositionAt(v);
 				
-				Vector3 direction = Vector3.Normalize(CenterCurve.GetTangentAt(v));
-				Vector3 k = Vector3.Cross(sign*direction, up);
-				
-				Matrix4x4 identity = new Matrix4x4(1.0f, 0.0f, 0.0f, 0.0f,
-												   0.0f, 1.0f, 0.0f, 0.0f,
-												   0.0f, 0.0f, 1.0f, 0.0f,
-												   0.0f, 0.0f, 0.0f, 1.0f);
-				
-				Matrix4x4 K = new Matrix4x4(0.0f, -k.Z,  k.Y, 0.0f,
-											 k.Z, 0.0f, -k.X, 0.0f,
-											-k.Y,  k.X, 0.0f, 0.0f,
-											0.0f, 0.0f, 0.0f, 0.0f);
-				
-				Matrix4x4 rotationMatrix = identity + K + K*K*(1.0f/(1.0f + Vector3.Dot(up, sign*direction)));
-				
-				Matrix4x4 transformationMatrix = rotationMatrix;
-				transformationMatrix.Translation = CenterCurve.GetPositionAt(v);
-				
-				float radius = Radius.GetValueAt(v);
+				float startAngle = StartAngle.GetValueAt(v);
+				float endAngle = EndAngle.GetValueAt(v);
 				
 				for (int i = 0; i < resolutionU; i++)
 				{
 					// First find the normalized uv-coordinates, u = [0, 2pi], v = [0, 1]:
-					float u = (float)i/(float)resolutionU * 2.0f * (float)Math.PI;
+					float u = startAngle + (endAngle-startAngle)*(float)i/(float)resolutionU;
+					
+					float radius = Radius.GetValueAt(new Vector2(u, v));
 					
 					// Calculate the position of the rings of vertices:
-					float x = sign*(float)Math.Cos(u);
-					float y = sign*(float)Math.Sin(sign*u);
-					float z = 0;
+					Vector3 surfaceNormal = (float)Math.Cos(u)*curveNormal + (float)Math.Sin(u)*curveBinormal;
+					Vector3 surfacePosition = translation + radius*surfaceNormal;
 					
-					Vector3 position = new Vector3(x, y, z);
-					
-					// Rotate the vector to orient the hemisphere correctly:
-					Vector3 vertexPosition = Vector3.Transform(sign*radius * position, transformationMatrix);
-					Vector3 normal = Vector3.Transform(sign*position, rotationMatrix);
-					
-					output.Add(new Vertex(vertexPosition, normal));
+					output.Add(new Vertex(surfacePosition, surfaceNormal));
 				}
 			}
 			
