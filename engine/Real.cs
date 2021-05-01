@@ -398,7 +398,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		// Note: NaN is neither true nor false.
 		public static bool operator true(Real r)
 		{
-#if !REALTYPE_DECIMAL
+#if (REALTYPE_DOUBLE || REALTYPE_FLOAT)
 			if (r.IsNaN) return false;
 #endif
 			return r._v != 0;
