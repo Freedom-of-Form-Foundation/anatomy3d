@@ -21,7 +21,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 		/// </summary>
 		public override Surface GetGeometry()
 		{
-			return new Capsule(new Cylinder(this.CenterCurve, this.Radius));
+			return new Capsule(this.CenterCurve, this.Radius);
 		}
 	}
 }

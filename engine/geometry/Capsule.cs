@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
 using System;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
@@ -11,16 +12,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		Hemisphere startCap;
 		Hemisphere endCap;
 		
-		public Capsule(Cylinder shaft)
+		public Capsule(Curve centerCurve, ContinuousMap<Vector2, float> heightMap)
 		{
-			this.shaft = shaft;
+			this.shaft = new Cylinder(centerCurve, heightMap);
 			this.startCap = new Hemisphere(
-									shaft.Radius.GetValueAt(0.0f),
+									shaft.Radius.GetValueAt(new Vector2(0.0f, 0.0f)),
 									shaft.CenterCurve.GetStartPosition(),
 									-shaft.CenterCurve.GetTangentAt(0.0f)
 								);
 			this.endCap = new Hemisphere(
-									shaft.Radius.GetValueAt(1.0f),
+									shaft.Radius.GetValueAt(new Vector2(0.0f, 1.0f)),
 									shaft.CenterCurve.GetEndPosition(),
 									shaft.CenterCurve.GetTangentAt(1.0f)
 								);
