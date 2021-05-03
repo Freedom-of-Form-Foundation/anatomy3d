@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
 using System;
-using RootFinding = MathNet.Numerics.RootFinding;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
