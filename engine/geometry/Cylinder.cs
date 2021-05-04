@@ -46,7 +46,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return resolutionU * resolutionV * 6;
 		}
 		
-		public Vector3 GetNormalAt(Vector2 uv)
+		public override Vector3 GetNormalAt(Vector2 uv)
 		{
 			float u = uv.X;
 			float v = uv.Y;
@@ -61,7 +61,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return (float)Math.Cos(u)*curveNormal + (float)Math.Sin(u)*curveBinormal;
 		}
 		
-		public Vector3 GetPositionAt(Vector2 uv)
+		public override Vector3 GetPositionAt(Vector2 uv)
 		{
 			float v = uv.Y;
 				

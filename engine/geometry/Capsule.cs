@@ -27,6 +27,52 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 								);
 		}
 		
+		public override Vector3 GetNormalAt(Vector2 uv)
+		{
+			float u = uv.X;
+			float v = uv.Y;
+			
+			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
+			{
+				return startCap.GetNormalAt(new Vector2(u + 0.5f * (float)Math.PI, v));
+			}
+			else if ((v >= 0.0f) && (v < 1.0f))
+			{
+				return shaft.GetNormalAt(new Vector2(u, v));
+			}
+			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
+			{
+				return endCap.GetNormalAt(new Vector2(u - 1.0f, v));
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException("v","'v' must be between [-0.5 pi] and [1.0 + 0.5 pi].");
+			}
+		}
+		
+		public override Vector3 GetPositionAt(Vector2 uv)
+		{
+			float u = uv.X;
+			float v = uv.Y;
+			
+			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
+			{
+				return startCap.GetPositionAt(new Vector2(u + 0.5f * (float)Math.PI, v));
+			}
+			else if ((v >= 0.0f) && (v < 1.0f))
+			{
+				return shaft.GetPositionAt(new Vector2(u, v));
+			}
+			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
+			{
+				return endCap.GetPositionAt(new Vector2(u - 1.0f, v));
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException("v","'v' must be between [-0.5 pi] and [1.0 + 0.5 pi].");
+			}
+		}
+		
 		public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
 		{
 			List<Vertex> startCapList = startCap.GenerateVertexList(resolutionU, resolutionU/4);

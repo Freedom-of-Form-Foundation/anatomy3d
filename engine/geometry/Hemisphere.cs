@@ -35,7 +35,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return resolutionU * resolutionV * 6 + resolutionU * 3;
 		}
 		
-		public Vector3 GetNormalAt(Vector2 uv)
+		public override Vector3 GetNormalAt(Vector2 uv)
 		{
 			float u = uv.X;
 			float v = uv.Y;
@@ -54,7 +54,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return x*pointNormal + y*pointBinormal + z*pointTangent;
 		}
 		
-		public Vector3 GetPositionAt(Vector2 uv)
+		public override Vector3 GetPositionAt(Vector2 uv)
 		{
 			Vector3 translation = Center;
 			float radius = this.Radius.GetValueAt(uv);

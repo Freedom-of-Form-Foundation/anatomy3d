@@ -1,11 +1,23 @@
 using System.Collections.Generic;
 using System.Numerics;
+using System;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public abstract class Surface
 	{
+		/// <summary>
+		///     Returns the surface normal at the uv coordinate given.
+		/// </summary>
+		public abstract Vector3 GetNormalAt(Vector2 uv);
+		
+		/// <summary>
+		///     Returns the surface position at the uv coordinate given.
+		/// </summary>
+		public abstract Vector3 GetPositionAt(Vector2 uv);
+		
 		/// <summary>
 		///     Generates the vertex positions of this uv-parametrized surface. The returned list will contain
 		///     approximately <paramref name="resolutionU"/> times <paramref name="resolutionV"/> vertices in total. The
