@@ -7,16 +7,21 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Joints
 {
 	public class HingeJoint : Joint
 	{
-		Cylinder articularSurface;
+		SymmetricCylinder articularSurface;
 		
 		public HingeJoint(Line centerLine, ContinuousMap<float, float> radius)
 		{
-			articularSurface = new Cylinder(centerLine, radius);
+			articularSurface = new SymmetricCylinder(centerLine, radius);
+		}
+		
+		public HingeJoint(Line centerLine, ContinuousMap<float, float> radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		{
+			articularSurface = new SymmetricCylinder(centerLine, radius, startAngle, endAngle);
 		}
 		
 		public HingeJoint(Line centerLine, float radius)
 		{
-			articularSurface = new Cylinder(centerLine, radius);
+			articularSurface = new SymmetricCylinder(centerLine, radius);
 		}
 		
 		/// <summary>
