@@ -19,6 +19,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public abstract Vector3 GetPositionAt(Vector2 uv);
 		
 		/// <summary>
+		///     Intersects the surface with a ray \f$\vec{p} + t \vec{s}\f$, returning all \f$t\f$ for which there
+		///		is an intersection.
+		/// </summary>
+		public virtual float RayIntersect(Vector3 rayStart, Vector3 rayDirection)
+		{
+			throw new NotImplementedException();
+		}
+		
+		/// <summary>
 		///     Generates the vertex positions of this uv-parametrized surface. The returned list will contain
 		///     approximately <paramref name="resolutionU"/> times <paramref name="resolutionV"/> vertices in total. The
 		///     meaning of the coordinates u and v depends on the specific type of surface.

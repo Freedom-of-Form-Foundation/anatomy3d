@@ -80,7 +80,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		{
 			List<float> output = new List<float>(4);
 			
-			Complex p1 = 2.0*c*c*c - 9.0*b*c*d + 27.0*a*d*d + 27.0*b*b*e - 72*a*c*e;
+			Complex p1 = 2.0*c*c*c - 9.0*b*c*d + 27.0*a*d*d + 27.0*b*b*e - 72.0*a*c*e;
 			Complex q = c*c - 3.0*b*d + 12.0*a*e;
 			Complex p2 = p1 + Complex.Sqrt(-4.0*q*q*q + p1*p1);
 			
