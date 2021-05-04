@@ -71,7 +71,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			Line centerLine = new Line(new Numerics.Vector3(0.0f, -0.2f, 0.0f),
 									   new Numerics.Vector3(0.001f, 0.2f, 0.9f));
 			
-			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetArticularSurface());
+			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface());
 			
 			// Add a long bone to the character:
 			character.bones.Add(new Anatomy.Bones.LongBone(centerLine, boneHeightMap));
