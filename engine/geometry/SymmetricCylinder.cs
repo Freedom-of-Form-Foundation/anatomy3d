@@ -5,7 +5,7 @@ using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
-	public class SymmetricCylinder : Cylinder
+	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
 	{
 		public SymmetricCylinder(Line centerLine, float radius)
 			: base(centerLine, radius)
@@ -25,7 +25,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 		}
 		
-		public override float RayIntersect(Vector3 rayStart, Vector3 rayDirection)
+		public float RayIntersect(Vector3 rayStart, Vector3 rayDirection)
 		{
 			float x0 = rayStart.X;
 			float y0 = rayStart.Y;

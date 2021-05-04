@@ -31,5 +31,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Joints
 		{
 			return articularSurface;
 		}
+		
+		/// <summary>
+		///     Returns the raytraceable surface geometry used by this Hinge Joint.
+		/// </summary>
+		public override IRaytraceableSurface GetRaytraceableSurface()
+		{
+			return articularSurface;
+		}
 	}
 }

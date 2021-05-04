@@ -13,9 +13,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	public class CurveMoldCastMap : ContinuousMap<Vector2, float>
 	{
 		private Surface raycastSurface;
-		private Surface moldSurface;
+		private IRaytraceableSurface moldSurface;
 		
-		public CurveMoldCastMap(Curve raycastCurve, Surface moldSurface)
+		public CurveMoldCastMap(Curve raycastCurve, IRaytraceableSurface moldSurface)
 		{
 			this.raycastSurface = new Capsule(raycastCurve, 0.0f);
 			this.moldSurface = moldSurface;
