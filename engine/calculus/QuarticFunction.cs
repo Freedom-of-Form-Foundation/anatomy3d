@@ -94,29 +94,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			Complex p6 = (-b*b*b/(a*a*a) + 4.0*b*c/(a*a) - 8.0*d/a)/(4.0*p4);
 			
-			Complex x1 = -b/(4.0*a) - p4/2.0 - 0.5*Complex.Sqrt(p5 - p6);
-			Complex x2 = -b/(4.0*a) - p4/2.0 + 0.5*Complex.Sqrt(p5 - p6);
-			Complex x3 = -b/(4.0*a) + p4/2.0 - 0.5*Complex.Sqrt(p5 + p6);
-			Complex x4 = -b/(4.0*a) + p4/2.0 + 0.5*Complex.Sqrt(p5 + p6);
-			
-			if(x1.Imaginary == 0.0f)
+			List<Complex> roots = new List<Complex>
 			{
-				output.Add((float)x1.Real);
-			}
+				-b/(4.0*a) - p4/2.0 - 0.5*Complex.Sqrt(p5 - p6),
+				-b/(4.0*a) - p4/2.0 + 0.5*Complex.Sqrt(p5 - p6),
+				-b/(4.0*a) + p4/2.0 - 0.5*Complex.Sqrt(p5 + p6),
+				-b/(4.0*a) + p4/2.0 + 0.5*Complex.Sqrt(p5 + p6),
+			};
 			
-			if(x2.Imaginary == 0.0f)
+			foreach (Complex root in roots)
 			{
-				output.Add((float)x2.Real);
-			}
-			
-			if(x3.Imaginary == 0.0f)
-			{
-				output.Add((float)x3.Real);
-			}
-			
-			if(x4.Imaginary == 0.0f)
-			{
-				output.Add((float)x4.Real);
+				if(Math.Abs(root.Imaginary) <= 0.05f)
+				{
+					output.Add((float)root.Real);
+				}
 			}
 			
 			return output;
