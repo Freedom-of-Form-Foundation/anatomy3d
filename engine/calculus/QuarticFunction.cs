@@ -78,6 +78,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		public static List<float> Solve(float e, float d, float c, float b, float a)
 		{
+			if(Math.Abs(a) <= 0.005f)
+			{
+				return CubicFunction.Solve(e, d, c, b);
+			}
+			
 			List<float> output = new List<float>(4);
 			
 			Complex p1 = 2.0*c*c*c - 9.0*b*c*d + 27.0*a*d*d + 27.0*b*b*e - 72.0*a*c*e;

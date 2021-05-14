@@ -218,7 +218,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				float p4 = b4 - A2*A2;
 				
 				// Solve the quartic polynomial:
-				List<float> intersections = QuarticFunction.Solve(p0, p1, p2, p3, 0.1f);
+				List<float> intersections = QuarticFunction.Solve(p0, p1, p2, p3, p4);
 				//TODO: The previous Solve() function has a constant value in the last parameter,
 				// but that is wrong. It should be `p4`, except since `p4` is so small, the near divide-by-zero
 				// will cause a numeric instability and cause the results to fluctuate. This resolves it somewhat,
