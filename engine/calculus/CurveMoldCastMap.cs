@@ -14,16 +14,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	{
 		private Surface raycastSurface;
 		private IRaytraceableSurface moldSurface;
+		private ContinuousMap<Vector2, float> defaultRadius;
 		
-		public CurveMoldCastMap(Curve raycastCurve, IRaytraceableSurface moldSurface)
+		public CurveMoldCastMap(Curve raycastCurve, IRaytraceableSurface moldSurface, ContinuousMap<Vector2, float> defaultRadius)
 		{
 			this.raycastSurface = new Capsule(raycastCurve, 0.0f);
 			this.moldSurface = moldSurface;
+			this.defaultRadius = defaultRadius;
 		}
 		
 		public override float GetValueAt(Vector2 uv)
 		{
-			return moldSurface.RayIntersect(raycastSurface.GetPositionAt(uv), Vector3.Normalize(raycastSurface.GetNormalAt(uv)));
+			float intersectionRadius = moldSurface.RayIntersect(raycastSurface.GetPositionAt(uv),
+																Vector3.Normalize(raycastSurface.GetNormalAt(uv))
+																);
+			
+			if (Single.IsInfinity(intersectionRadius) || Single.IsNaN(intersectionRadius))
+			{
+				return defaultRadius.GetValueAt(uv);
+			} else {
+				return intersectionRadius;
+			}
 		}
 	}
 }

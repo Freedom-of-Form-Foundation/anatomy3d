@@ -55,7 +55,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				}
 			}
 			
-			return Single.IsInfinity(minimum) ? 0.0f : minimum;
+			return minimum;
 		}
 	}
 }

@@ -48,13 +48,13 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<float, float> radiusPoints = new SortedList<float, float>();
-			radiusPoints.Add(0.0f, 0.7f*0.92f);
+			radiusPoints.Add(-3.5f, 0.7f*0.92f);
 			radiusPoints.Add(0.02f, 0.7f*0.92f);
 			radiusPoints.Add(0.15f, 0.7f*0.8f);
-			radiusPoints.Add(0.5f, 0.1f*0.7f);
+			radiusPoints.Add(0.5f, 0.7f*0.7f);
 			radiusPoints.Add(0.8f, 0.7f*0.76f);
 			radiusPoints.Add(0.98f, 0.7f*0.8f);
-			radiusPoints.Add(1.0f, 0.7f*0.8f);
+			radiusPoints.Add(4.5f, 0.7f*0.8f);
 			
 			CubicSpline1D boneRadius = new CubicSpline1D(radiusPoints);
 
@@ -68,10 +68,10 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, -1.4f, 0.5f),
-									   new Numerics.Vector3(0.001f, 0.0f, 0.5f));
+			Line centerLine = new Line(new Numerics.Vector3(0.0f, -2.0f, 0.5f),
+									   new Numerics.Vector3(0.001f, 0.0f, 0.51f));
 			
-			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface());
+			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface(), new DomainToVector2<float>(new Numerics.Vector2(0.0f, 1.0f), boneRadius));
 			
 			// Add a long bone to the character:
 			character.bones.Add(new Anatomy.Bones.LongBone(centerLine, boneHeightMap));
@@ -91,7 +91,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<float, float> splinePoints = new SortedList<float, float>();
-			float radiusModifier = 0.3f;
+			float radiusModifier = 0.6f;
 			splinePoints.Add(-0.1f, radiusModifier*1.1f);
 			splinePoints.Add(0.0f, radiusModifier*1.1f);
 			splinePoints.Add(0.15f, radiusModifier*0.95f);
