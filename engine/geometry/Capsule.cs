@@ -16,12 +16,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			this.shaft = new Cylinder(centerCurve, heightMap);
 			this.startCap = new Hemisphere(
-									shaft.Radius.GetValueAt(new Vector2(0.0f, 0.0f)),
+									new ShiftedMap2D<float>(new Vector2(0.0f, -0.5f * (float)Math.PI), heightMap),
 									shaft.CenterCurve.GetStartPosition(),
 									-shaft.CenterCurve.GetTangentAt(0.0f)
 								);
 			this.endCap = new Hemisphere(
-									shaft.Radius.GetValueAt(new Vector2(0.0f, 1.0f)),
+									new ShiftedMap2D<float>(new Vector2(0.0f, 1.0f), heightMap),
 									shaft.CenterCurve.GetEndPosition(),
 									shaft.CenterCurve.GetTangentAt(1.0f)
 								);
@@ -34,7 +34,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
 			{
-				return startCap.GetNormalAt(new Vector2(u + 0.5f * (float)Math.PI, v));
+				return startCap.GetNormalAt(new Vector2(u, v + 0.5f * (float)Math.PI));
 			}
 			else if ((v >= 0.0f) && (v < 1.0f))
 			{
@@ -42,7 +42,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
 			{
-				return endCap.GetNormalAt(new Vector2(u - 1.0f, v));
+				return endCap.GetNormalAt(new Vector2(u, v - 1.0f));
 			}
 			else
 			{
@@ -57,7 +57,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
 			{
-				return startCap.GetPositionAt(new Vector2(u + 0.5f * (float)Math.PI, v));
+				return startCap.GetPositionAt(new Vector2(u, v + 0.5f * (float)Math.PI));
 			}
 			else if ((v >= 0.0f) && (v < 1.0f))
 			{
@@ -65,7 +65,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
 			{
-				return endCap.GetPositionAt(new Vector2(u - 1.0f, v));
+				return endCap.GetPositionAt(new Vector2(u, v - 1.0f));
 			}
 			else
 			{
