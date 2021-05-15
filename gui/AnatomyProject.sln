@@ -2,7 +2,7 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gui", "AnatomyProject.csproj", "{67442733-B150-4B9A-9F6C-1DCECDA08CCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "engine", "..\engine.csproj", "{C05AA306-D502-4117-AAD9-B3B702D0FEB1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "engine", "..\engine\engine.csproj", "{C05AA306-D502-4117-AAD9-B3B702D0FEB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

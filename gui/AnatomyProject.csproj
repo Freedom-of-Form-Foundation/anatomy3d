@@ -4,14 +4,9 @@
     <RootNamespace>gui</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\engine\anatomy\anatomy.csproj" />
-    <ProjectReference Include="..\engine\calculus\calculus.csproj" />
-    <ProjectReference Include="..\engine\character\character.csproj" />
-    <ProjectReference Include="..\engine\engine.csproj" />
-    <ProjectReference Include="..\engine\geometry\geometry.csproj" />
-    <ProjectReference Include="..\engine\species\species.csproj" />
+    <Content Include="project.godot" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="project.godot" />
+    <ProjectReference Include="..\engine\engine.csproj" />
   </ItemGroup>
 </Project>
