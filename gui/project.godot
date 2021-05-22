@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="AnatomyProject"
-run/main_scene="res://gui/Main.tscn"
+run/main_scene="res://Main.tscn"
 
 [rendering]
 
