@@ -1,12 +1,14 @@
 <Project Sdk="Godot.NET.Sdk/3.2.3">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <RootNamespace>gui</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="project.godot" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\engine\engine.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GodotSharp" Version="3.2.3" />
   </ItemGroup>
 </Project>
