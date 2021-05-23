@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
