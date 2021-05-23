@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Numerics;
-using System;
-using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
