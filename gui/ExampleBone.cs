@@ -69,7 +69,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
 			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, 0.5f),
-									   new Numerics.Vector3(0.001f, -2.0f, 0.51f));
+									   new Numerics.Vector3(0.001f, 10f, 0.51f));
 			
 			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface(), new DomainToVector2<float>(new Numerics.Vector2(0.0f, 1.0f), boneRadius));
 			
@@ -82,7 +82,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			// Finally upload the mesh to Godot:
 			MeshInstance newMesh = new MeshInstance();
 			newMesh.Mesh = new GodotMeshConverter(mesh);
-			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://gui/BoneMaterial.tres"));
+			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://BoneMaterial.tres"));
 			
 			AddChild(newMesh);
 		}
@@ -104,11 +104,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, 0.0f),
-									   new Numerics.Vector3(0.01f, 0.0f, 1.0f));
+			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, -1.0f),
+									   new Numerics.Vector3(0.01f, 0.0f, 2.0f));
 			
 			// Add a long bone to the character:
-			character.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f*(float)Math.PI, 2.0f*(float)Math.PI));
+			character.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, -0.5f*(float)Math.PI, 0.5f*(float)Math.PI));
 			
 			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
 			UVMesh mesh = character.joints[0].GetArticularSurface().GenerateMesh(64, 64);
@@ -116,7 +116,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			// Finally upload the mesh to Godot:
 			MeshInstance newMesh = new MeshInstance();
 			newMesh.Mesh = new GodotMeshConverter(mesh);
-			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://gui/JointMaterial.tres"));
+			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
 			AddChild(newMesh);
 		}

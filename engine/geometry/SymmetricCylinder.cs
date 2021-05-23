@@ -27,13 +27,26 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		
 		public float RayIntersect(Vector3 rayStart, Vector3 rayDirection)
 		{
-			float x0 = rayStart.X;
-			float y0 = rayStart.Y;
-			float z0 = rayStart.Z;
+			// Since we raytrace only using a cylindrical surface that is horizontal and at the origin, we
+			// first shift and rotate the ray such that we get the right orientation:
+			Vector3 start = CenterCurve.GetStartPosition();
+			Vector3 end = CenterCurve.GetEndPosition();
+			float length = Vector3.Distance(start, end);
 			
-			float a = rayDirection.X;
-			float b = rayDirection.Y;
-			float c = rayDirection.Z;
+			Vector3 shiftedRay = rayStart - start;
+			Vector3 rescaledRay = new Vector3(shiftedRay.X, shiftedRay.Y, shiftedRay.Z/length);
+			
+			float x0 = rescaledRay.X;
+			float y0 = rescaledRay.Y;
+			float z0 = rescaledRay.Z;
+			
+			Vector3 newDirection = new Vector3(rayDirection.X, rayDirection.Y, rayDirection.Z/length);
+			
+			float a = newDirection.X;
+			float b = newDirection.Y;
+			float c = newDirection.Z;
+			
+			// TODO: ensure that CenterCurve is always a Line!
 			
 			// Raytrace using a cylindrical surface equation x^2 + y^2. The parameters in the following line
 			// represent the coefficients of the expanded cylindrical surface equation, after the substitution

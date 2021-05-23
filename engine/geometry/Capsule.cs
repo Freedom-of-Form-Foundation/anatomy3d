@@ -21,7 +21,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 									-shaft.CenterCurve.GetTangentAt(0.0f)
 								);
 			this.endCap = new Hemisphere(
-									new ShiftedMap2D<float>(new Vector2(0.0f, 1.0f), heightMap),
+									new ShiftedMap2D<float>(new Vector2(0.0f, 1.0f + 0.5f * (float)Math.PI), new Vector2(1.0f, -1.0f), heightMap),
 									shaft.CenterCurve.GetEndPosition(),
 									shaft.CenterCurve.GetTangentAt(1.0f)
 								);
