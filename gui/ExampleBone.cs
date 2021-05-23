@@ -68,7 +68,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, 0.5f),
+			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
 									   new Numerics.Vector3(0.001f, 10f, 0.51f));
 			
 			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface(), new DomainToVector2<float>(new Numerics.Vector2(0.0f, 1.0f), boneRadius));

@@ -36,17 +36,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			Vector3 shiftedRay = rayStart - start;
 			Vector3 rescaledRay = new Vector3(shiftedRay.X, shiftedRay.Y, shiftedRay.Z/length);
 			
+			Vector3 newDirection = new Vector3(rayDirection.X, rayDirection.Y, rayDirection.Z/length);
+			
+			
+			// TODO: ensure that CenterCurve is always a Line!
+			
+			// If the ray direction is pointing horizontally with respect to the cylindrical surface, we get
+			// numerical instability issues. So, we rotate the scene such that it points upwards again:
+			//if(Math.Abs(Vector3.Dot(newDirection, new Vector3(1.0f, 0.0f, 0.0f))) < (float)1.0/Math.Sqrt(2.0))
+			//{
+				Quaternion rotation = Quaternion.CreateFromAxisAngle(new Vector3(0.0f, 0.0f, 1.0f), 0.5f*(float)Math.PI);
+				rescaledRay = Vector3.Transform(rescaledRay, rotation);
+				newDirection = Vector3.Transform(newDirection, rotation);
+			//}
+			
 			float x0 = rescaledRay.X;
 			float y0 = rescaledRay.Y;
 			float z0 = rescaledRay.Z;
 			
-			Vector3 newDirection = new Vector3(rayDirection.X, rayDirection.Y, rayDirection.Z/length);
-			
 			float a = newDirection.X;
 			float b = newDirection.Y;
 			float c = newDirection.Z;
-			
-			// TODO: ensure that CenterCurve is always a Line!
 			
 			// Raytrace using a cylindrical surface equation x^2 + y^2. The parameters in the following line
 			// represent the coefficients of the expanded cylindrical surface equation, after the substitution
