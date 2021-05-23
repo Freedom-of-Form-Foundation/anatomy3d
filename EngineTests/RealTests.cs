@@ -30,12 +30,12 @@ namespace EngineTests
         [Fact]
         public void TestAddition()
         {
-            Assert.Equal(new Real(2) + new Real(2), new Real(4));
-            Assert.Equal(new Real(2) + new Real(-2), new Real(0));
-            Assert.Equal(new Real(-1000000.0) + Real.PositiveInfinity, Real.PositiveInfinity);
-            Assert.Equal(Real.PositiveInfinity + Real.NegativeInfinity, Real.NaN);
-            Assert.Equal(new Real(9999999) + Real.NegativeInfinity, Real.NegativeInfinity);
-            Assert.NotEqual(new Real(2) + new Real(2.0), new Real(5));
+            Assert.Equal(new Real(4), new Real(2) + new Real(2));
+            Assert.Equal(new Real(0), new Real(2) + new Real(-2));
+            Assert.Equal(Real.PositiveInfinity, new Real(-1000000.0) + Real.PositiveInfinity);
+            Assert.Equal(Real.NaN, Real.PositiveInfinity + Real.NegativeInfinity);
+            Assert.Equal(Real.NegativeInfinity, new Real(9999999) + Real.NegativeInfinity);
+            Assert.NotEqual(new Real(5), new Real(2) + new Real(2.0));
         }
         
         [Fact]
