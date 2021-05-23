@@ -50,9 +50,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			return Function.GetValueAt(Vector2.Dot(ParameterDirection, t));
 		}
 		
-		public override List<float> SolveRayTrace(float b0, float b1, float b2, float b3, float b4, float z0 = 0.0f, float c = 1.0f)
+		public override List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
-			return Function.SolveRayTrace(b0, b1, b2, b3, b4, z0, c);
+			return Function.SolveRaytrace(surfaceFunction, z0, c);
 		}
 	}
 }

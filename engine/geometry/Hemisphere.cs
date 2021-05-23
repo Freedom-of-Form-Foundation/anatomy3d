@@ -104,6 +104,22 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				}
 			}
 			
+			// Recalculate the surface normal after deformation:
+			for (int j = 1; j < resolutionV; j++)
+			{
+				for (int i = 0; i < (resolutionU - 1); i++)
+				{
+					Vector3 surfacePosition = output[(j-1)*resolutionU + i + 1].Position;
+					Vector3 du = surfacePosition - output[(j)*resolutionU + i + 1].Position;
+					Vector3 dv = surfacePosition - output[(j-1)*resolutionU + i + 1 + 1].Position;
+					
+					// Calculate the position of the rings of vertices:
+					Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
+					
+					output[(j-1)*resolutionU + i + 1] = new Vertex(surfacePosition, surfaceNormal);
+				}
+			}
+			
 			return output;
 		}
 		

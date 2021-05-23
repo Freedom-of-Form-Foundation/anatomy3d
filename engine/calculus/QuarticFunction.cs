@@ -8,11 +8,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	public class QuarticFunction : ContinuousMap<float, float>
 	{
-		float a0;
-		float a1;
-		float a2;
-		float a3;
-		float a4;
+		public float a0 { get; }
+		public float a1 { get; }
+		public float a2 { get; }
+		public float a3 { get; }
+		public float a4 { get; }
 		
 		/// <summary>
 		///     A quartic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$.

@@ -181,7 +181,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		public override List<float> SolveRayTrace(float b0, float b1, float b2, float b3, float b4, float z0 = 0.0f, float c = 1.0f)
+		public override List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
 			List<float> output = new List<float>();
 			
@@ -211,11 +211,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				float A2 = a2*c*c;
 				
 				// Find the quartic polynomial to solve:
-				float p0 = b0 - A0*A0;
-				float p1 = b1 - 2.0f*A0*A1;
-				float p2 = b2 - (2.0f*A0*A2 + A1*A1);
-				float p3 = b3 - 2.0f*A1*A2;
-				float p4 = b4 - A2*A2;
+				float p0 = surfaceFunction.a0 - A0*A0;
+				float p1 = surfaceFunction.a1 - 2.0f*A0*A1;
+				float p2 = surfaceFunction.a2 - (2.0f*A0*A2 + A1*A1);
+				float p3 = surfaceFunction.a3 - 2.0f*A1*A2;
+				float p4 = surfaceFunction.a4 - A2*A2;
 				
 				// Solve the quartic polynomial:
 				List<float> intersections = QuarticFunction.Solve(p0, p1, p2, p3, p4);

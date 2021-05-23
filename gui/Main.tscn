@@ -14,7 +14,7 @@ background_sky = SubResource( 1 )
 script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.766022, 0.642814, 0, -0.642814, 0.766022, 0.00880861, 2.95223, 4.26714 )
+transform = Transform( 1, 0, 0, 0, 0.766022, 0.642814, 0, -0.642814, 0.766022, -0.187934, 1.6152, 1.95243 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )

@@ -74,6 +74,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		public static List<float> Solve(float a0, float a1, float a2)
 		{
+			if(Math.Abs(a2) <= 0.005f)
+			{
+				if(Math.Abs(a1) <= 0.005f)
+				{
+					return new List<float>(0);
+				} else {
+					return new List<float>{-a0/a1};
+				}
+			}
+			
 			List<float> output = new List<float>(2);
 			
 			float x1 = 0.5f*(-a1 + (float)Math.Sqrt(a1*a1 - 4.0f*a0*a2))/a2;

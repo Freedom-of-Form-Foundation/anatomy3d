@@ -16,7 +16,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the continuous map. The parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		public virtual List<float> SolveRayTrace(float b0, float b1, float b2, float b3, float b4, float z0 = 0.0f, float c = 1.0f)
+		public virtual List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
 			throw new NotImplementedException();
 		}
