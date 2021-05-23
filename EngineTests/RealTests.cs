@@ -35,6 +35,7 @@ namespace EngineTests
             Assert.Equal(new Real(-1000000.0) + Real.PositiveInfinity, Real.PositiveInfinity);
             Assert.Equal(Real.PositiveInfinity + Real.NegativeInfinity, Real.NaN);
             Assert.Equal(new Real(9999999) + Real.NegativeInfinity, Real.NegativeInfinity);
+            Assert.NotEqual(new Real(2) + new Real(2.0), new Real(5));
         }
         
         [Fact]
