@@ -34,6 +34,7 @@
 #endif
 
 using System;
+using System.Numerics;
 
 // IDE configuration: This file will contain some redundant casts because it's
 // designed to allow a field type to be changed to change the behavior of
@@ -256,6 +257,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		{
 			_v = r._v;
 		}
+
 #endregion
 
 #region Constants
@@ -302,9 +304,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		public static explicit operator long(Real real) => (long) real._v;
 		public static explicit operator ulong(Real real) => (ulong) real._v;
 
+		/// <summary>
+		/// Convert a Real to a Complex with zero imaginary part.
+		/// </summary>
+		/// <param name="real">Real to convert.</param>
+		/// <returns>Complex with real part equal to the provided Real (as double) and zero imaginary part.</returns>
+		public static explicit operator Complex(Real real) => new Complex((double) real._v, 0.0);
+
 		#endregion
 
-#region Interfaces
+		#region Interfaces
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			return _v.ToString(format, formatProvider);
