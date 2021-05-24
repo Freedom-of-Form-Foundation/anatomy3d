@@ -40,8 +40,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		// Called every frame. 'delta' is the elapsed time since the previous frame.
 		public override void _Process(float delta)
 		{
-			// Visually spin the bone around, just for show:
-			RotateY(0.5f*delta);
+			
 		}
 		
 		public void CreateExampleBones(Anatomy.Skeleton skeleton)
