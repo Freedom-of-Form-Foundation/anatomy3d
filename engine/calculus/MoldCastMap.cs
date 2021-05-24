@@ -32,10 +32,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
 	/// <summary>
 	/// 	A MoldCastMap projects one surface onto a mold surface, giving the distance between the two surfaces
-	///		on each coordinate point. A CurveMoldCastMap uses a curve to project its rays from, simplifying
-	///		computation. This map can for example be used to shape the Cylinder and the Capsule surfaces.
+	///		on each coordinate point. This map can for example be used to shape the Cylinder and the Capsule surfaces.
 	/// </summary>
-	public class CurveMoldCastMap : ContinuousMap<Vector2, float>
+	public class MoldCastMap : ContinuousMap<Vector2, float>
 	{
 		/// <summary>
 		/// 	The surface from which the rays are cast. A ray is cast out of each point on the surface in the
@@ -62,13 +61,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		private readonly RayCastDirection direction;
 		
 		/// <summary>
-		/// 	Construct a new CurveMoldCastMap.
+		/// 	Construct a new MoldCastMap from a curve.
 		/// </summary>
 		/// <param name="raycastCurve">
-		/// 	The surface from which the rays are cast. A ray is cast out of each point on the surface in the
-		/// 	direction of the surface's normal. This could for example be the center curve of a Capsule, in which
-		/// 	case the CurveMoldCastMap returns a height map that ensures that the Capsule is shaped like the
-		/// 	moldSurface.
+		/// 	The curve from which the rays are cast. A ray is cast out of each point on the curve. This could for
+		/// 	example be the center curve of a Capsule, in which case the CurveMoldCastMap returns a height map that
+		/// 	ensures that the Capsule is shaped like the moldSurface.
 		/// </param>
 		/// <param name="moldSurface">
 		/// 	The surface that defines the mold that shapes the height map that is returned by the MoldCastMap. Rays
@@ -83,12 +81,41 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
 		/// 	outwards from the surface, or in the opposite direction.
 		/// </param>
-		public CurveMoldCastMap(Curve raycastCurve,
+		public MoldCastMap(Curve raycastCurve,
+								IRaytraceableSurface moldSurface,
+								ContinuousMap<Vector2, float> defaultRadius,
+								RayCastDirection direction = RayCastDirection.Outwards)
+			: this(new Capsule(raycastCurve, 0.0f), moldSurface, defaultRadius, direction)
+		{
+			
+		}
+		
+		/// <summary>
+		/// 	Construct a new MoldCastMap.
+		/// </summary>
+		/// <param name="raycastSurface">
+		/// 	The surface from which the rays are cast. A ray is cast out of each point on the surface in the
+		/// 	direction of the surface's normal.
+		/// </param>
+		/// <param name="moldSurface">
+		/// 	The surface that defines the mold that shapes the height map that is returned by the MoldCastMap. Rays
+		/// 	that are cast are checked whether they intersect this surface.
+		/// </param>
+		/// <param name="defaultRadius">
+		/// 	The height map that is returned when a ray does not intersect the moldSurface. This happens when the ray
+		/// 	has missed the mold surface and shoots off to infinity. When that happens, return the length of
+		/// 	defaultRadius instead, so that the heightmap is still defined.
+		/// </param>
+		/// <param name="direction">
+		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
+		/// 	outwards from the surface, or in the opposite direction.
+		/// </param>
+		public MoldCastMap(Surface raycastSurface,
 								IRaytraceableSurface moldSurface,
 								ContinuousMap<Vector2, float> defaultRadius,
 								RayCastDirection direction = RayCastDirection.Outwards)
 		{
-			this.raycastSurface = new Capsule(raycastCurve, 0.0f);
+			this.raycastSurface = raycastSurface;
 			this.moldSurface = moldSurface;
 			this.defaultRadius = defaultRadius;
 			this.direction = direction;
@@ -105,7 +132,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				return defaultRadius.GetValueAt(uv);
 			} else {
-				return intersectionRadius - 0.2f;
+				return intersectionRadius;
 			}
 		}
 	}

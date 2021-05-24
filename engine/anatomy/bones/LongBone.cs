@@ -40,7 +40,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 			ContinuousMap<Vector2, float> deformations = Radius;
 			foreach (var i in InteractingJoints)
 			{
-				CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(CenterCurve, i.joint.GetRaytraceableSurface(), deformations, i.direction);
+				MoldCastMap boneHeightMap = new MoldCastMap(CenterCurve, i.joint.GetRaytraceableSurface(), deformations, i.direction);
 				deformations = boneHeightMap;
 			}
 			
