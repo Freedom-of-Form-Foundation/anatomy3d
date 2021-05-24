@@ -1,3 +1,19 @@
+﻿/*
+ * Copyright (C) 2021 Freedom of Form Foundation, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License, version 2 (GPLv2) as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License, version 2 (GPLv2) for more details.
+ * 
+ * You should have received a copy of the GNU General Public License, version 2 (GPLv2)
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
@@ -6,6 +22,9 @@ using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
+	/// <summary>
+	/// A CubicFunction defines a cubic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3\f$.
+	/// </summary>
 	public class CubicFunction : ContinuousMap<float, float>
 	{
 		float a0;
