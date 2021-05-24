@@ -80,8 +80,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		{
 			if(Math.Abs(a) <= 0.005f)
 			{
+				//return new List<float>{2.0f};
 				return CubicFunction.Solve(e, d, c, b);
 			}
+			
+			//if(Math.Min(Math.Min(Math.Abs(b), Math.Abs(c)), Math.Min(Math.Abs(d), Math.Abs(e))) <= 0.015f)
+			//{
+			//	return new List<float>{2.0f};
+			//}
+			
+			float ba = b/a;
+			float ca = c/a;
+			float da = d/a;
+			float ea = e/a;
 			
 			List<float> output = new List<float>(4);
 			
@@ -93,23 +104,23 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			Complex p3 = q/(3.0*a*pow) + pow/(3.0*a);
 			
-			Complex p4 = Complex.Sqrt(b*b/(4.0*a*a) - 2.0*c/(3.0*a) + p3);
+			Complex p4 = Complex.Sqrt(ba*ba/4.0 - 2.0*ca/(3.0) + p3);
 			
 			Complex p5 = b*b/(2.0*a*a) - 4.0*c/(3.0*a) - p3;
 			
-			Complex p6 = (-b*b*b/(a*a*a) + 4.0*b*c/(a*a) - 8.0*d/a)/(4.0*p4);
+			Complex p6 = (-ba*ba*ba + 4.0*ba*ca - 8.0*da)/(4.0*p4);
 			
 			List<Complex> roots = new List<Complex>
 			{
-				-b/(4.0*a) - p4/2.0 - 0.5*Complex.Sqrt(p5 - p6),
-				-b/(4.0*a) - p4/2.0 + 0.5*Complex.Sqrt(p5 - p6),
-				-b/(4.0*a) + p4/2.0 - 0.5*Complex.Sqrt(p5 + p6),
-				-b/(4.0*a) + p4/2.0 + 0.5*Complex.Sqrt(p5 + p6),
+				-ba/(4.0) - p4/2.0 - 0.5*Complex.Sqrt(p5 - p6),
+				-ba/(4.0) - p4/2.0 + 0.5*Complex.Sqrt(p5 - p6),
+				-ba/(4.0) + p4/2.0 - 0.5*Complex.Sqrt(p5 + p6),
+				-ba/(4.0) + p4/2.0 + 0.5*Complex.Sqrt(p5 + p6),
 			};
 			
 			foreach (Complex root in roots)
 			{
-				if(Math.Abs(root.Imaginary) <= 0.05f)
+				if(Math.Abs(root.Imaginary) <= 0.005f)
 				{
 					output.Add((float)root.Real);
 				}
