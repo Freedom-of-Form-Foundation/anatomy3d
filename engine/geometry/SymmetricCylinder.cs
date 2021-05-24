@@ -25,7 +25,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 		}
 		
-		public float RayIntersect(Vector3 rayStart, Vector3 rayDirection)
+		public float RayIntersect(Vector3 rayStart, Vector3 rayDirection, RayCastDirection direction = RayCastDirection.Outwards)
 		{
 			// Since we raytrace only using a cylindrical surface that is horizontal and at the origin, we
 			// first shift and rotate the ray such that we get the right orientation:
@@ -45,9 +45,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// numerical instability issues. So, we rotate the scene such that it points upwards again:
 			//if(Math.Abs(Vector3.Dot(newDirection, new Vector3(1.0f, 0.0f, 0.0f))) < (float)1.0/Math.Sqrt(2.0))
 			//{
-				Quaternion rotation = Quaternion.CreateFromAxisAngle(new Vector3(0.0f, 0.0f, 1.0f), 0.5f*(float)Math.PI);
-				rescaledRay = Vector3.Transform(rescaledRay, rotation);
-				newDirection = Vector3.Transform(newDirection, rotation);
+				//Quaternion rotation = Quaternion.CreateFromAxisAngle(new Vector3(0.0f, 0.0f, 1.0f), 0.5f*(float)Math.PI);
+				//rescaledRay = Vector3.Transform(rescaledRay, rotation);
+				//newDirection = Vector3.Transform(newDirection, rotation);
 			//}
 			
 			float x0 = rescaledRay.X;
@@ -69,15 +69,31 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// closest intersection point.
 			float minimum = Single.PositiveInfinity;
 			
-			foreach (float i in intersections)
+			switch (direction)
 			{
-				if (i > 0.0f)
-				{
-					minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
-				}
+				case RayCastDirection.Outwards:
+					foreach (float i in intersections)
+					{
+						if (i > 0.0f)
+						{
+							minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
+						}
+					}
+					
+					return minimum;
+				case RayCastDirection.Inwards:
+					foreach (float i in intersections)
+					{
+						if (i < 0.0f)
+						{
+							minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
+						}
+					}
+					
+					return minimum;
+				default:
+					throw new ArgumentException("direction does not have a valid enum value.");
 			}
-			
-			return minimum;
 		}
 	}
 }

@@ -22,6 +22,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="rayDirection">
 		///		The direction in which the ray is cast.
 		/// </param>
-		float RayIntersect(Vector3 rayStart, Vector3 rayDirection);
+		float RayIntersect(Vector3 rayStart, Vector3 rayDirection, RayCastDirection direction = RayCastDirection.Outwards);
 	}
 }

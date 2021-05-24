@@ -18,10 +18,10 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		public override void _Ready()
 		{
 			// Example method that creates a character and adds a single joint and bone:
-			Character character = new Character();
+			Anatomy.Skeleton skeleton = new Anatomy.Skeleton();
 			
-			CreateExampleJoint(character);
-			CreateExampleBone(character);
+			CreateExampleJoint(skeleton);
+			CreateExampleBones(skeleton);
 			
 			// Test:
 			List<float> intersections = QuarticFunction.Solve(5.0f, 8.0f, 2.0f, -2.0f, -7.0f);
@@ -44,7 +44,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			RotateY(0.5f*delta);
 		}
 		
-		public void CreateExampleBone(Character character)
+		public void CreateExampleBones(Anatomy.Skeleton skeleton)
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<float, float> radiusPoints = new SortedList<float, float>();
@@ -68,26 +68,41 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
+			// Add first bone:
 			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
 									   new Numerics.Vector3(0.001f, 10f, 0.51f));
 			
-			CurveMoldCastMap boneHeightMap = new CurveMoldCastMap(centerLine, character.joints[0].GetRaytraceableSurface(), new DomainToVector2<float>(new Numerics.Vector2(0.0f, 1.0f), boneRadius));
+			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
+			bone1.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards));
+			skeleton.bones.Add(bone1);
 			
-			// Add a long bone to the character:
-			character.bones.Add(new Anatomy.Bones.LongBone(centerLine, boneHeightMap));
+			// Add second bone:
+			Line centerLine2 = new Line(new Numerics.Vector3(0.0f, 0.2f, 0.5f),
+									   new Numerics.Vector3(0.001f, -10.0f, 0.51f));
 			
-			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
-			UVMesh mesh = character.bones[0].GetGeometry().GenerateMesh(128, 128);
+			var bone2 = new Anatomy.Bones.LongBone(centerLine2, 0.3f);
+			bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Inwards));
+			skeleton.bones.Add(bone2);
 			
-			// Finally upload the mesh to Godot:
-			MeshInstance newMesh = new MeshInstance();
-			newMesh.Mesh = new GodotMeshConverter(mesh);
-			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://BoneMaterial.tres"));
-			
-			AddChild(newMesh);
+			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
+			foreach ( var bone in skeleton.bones )
+			{
+				UVMesh mesh = bone.GetGeometry().GenerateMesh(128, 128);
+				
+				// Finally upload the mesh to Godot:
+				MeshInstance newMesh = new MeshInstance();
+				newMesh.Mesh = new GodotMeshConverter(mesh);
+				
+				// Give each mesh a random color:
+				var boneMaterial = (SpatialMaterial)GD.Load("res://BoneMaterial.tres").Duplicate();
+				boneMaterial.AlbedoColor = new Color(GD.Randf(), GD.Randf(), GD.Randf(), GD.Randf());
+				newMesh.SetSurfaceMaterial(0, boneMaterial);
+				
+				AddChild(newMesh);
+			}
 		}
 		
-		public void CreateExampleJoint(Character character)
+		public void CreateExampleJoint(Anatomy.Skeleton skeleton)
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<float, float> splinePoints = new SortedList<float, float>();
@@ -104,21 +119,21 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, -1.0f),
-									   new Numerics.Vector3(0.01f, 0.0f, 2.0f));
+			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, 0.0f),
+									   new Numerics.Vector3(0.01f, 0.0f, 1.0f));
 			
 			// Add a long bone to the character:
-			character.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, -0.5f*(float)Math.PI, 0.5f*(float)Math.PI));
+			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, -0.5f*(float)Math.PI, 0.5f*(float)Math.PI));
 			
 			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
-			UVMesh mesh = character.joints[0].GetArticularSurface().GenerateMesh(64, 64);
+			UVMesh mesh = skeleton.joints[0].GetArticularSurface().GenerateMesh(64, 64);
 			
 			// Finally upload the mesh to Godot:
 			MeshInstance newMesh = new MeshInstance();
 			newMesh.Mesh = new GodotMeshConverter(mesh);
 			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
-			AddChild(newMesh);
+			//AddChild(newMesh);
 		}
 	}
 }
