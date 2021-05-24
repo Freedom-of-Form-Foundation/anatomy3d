@@ -188,42 +188,41 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Solve the polynomial equation for each segment:
 			for (int i = 1; i < PointsX.Count; i++)
 			{
-				float x1 = PointsX[i-1];
-				float x2 = PointsX[i];
-				float y1 = PointsY[i-1];
-				float y2 = PointsY[i];
+				Real x1 = PointsX[i-1];
+				Real x2 = PointsX[i];
+				Real y1 = PointsY[i-1];
+				Real y2 = PointsY[i];
 				
 				// Calculate and return the interpolated value:
-				float dx = x2 - x1;
-				float div = 1.0f/dx;
-				float dy = y2 - y1;
+				Real dx = x2 - x1;
+				Real div = 1.0/dx;
+				Real dy = y2 - y1;
 				
-				float a = -parameters[i]*dx + dy;
+				Real a = -parameters[i]*dx + dy;
 				
 				// Write in the form of a0 + a1 z + a2 z^2:
-				float a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
-				float a1 = 2.0f*a*x1*div*div + (a + dy)*div;
-				float a2 = -a*div*div;
+				Real a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
+				Real a1 = 2.0*a*x1*div*div + (a + dy)*div;
+				Real a2 = -a*div*div;
 				
 				// Substitute z = z0 + c t:
-				float A0 = a0 + a1*z0 + a2*z0*z0;
-				float A1 = (a1 + 2.0f*a2*z0)*c;
-				float A2 = a2*c*c;
+				Real A0 = a0 + a1*z0 + a2*z0*z0;
+				Real A1 = (a1 + 2.0*a2*z0)*c;
+				Real A2 = a2*c*c;
 				
 				// Find the quartic polynomial to solve:
-				float p0 = surfaceFunction.a0 - A0*A0;
-				float p1 = surfaceFunction.a1 - 2.0f*A0*A1;
-				float p2 = surfaceFunction.a2 - (2.0f*A0*A2 + A1*A1);
-				float p3 = surfaceFunction.a3 - 2.0f*A1*A2;
-				float p4 = surfaceFunction.a4 - A2*A2;
+				Real p0 = surfaceFunction.a0 - A0*A0;
+				Real p1 = surfaceFunction.a1 - 2.0*A0*A1;
+				Real p2 = surfaceFunction.a2 - (2.0*A0*A2 + A1*A1);
+				Real p3 = surfaceFunction.a3 - 2.0*A1*A2;
+				Real p4 = surfaceFunction.a4 - A2*A2;
 				
 				// Solve the quartic polynomial:
-				List<float> intersections = QuarticFunction.Solve(p0, p1, p2, p3, p4);
+				List<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
 				//TODO: The previous Solve() function has a constant value in the last parameter,
 				// but that is wrong. It should be `p4`, except since `p4` is so small, the near divide-by-zero
 				// will cause a numeric instability and cause the results to fluctuate. This resolves it somewhat,
 				// but proper solution MUST be implemented before this code is production-ready.
-				Console.WriteLine("p4: " + p4);
 				
 				// Only return the value if it is sampled within the segment that we are currently considering,
 				// otherwise the value we got is invalid:
