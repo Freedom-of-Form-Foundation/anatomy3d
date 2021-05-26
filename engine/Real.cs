@@ -311,9 +311,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <returns>Complex with real part equal to the provided Real (as double) and zero imaginary part.</returns>
 		public static explicit operator Complex(Real real) => new Complex((double) real._v, 0.0);
 
-		#endregion
+	#endregion
 
-		#region Interfaces
+	#region Interfaces
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			return _v.ToString(format, formatProvider);
