@@ -25,7 +25,7 @@ using FreedomOfFormFoundation.AnatomyEngine;
 
 namespace EngineTests
 {
-    public class Tests
+    public class RealTests
     {
         [Fact]
         public void TestAddition()
