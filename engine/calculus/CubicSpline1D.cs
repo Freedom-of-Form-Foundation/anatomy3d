@@ -19,11 +19,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				if (points.Count == 1)
 				{
-					throw new ArgumentException("points","List contains only a single point. A spline must have at least two points.");
+					throw new ArgumentException("List contains only a single point. A spline must have at least two points.", "points");
 				}
 				else
 				{
-					throw new ArgumentException("points","List is empty. A spline must have at least two points.");
+					throw new ArgumentException("List is empty. A spline must have at least two points.", "points");
 				}
 			}
 			
