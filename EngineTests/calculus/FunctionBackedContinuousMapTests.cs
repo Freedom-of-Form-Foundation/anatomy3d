@@ -60,5 +60,21 @@ namespace EngineTests
             Assert.IsAssignableFrom<FunctionBackedContinuousMap<int, int>>(e);
             Assert.Equal(4, ((FunctionBackedContinuousMap<int, int>) e).F(2));
         }
+
+        [Fact]
+        public void TestThen()
+        {
+            ContinuousMap<int, int> c = ((ContinuousMap<int, int>)TimesTwo).Then(x => (x + 1));
+            Assert.NotNull(c);
+            Assert.Equal(expected: 15, actual: c.GetValueAt(7));
+        }
+
+        [Fact]
+        public void TestCompose()
+        {
+            ContinuousMap<int, int> c = ((ContinuousMap<int, int>)TimesTwo).Compose((int x) => x + 1);
+            Assert.NotNull(c);
+            Assert.Equal(16, c.GetValueAt(7));
+        }
     }
 }
