@@ -75,6 +75,9 @@ namespace EngineTests.calculus
         [InlineData(0f, 1f, 0f, 3.14159f, 3.14159f)]
         [InlineData(0f, 1e10f, 0f, 1e5f, 1e15f)]
         [InlineData(42f, 20f, 0f, 10f, 242f)]
+        [InlineData(float.NegativeInfinity, 1f, 0f, 10f, float.NegativeInfinity)]
+        [InlineData(float.PositiveInfinity, 1e-15f, 0f, float.PositiveInfinity, float.PositiveInfinity)]
+        [InlineData(1000f, 0f, 0f, float.NegativeInfinity, float.NegativeInfinity)]
         public void TestValueCalculation(float a0, float a1, float a2, float x, float expected)
         {
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
@@ -96,7 +99,6 @@ namespace EngineTests.calculus
         /// <param name="x">Value to test at.</param>
         [Theory]
         [InlineData(float.PositiveInfinity, 1e-15f, 0f, float.NegativeInfinity)]
-        [InlineData(1000f, 0f, 0f, float.NegativeInfinity)]
         public void TestValueNaN(float a0, float a1, float a2, float x)
         {
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
