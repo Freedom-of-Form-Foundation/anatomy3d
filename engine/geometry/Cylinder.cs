@@ -31,7 +31,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.EndAngle = endAngle;
 		}
 		
-		public ContinuousMap<Vector2, float> Radius { get; set; }
+		protected ContinuousMap<Vector2, float> radius2D;
+		public ContinuousMap<Vector2, float> Radius
+		{
+			get { return radius2D; }
+			set { radius2D = value; }
+		}
+		
 		public Curve CenterCurve { get; set; }
 		public ContinuousMap<float, float> StartAngle { get; set; }
 		public ContinuousMap<float, float> EndAngle { get; set; }
