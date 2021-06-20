@@ -7,13 +7,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public class SpatialCubicSpline : Curve
 	{
-		CubicSpline1D X { get; }
-		CubicSpline1D Y { get; }
-		CubicSpline1D Z { get; }
+		public CubicSpline1D X { get; }
+		public CubicSpline1D Y { get; }
+		public CubicSpline1D Z { get; }
 		
-		CubicSpline1D NormalX { get; set; }
-		CubicSpline1D NormalY { get; set; }
-		CubicSpline1D NormalZ { get; set; }
+		public CubicSpline1D NormalX { get; private set; }
+		public CubicSpline1D NormalY { get; private set; }
+		public CubicSpline1D NormalZ { get; private set; }
 		
 #region ArbitraryConstants
 		// Arbitrary number of interpolating steps for calculating the normal.

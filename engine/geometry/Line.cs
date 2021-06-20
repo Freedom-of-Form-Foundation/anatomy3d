@@ -6,9 +6,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public class Line : Curve
 	{
-		Vector3 start;
-		Vector3 end;
-		Vector3 normal;
+		private Vector3 start;
+		private Vector3 end;
+		private Vector3 normal;
 		
 		public Line(Vector3 start, Vector3 end)
 		{
