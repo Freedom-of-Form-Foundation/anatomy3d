@@ -111,8 +111,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public float GetAt(float x, uint derivative)
 		{
-			// The input parameter must lie between the outer points:
-			if ((x < PointsX[0]) || (x > PointsX[PointsX.Count - 1]))
+			// The input parameter must lie between the outer points, and must not be NaN:
+			if (!( x >= PointsX[0] && x <= PointsX[PointsX.Count - 1]))
 			{
 				throw new ArgumentOutOfRangeException("x","Cannot interpolate outside the interval given by the spline points.");
 			}
