@@ -7,26 +7,26 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
 	{
-		public SymmetricCylinder(Line centerLine, float radius)
-			: base(centerLine, radius)
-		{
-			radius1D = radius;
-		}
+		//public SymmetricCylinder(Line centerLine, float radius)
+		//	: base(centerLine, radius)
+		//{
+		//	radius1D = radius;
+		//}
 		
-		public SymmetricCylinder(Line centerLine, ContinuousMap<float, float> radius)
+		public SymmetricCylinder(Line centerLine, RaytraceableFunction1D radius)
 			: base(centerLine, new DomainToVector2<float>(new Vector2(0.0f, 1.0f), radius))
 		{
 			radius1D = radius;
 		}
 		
-		public SymmetricCylinder(Line centerLine, ContinuousMap<float, float> radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		public SymmetricCylinder(Line centerLine, RaytraceableFunction1D radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
 			: base(centerLine, new DomainToVector2<float>(new Vector2(0.0f, 1.0f), radius), startAngle, endAngle)
 		{
 			radius1D = radius;
 		}
 		
-		protected ContinuousMap<float, float> radius1D;
-		public new ContinuousMap<float, float> Radius
+		protected RaytraceableFunction1D radius1D;
+		public new RaytraceableFunction1D Radius
 		{
 			get { return radius1D; }
 			set {

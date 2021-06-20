@@ -9,20 +9,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Joints
 	{
 		SymmetricCylinder articularSurface;
 		
-		public HingeJoint(Line centerLine, ContinuousMap<float, float> radius)
+		public HingeJoint(Line centerLine, RaytraceableFunction1D radius)
 		{
 			articularSurface = new SymmetricCylinder(centerLine, radius);
 		}
 		
-		public HingeJoint(Line centerLine, ContinuousMap<float, float> radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		public HingeJoint(Line centerLine, RaytraceableFunction1D radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
 		{
 			articularSurface = new SymmetricCylinder(centerLine, radius, startAngle, endAngle);
 		}
 		
-		public HingeJoint(Line centerLine, float radius)
-		{
-			articularSurface = new SymmetricCylinder(centerLine, radius);
-		}
+		//public HingeJoint(Line centerLine, float radius)
+		//{
+		//	articularSurface = new SymmetricCylinder(centerLine, radius);
+		//}
 		
 		/// <summary>
 		///     Returns the surface geometry used by this Hinge Joint.

@@ -30,7 +30,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	///		points. As opposed to a cubic spline, a quadratic spline is not continuous in its second derivative. It is
 	///		therefore 'less smooth', but as a result it is possible to raytrace a quadratic spline analytically.
 	/// </summary>
-	public class QuadraticSpline1D : ContinuousMap<float, float>
+	public class QuadraticSpline1D : RaytraceableFunction1D
 	{
 		private float[] parameters;
 		public List<float> PointsX { get; }

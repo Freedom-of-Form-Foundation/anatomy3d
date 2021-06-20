@@ -66,11 +66,5 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		{
 			return Function.GetValueAt(Vector2.Dot(ParameterDirection, t));
 		}
-		
-		/// <inheritdoc />
-		public override List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
-		{
-			return Function.SolveRaytrace(surfaceFunction, z0, c);
-		}
 	}
 }

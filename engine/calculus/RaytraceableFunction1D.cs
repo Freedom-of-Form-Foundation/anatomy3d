@@ -20,13 +20,13 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-	public interface IRaytraceable1D
+	public abstract class RaytraceableFunction1D : ContinuousMap<float, float>
 	{
 		/// <summary>
 		/// Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
 		///	\f$x\f$ for which the equation is true. \f$q(x)\f$ is the continuous map. The parameters z0 and c
 		///	can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f);
+		public abstract List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f);
 	}
 }
