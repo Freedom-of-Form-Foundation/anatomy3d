@@ -7,24 +7,57 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public class Hemisphere : Surface
 	{
+
+#region Constructors
 		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction)
+			: this(radius,
+					center,
+					direction,
+					Vector3.Cross(direction, Vector3.UnitZ),
+					Vector3.Cross(direction, Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ)))
+				)
+		{
+			
+		}
+		
+		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction, Vector3 normal, Vector3 binormal)
 		{
 			this.Radius = radius;
 			this.Center = center;
 			this.Direction = direction;
+			this.Normal = normal;
+			this.Binormal = binormal;
 		}
+#endregion
 		
-		ContinuousMap<Vector2, float> Radius { get; set; }
+#region Properties
+		private ContinuousMap<Vector2, float> Radius { get; set; }
 		
-		Vector3 Center { get; set; }
+		public Vector3 Center { get; set; }
 		
-		private Vector3 direction;
+		public Vector3 direction;
 		Vector3 Direction
 		{
 			get { return direction; }
 			set { direction = Vector3.Normalize(value); }
 		}
 		
+		public Vector3 pointNormal;
+		Vector3 Normal
+		{
+			get { return pointNormal; }
+			set { pointNormal = Vector3.Normalize(value); }
+		}
+		
+		public Vector3 pointBinormal;
+		Vector3 Binormal
+		{
+			get { return pointBinormal; }
+			set { pointBinormal = Vector3.Normalize(value); }
+		}
+#endregion
+
+#region Static Methods
 		public static int CalculateVertexCount(int resolutionU, int resolutionV)
 		{
 			return resolutionU * resolutionV + 1;
@@ -34,24 +67,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			return resolutionU * resolutionV * 6 + resolutionU * 3;
 		}
-		
+#endregion
+
+#region Base Class Method Overrides
 		public override Vector3 GetNormalAt(Vector2 uv)
 		{
 			float u = uv.X;
 			float v = uv.Y;
-			
-			Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
-			
-			Vector3 pointTangent = this.direction;
-			Vector3 pointNormal = Vector3.Normalize(Vector3.Cross(pointTangent, up));
-			Vector3 pointBinormal = Vector3.Normalize(Vector3.Cross(pointTangent, pointNormal));
 			
 			// Calculate the position of the rings of vertices:
 			float x = (float)Math.Sin(v) * (float)Math.Cos(u);
 			float y = (float)Math.Sin(v) * (float)Math.Sin(u);
 			float z = (float)Math.Cos(v);
 			
-			return x*pointNormal + y*pointBinormal + z*pointTangent;
+			return x*Normal + y*Binormal + z*Direction;
 		}
 		
 		public override Vector3 GetPositionAt(Vector2 uv)
@@ -69,9 +98,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// Load all required variables:
 			Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
 			
-			Vector3 pointTangent = this.direction;
-			Vector3 pointNormal = Vector3.Normalize(Vector3.Cross(pointTangent, up));
-			Vector3 pointBinormal = Vector3.Normalize(Vector3.Cross(pointTangent, pointNormal));
+			Vector3 pointTangent = Direction;
+			Vector3 pointNormal = Normal;
+			Vector3 pointBinormal = Binormal;
 			
 			Vector3 translation = Center;
 			
@@ -110,8 +139,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				for (int i = 0; i < (resolutionU - 1); i++)
 				{
 					Vector3 surfacePosition = output[(j-1)*resolutionU + i + 1].Position;
-					Vector3 du = surfacePosition - output[(j)*resolutionU + i + 1].Position;
-					Vector3 dv = surfacePosition - output[(j-1)*resolutionU + i + 1 + 1].Position;
+					Vector3 du = surfacePosition - output[(j-1)*resolutionU + i + 1 + 1].Position;
+					Vector3 dv = surfacePosition - output[(j)*resolutionU + i + 1].Position;
 					
 					// Calculate the position of the rings of vertices:
 					Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
@@ -121,8 +150,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				
 				// Stitch the end of the triangles:
 				Vector3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU].Position;
-				Vector3 du2 = surfacePosition2 - output[(j)*resolutionU + resolutionU].Position;
-				Vector3 dv2 = surfacePosition2 - output[(j-1)*resolutionU + 1].Position;
+				Vector3 du2 = surfacePosition2 - output[(j-1)*resolutionU + 1].Position;
+				Vector3 dv2 = surfacePosition2 - output[(j)*resolutionU + resolutionU].Position;
 				
 				// Calculate the position of the rings of vertices:
 				Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
@@ -141,14 +170,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			for (int i = 0; i < resolutionU-1; i++)
 			{
 				output.Add(indexOffset + 1 + i);
-				output.Add(indexOffset + 0);
 				output.Add(indexOffset + 2 + i);
+				output.Add(indexOffset + 0);
 			}
 			
 			// Stitch final triangle on the pole of the hemisphere:
 			output.Add(indexOffset + resolutionU);
-			output.Add(indexOffset + 0);
 			output.Add(indexOffset + 1);
+			output.Add(indexOffset + 0);
 			
 			// Add the remaining rings:
 			for (int j = 0; j < resolutionV - 1; j++)
@@ -157,25 +186,26 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				for (int i = 0; i < resolutionU-1; i++)
 				{
 					output.Add(indexOffset + 1 + i + resolutionU*(j+1));
-					output.Add(indexOffset + 1 + i + resolutionU*j);
 					output.Add(indexOffset + 1 + (i+1) + resolutionU*j);
+					output.Add(indexOffset + 1 + i + resolutionU*j);
 
 					output.Add(indexOffset + 1 + (i+1) + resolutionU*(j+1));
-					output.Add(indexOffset + 1 + i + resolutionU*(j+1));
 					output.Add(indexOffset + 1 + (i+1) + resolutionU*j);
+					output.Add(indexOffset + 1 + i + resolutionU*(j+1));
 				}
 				
 				// Stitch the end of the ring of triangles:
 				output.Add(indexOffset + 1 + resolutionU-1 + resolutionU*(j+1));
-				output.Add(indexOffset + 1 + resolutionU-1 + resolutionU*j);
 				output.Add(indexOffset + 1 + resolutionU*j);
+				output.Add(indexOffset + 1 + resolutionU-1 + resolutionU*j);
 
 				output.Add(indexOffset + 1 + resolutionU*(j+1));
-				output.Add(indexOffset + 1 + resolutionU-1 + resolutionU*(j+1));
 				output.Add(indexOffset + 1 + resolutionU*j);
+				output.Add(indexOffset + 1 + resolutionU-1 + resolutionU*(j+1));
 			}
 
 			return output;
 		}
+#endregion
 	}
 }
