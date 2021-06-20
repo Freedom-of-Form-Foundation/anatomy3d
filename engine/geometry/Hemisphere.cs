@@ -118,6 +118,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 					
 					output[(j-1)*resolutionU + i + 1] = new Vertex(surfacePosition, surfaceNormal);
 				}
+				
+				// Stitch the end of the triangles:
+				Vector3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU].Position;
+				Vector3 du2 = surfacePosition2 - output[(j)*resolutionU + resolutionU].Position;
+				Vector3 dv2 = surfacePosition2 - output[(j-1)*resolutionU + 1].Position;
+				
+				// Calculate the position of the rings of vertices:
+				Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
+				
+				output[(j-1)*resolutionU + resolutionU] = new Vertex(surfacePosition2, surfaceNormal2);
 			}
 			
 			return output;
