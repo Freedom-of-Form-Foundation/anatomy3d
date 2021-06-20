@@ -15,6 +15,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		CubicSpline1D NormalY { get; set; }
 		CubicSpline1D NormalZ { get; set; }
 		
+#region ArbitraryConstants
+		// Arbitrary number of interpolating steps for calculating the normal.
+		// Four should be enough to prevent sudden jumps.
+		private static readonly int kInterpolationStepCount = 4;
+#endregion
+		
 		public SpatialCubicSpline(CubicSpline1D x, CubicSpline1D y, CubicSpline1D z)
 		{
 			this.X = x;
@@ -110,11 +116,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				float segmentSize = currentValue - previousValue;
 				
 				// Interpolate between each two points:
-				
-				int stepCount = 4; // Arbitrary number of interpolating steps. Four should be enough to prevent sudden jumps.
-				for (int j = 0; j < stepCount; j++)
+				for (int j = 0; j < kInterpolationStepCount; j++)
 				{
-					float t = previousValue + segmentSize*(float)j/(float)stepCount;
+					float t = previousValue + segmentSize*(float)j/(float)kInterpolationStepCount;
 					
 					Vector3 direction = Vector3.Normalize(GetTangentAt(t));
 					Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, up));
