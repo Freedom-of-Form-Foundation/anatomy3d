@@ -68,7 +68,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
 			// Add first bone:
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
+			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
 									   new Numerics.Vector3(0.001f, 10f, 0.51f));
 			
 			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
@@ -76,7 +76,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			Line centerLine2 = new Line(new Numerics.Vector3(0.0f, 0.2f, 0.5f),
+			LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, 0.2f, 0.5f),
 									   new Numerics.Vector3(0.001f, -10.0f, 0.51f));
 			
 			var bone2 = new Anatomy.Bones.LongBone(centerLine2, 0.3f);
@@ -118,7 +118,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			Line centerLine = new Line(new Numerics.Vector3(0.0f, 0.0f, 0.0f),
+			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, 0.0f),
 									   new Numerics.Vector3(0.01f, 0.0f, 1.0f));
 			
 			// Add a long bone to the character:

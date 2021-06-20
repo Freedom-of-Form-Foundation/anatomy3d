@@ -4,13 +4,13 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
-	public class Line : Curve
+	public class LineSegment : Curve
 	{
 		private Vector3 start;
 		private Vector3 end;
 		private Vector3 normal;
 		
-		public Line(Vector3 start, Vector3 end)
+		public LineSegment(Vector3 start, Vector3 end)
 		{
 			this.start = start;
 			this.end = end;
@@ -25,7 +25,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.normal = Vector3.Normalize(Vector3.Cross(end - start, up));
 		}
 		
-		public Line(Vector3 start, Vector3 end, Vector3 normal)
+		public LineSegment(Vector3 start, Vector3 end, Vector3 normal)
 		{
 			this.start = start;
 			this.end = end;

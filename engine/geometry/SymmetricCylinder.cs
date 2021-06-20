@@ -7,19 +7,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
 	{
-		//public SymmetricCylinder(Line centerLine, float radius)
+		//public SymmetricCylinder(LineSegment centerLine, float radius)
 		//	: base(centerLine, radius)
 		//{
 		//	radius1D = radius;
 		//}
 		
-		public SymmetricCylinder(Line centerLine, RaytraceableFunction1D radius)
+		public SymmetricCylinder(LineSegment centerLine, RaytraceableFunction1D radius)
 			: base(centerLine, new DomainToVector2<float>(new Vector2(0.0f, 1.0f), radius))
 		{
 			radius1D = radius;
 		}
 		
-		public SymmetricCylinder(Line centerLine, RaytraceableFunction1D radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		public SymmetricCylinder(LineSegment centerLine, RaytraceableFunction1D radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
 			: base(centerLine, new DomainToVector2<float>(new Vector2(0.0f, 1.0f), radius), startAngle, endAngle)
 		{
 			radius1D = radius;
@@ -49,7 +49,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			Vector3 newDirection = new Vector3(rayDirection.X, rayDirection.Y, rayDirection.Z/length);
 			
 			
-			// TODO: ensure that CenterCurve is always a Line!
+			// TODO: ensure that CenterCurve is always a LineSegment!
 			
 			// If the ray direction is pointing horizontally with respect to the cylindrical surface, we get
 			// numerical instability issues. So, we rotate the scene such that it points upwards again:
