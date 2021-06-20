@@ -42,7 +42,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
 			{
-				return endCap.GetNormalAt(new Vector2(u, v - 1.0f));
+				return endCap.GetNormalAt(new Vector2(u, 1.0f + 0.5f * (float)Math.PI - v));
 			}
 			else
 			{
@@ -65,7 +65,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
 			{
-				return endCap.GetPositionAt(new Vector2(u, v - 1.0f));
+				return endCap.GetPositionAt(new Vector2(u, 1.0f + 0.5f * (float)Math.PI - v));
 			}
 			else
 			{
