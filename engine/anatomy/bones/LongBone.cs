@@ -11,13 +11,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 		public ContinuousMap<Vector2, float> Radius { get; set; }
 		public Curve CenterCurve { get; set; }
 		
-		public List<(Joint joint, RayCastDirection direction)> InteractingJoints { get; set; }
+		public List<(Joint joint, RayCastDirection direction, float maxDistance)> InteractingJoints { get; set; }
 		
 		public LongBone(Curve centerCurve, ContinuousMap<Vector2, float> radius)
 		{
 			this.CenterCurve = centerCurve;
 			this.Radius = radius;
-			this.InteractingJoints = new List<(Joint joint, RayCastDirection direction)>(0);
+			this.InteractingJoints = new List<(Joint joint, RayCastDirection direction, float maxDistance)>(0);
 		}
 		
 		public LongBone(Curve centerCurve, ContinuousMap<float, float> radius)
@@ -40,7 +40,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 			ContinuousMap<Vector2, float> deformations = Radius;
 			foreach (var i in InteractingJoints)
 			{
-				MoldCastMap boneHeightMap = new MoldCastMap(CenterCurve, i.joint.GetRaytraceableSurface(), deformations, i.direction);
+				MoldCastMap boneHeightMap = new MoldCastMap(CenterCurve, i.joint.GetRaytraceableSurface(), deformations, i.direction, i.maxDistance);
 				deformations = boneHeightMap;
 			}
 			

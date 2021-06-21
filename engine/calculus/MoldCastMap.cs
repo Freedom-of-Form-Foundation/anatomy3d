@@ -61,6 +61,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		private readonly RayCastDirection direction;
 		
 		/// <summary>
+		/// 	The maximum ray length before a ray is considered to be out of bounds.
+		/// </summary>
+		private readonly float maxDistance;
+		
+		/// <summary>
 		/// 	Construct a new MoldCastMap from a curve.
 		/// </summary>
 		/// <param name="raycastCurve">
@@ -81,11 +86,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
 		/// 	outwards from the surface, or in the opposite direction.
 		/// </param>
+		/// <param name="maxDistance">
+		/// 	The maximum ray length before a ray is considered to be out of bounds.
+		/// </param>
 		public MoldCastMap(Curve raycastCurve,
 								IRaytraceableSurface moldSurface,
 								ContinuousMap<Vector2, float> defaultRadius,
-								RayCastDirection direction = RayCastDirection.Outwards)
-			: this(new Capsule(raycastCurve, 0.0f), moldSurface, defaultRadius, direction)
+								RayCastDirection direction = RayCastDirection.Outwards,
+								float maxDistance = Single.PositiveInfinity)
+			: this(new Capsule(raycastCurve, 0.0f), moldSurface, defaultRadius, direction, maxDistance)
 		{
 			
 		}
@@ -110,15 +119,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
 		/// 	outwards from the surface, or in the opposite direction.
 		/// </param>
+		/// <param name="maxDistance">
+		/// 	The maximum ray length before a ray is considered to be out of bounds.
+		/// </param>
 		public MoldCastMap(Surface raycastSurface,
 								IRaytraceableSurface moldSurface,
 								ContinuousMap<Vector2, float> defaultRadius,
-								RayCastDirection direction = RayCastDirection.Outwards)
+								RayCastDirection direction = RayCastDirection.Outwards,
+								float maxDistance = Single.PositiveInfinity)
 		{
 			this.raycastSurface = raycastSurface;
 			this.moldSurface = moldSurface;
 			this.defaultRadius = defaultRadius;
 			this.direction = direction;
+			this.maxDistance = maxDistance;
 		}
 		
 		/// <inheritdoc />
@@ -128,11 +142,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 																Vector3.Normalize(raycastSurface.GetNormalAt(uv)),
 																direction);
 			
-			if (Single.IsInfinity(intersectionRadius) || Single.IsNaN(intersectionRadius))
+			if (Math.Abs(intersectionRadius) <= maxDistance)
 			{
-				return defaultRadius.GetValueAt(uv);
-			} else {
 				return intersectionRadius;
+			} else {
+				return defaultRadius.GetValueAt(uv);
 			}
 		}
 	}

@@ -69,24 +69,24 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			// Add first bone:
 			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
-									   new Numerics.Vector3(0.001f, 10f, 0.51f));
+									   new Numerics.Vector3(0.001f, 10.0f, 0.51f));
 			
 			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
-			bone1.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards));
+			bone1.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards, 3.0f));
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, 0.2f, 0.5f),
-									   new Numerics.Vector3(0.001f, -10.0f, 0.51f));
+			LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, -10.0f, 0.5f),
+									   new Numerics.Vector3(0.001f, -2.0f, 0.51f));
 			
-			var bone2 = new Anatomy.Bones.LongBone(centerLine2, 0.3f);
-			bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Inwards));
+			var bone2 = new Anatomy.Bones.LongBone(centerLine2, 1.1f);
+			bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Inwards, 3.0f));
 			skeleton.bones.Add(bone2);
 			
 			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
 			foreach ( var bone in skeleton.bones )
 			{
-				UVMesh mesh = bone.GetGeometry().GenerateMesh(128, 128);
+				UVMesh mesh = bone.GetGeometry().GenerateMesh(256, 256);
 				
 				// Finally upload the mesh to Godot:
 				MeshInstance newMesh = new MeshInstance();
@@ -132,7 +132,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			newMesh.Mesh = new GodotMeshConverter(mesh);
 			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
-			//AddChild(newMesh);
+			AddChild(newMesh);
 		}
 	}
 }
