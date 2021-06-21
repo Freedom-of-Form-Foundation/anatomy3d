@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
 using System;
+using System.Runtime.CompilerServices;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
@@ -93,31 +94,34 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Quartic_function for the
 		///		algorithm used.
 		/// </summary>
-		public static List<float> Solve(float e, float d, float c, float b, float a)
+		[MethodImpl(MethodImplOptions.NoOptimization)]
+		public static List<float> Solve(float e2, float d2, float c2, float b2, float a2)
 		{
-			if(Math.Abs(a) <= 0.005f)
+			if(Math.Abs(a2) <= 0.005f)
 			{
-				//return new List<float>{2.0f};
-				return CubicFunction.Solve(e, d, c, b);
+				return CubicFunction.Solve(e2, d2, c2, b2);
 			}
 			
-			//if(Math.Min(Math.Min(Math.Abs(b), Math.Abs(c)), Math.Min(Math.Abs(d), Math.Abs(e))) <= 0.015f)
-			//{
-			//	return new List<float>{2.0f};
-			//}
+			double a = a2;
+			double b = b2;
+			double c = c2;
+			double d = d2;
+			double e = e2;
 			
-			float ba = b/a;
-			float ca = c/a;
-			float da = d/a;
-			float ea = e/a;
+			double ba = b/a;
+			double ca = c/a;
+			double da = d/a;
+			double ea = e/a;
 			
 			List<float> output = new List<float>(4);
 			
-			Complex p1 = 2.0*c*c*c - 9.0*b*c*d + 27.0*a*d*d + 27.0*b*b*e - 72.0*a*c*e;
-			Complex q = c*c - 3.0*b*d + 12.0*a*e;
-			Complex p2 = p1 + Complex.Sqrt(-4.0*q*q*q + p1*p1);
+			double p1 = c*c*c - 4.5*b*c*d + 13.5*a*d*d + 13.5*b*b*e - 36.0*a*c*e;
 			
-			Complex pow = Complex.Pow(p2/2.0, (1.0/3.0));
+			double q = c*c - 3.0*b*d + 12.0*a*e;
+			
+			Complex p2 = p1 + Complex.Sqrt(-q*q*q + p1*p1);
+			
+			Complex pow = Complex.Pow(p2, (1.0/3.0));
 			
 			Complex p3 = q/(3.0*a*pow) + pow/(3.0*a);
 			
