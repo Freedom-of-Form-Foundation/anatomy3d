@@ -28,6 +28,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public abstract Vector3 GetNormalAt(float t);
 		
 		/// <summary>
+		///     Returns the binormal vector of the curve based on the parametric variable <paramref name="t"/>.
+		/// </summary>
+		/// <param name="t">The parameter along the length of the curve. <paramref name="t"/> must be in the range
+		/// \f$[ 0, 1 ]\f$.</param>
+		public virtual Vector3 GetBinormalAt(float t)
+		{
+			return Vector3.Cross(GetTangentAt(t), GetNormalAt(t));
+		}
+		
+		/// <summary>
 		///     Returns the position in 3D space of the start point of the curve.
 		///     Should return the same value as <c>getPositionAt(0.0)</c>.
 		/// </summary>

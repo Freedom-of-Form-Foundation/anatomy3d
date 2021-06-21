@@ -41,6 +41,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// first shift and rotate the ray such that we get the right orientation:
 			Vector3 start = CenterCurve.GetStartPosition();
 			Vector3 end = CenterCurve.GetEndPosition();
+			Vector3 tangent = CenterCurve.GetTangentAt(0.0f);
 			float length = Vector3.Distance(start, end);
 			
 			Vector3 shiftedRay = rayStart - start;
@@ -79,31 +80,46 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// closest intersection point.
 			float minimum = Single.PositiveInfinity;
 			
+			float directionSign = 1.0f;
+			
 			switch (direction)
 			{
 				case RayCastDirection.Outwards:
-					foreach (float i in intersections)
-					{
-						if (i > 0.0f)
-						{
-							minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
-						}
-					}
-					
-					return minimum;
+					directionSign = 1.0f;
+					break;
 				case RayCastDirection.Inwards:
-					foreach (float i in intersections)
-					{
-						if (i < 0.0f)
-						{
-							minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
-						}
-					}
-					
-					return minimum;
+					directionSign = -1.0f;
+					break;
 				default:
 					throw new ArgumentException("direction does not have a valid enum value.");
 			}
+			
+			foreach (float i in intersections)
+			{
+				// Calculate the 3d point at which the ray intersects the cylinder:
+				Vector3 intersectionPoint = rescaledRay + i*newDirection;
+				
+				// Find the closest point to the intersectionPoint on the centerLine:
+				Vector3 v = intersectionPoint - start;
+				float t = -Vector3.Dot(intersectionPoint, tangent) / Vector3.Dot(tangent, tangent);
+				
+				// Find the angle to the normal of the centerLine, so that we can determine whether the
+				// angle is within the bound of the pie-slice at position t:
+				Vector3 centerLineNormal = CenterCurve.GetNormalAt(t);
+				Vector3 centerLineBinormal = CenterCurve.GetBinormalAt(t);
+				Vector3 d = intersectionPoint - CenterCurve.GetPositionAt(t);
+				float correctionShift = (float)Math.Sign(Vector3.Dot(d, centerLineBinormal));
+				float phi = correctionShift*(float)Math.Acos(Vector3.Dot(d, centerLineNormal)) % (2.0f*(float)Math.PI);
+				
+				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
+				// otherwise discard:
+				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && directionSign*i > 0.0f)
+				{
+					minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
+				}
+			}
+			
+			return minimum;
 		}
 	}
 }

@@ -76,12 +76,12 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, -10.0f, 0.5f),
-									   new Numerics.Vector3(0.001f, -2.0f, 0.51f));
+			//LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, -10.0f, 0.5f),
+			//						   new Numerics.Vector3(0.001f, -1.0f, 0.51f));
 			
-			var bone2 = new Anatomy.Bones.LongBone(centerLine2, 1.1f);
-			bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Inwards, 3.0f));
-			skeleton.bones.Add(bone2);
+			//var bone2 = new Anatomy.Bones.LongBone(centerLine2, 1.1f);
+			//bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards, 3.0f));
+			//skeleton.bones.Add(bone2);
 			
 			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
 			foreach ( var bone in skeleton.bones )

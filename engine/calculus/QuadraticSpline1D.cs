@@ -235,10 +235,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				
 				// Solve the quartic polynomial:
 				List<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
-				//TODO: The previous Solve() function has a constant value in the last parameter,
-				// but that is wrong. It should be `p4`, except since `p4` is so small, the near divide-by-zero
-				// will cause a numeric instability and cause the results to fluctuate. This resolves it somewhat,
-				// but proper solution MUST be implemented before this code is production-ready.
 				
 				// Only return the value if it is sampled within the segment that we are currently considering,
 				// otherwise the value we got is invalid:
