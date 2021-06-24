@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using FreedomOfFormFoundation.AnatomyEngine;
 using Xunit;
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
@@ -105,6 +106,35 @@ namespace EngineTests.calculus
             Assert.NotNull(q);
             Assert.True(float.IsNaN(q.GetValueAt(x)));
             Assert.True(float.IsNaN(q.GetAt(x, 0)));
+        }
+
+        /// <summary>
+        /// Tests evaluation of a function at derivatives from 0 to 4. Does not support expected
+        /// NaN results. The 3rd and 4th derivatives of a quadratic function are always 0, so
+        /// there is no parameter for this.
+        /// </summary>
+        /// <param name="a0">Constant term in the quadratic function.</param>
+        /// <param name="a1">Linear term in the quadratic function.</param>
+        /// <param name="a2">Quadratic term in the quadratic function.</param>
+        /// <param name="x">Value of X to test at.</param>
+        /// <param name="atD0">Expected value of the function (the 0th derivative) at x.</param>
+        /// <param name="atD1">Expected value of the first derivative at x.</param>
+        /// <param name="atD2">Expected value of the second derivative at x.</param>
+        [Theory]
+        [InlineData(0f,0f,0f,0f,0f,0f,0f)]
+        [InlineData(1f, 0f, 0f, 20f, 1f, 0f, 0f)]
+        [InlineData(1f, 2f, 0f, 10f, 21f, 2f, 0f)]
+        [InlineData(1f, 2f, 4f, 2f, 21f, 18f, 8f)]
+        public void TestDerivativesAt(float a0, float a1, float a2, float x, float atD0, float atD1, float atD2)
+        {
+            QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
+            Assert.NotNull(q);
+            Assert.True(Near(q.GetAt(x, 0), atD0));
+            Assert.True(Near(q.GetAt(x, 1), atD1));
+            Assert.True(Near(q.GetDerivativeAt(x), atD1));
+            Assert.True(Near(q.GetAt(x, 2), atD2));
+            Assert.Equal(q.GetAt(x, 3), 0);
+            Assert.Equal(q.GetAt(x, 4), 0);
         }
     }
 }
