@@ -20,10 +20,10 @@ using System;
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	/// 	<c>ShiftedMap2D<O></c> shifts the domain of a 2D map such that the values are taken at
+	/// 	<c>ShiftedMap2D<TOut></c> shifts the domain of a 2D map such that the values are taken at
 	/// 	`Shift + Vector2.Multiply(Stretch, uv)`.
 	/// </summary>
-	public class ShiftedMap2D<O> : ContinuousMap<Vector2, O>
+	public class ShiftedMap2D<TOut> : ContinuousMap<Vector2, TOut>
 	{
 		/// <summary>
 		/// 	The vector by which the 2D map is shifted.
@@ -38,7 +38,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <summary>
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </summary>
-		public ContinuousMap<Vector2, O> Function { get; set; }
+		public ContinuousMap<Vector2, TOut> Function { get; set; }
 		
 		/// <summary>
 		///		Constructs a ShiftedMap2D whose input is shifted by a Vector2.
@@ -49,7 +49,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="function">
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </param>
-		public ShiftedMap2D(Vector2 shift, ContinuousMap<Vector2, O> function)
+		public ShiftedMap2D(Vector2 shift, ContinuousMap<Vector2, TOut> function)
 			: this(shift, new Vector2(1.0f, 1.0f), function)
 		{
 			
@@ -67,7 +67,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="function">
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </param>
-		public ShiftedMap2D(Vector2 shift, Vector2 stretch, ContinuousMap<Vector2, O> function)
+		public ShiftedMap2D(Vector2 shift, Vector2 stretch, ContinuousMap<Vector2, TOut> function)
 		{
 			this.Shift = shift;
 			this.Stretch = stretch;
@@ -75,7 +75,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <inheritdoc />
-		public override O GetValueAt(Vector2 uv)
+		public override TOut GetValueAt(Vector2 uv)
 		{
 			return Function.GetValueAt(Shift + Vector2.Multiply(Stretch, uv));
 		}

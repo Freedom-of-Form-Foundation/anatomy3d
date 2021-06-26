@@ -20,15 +20,15 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-	/// A ContinuousMap is an abstract class that defines some function that outputs a value of type `O` for each
-	/// input of type `I`. Mathematically, this means it defines a mapping from one space to another. For example, a
+	/// A ContinuousMap is an abstract class that defines some function that outputs a value of type `TOut` for each
+	/// input of type `TIn`. Mathematically, this means it defines a mapping from one space to another. For example, a
 	/// ContinuousMap<Real, Real> defines a function that takes a Real value and outputs a Real value, such as
 	/// a polynomial function. ContinuousMap<Vector2, Real> takes a Vector2 as input and gives a Real as output, which
 	/// could for instance be used as a height map.
-	public abstract class ContinuousMap<I, O>
+	public abstract class ContinuousMap<TIn, TOut>
 	{
-		public abstract O GetValueAt(I t);
+		public abstract TOut GetValueAt(TIn t);
 		
-		public static implicit operator ContinuousMap<I, O>(O m) => new ConstantFunction<I, O>(m);
+		public static implicit operator ContinuousMap<TIn, TOut>(TOut m) => new ConstantFunction<TIn, TOut>(m);
 	}
 }

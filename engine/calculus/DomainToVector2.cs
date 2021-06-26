@@ -22,20 +22,20 @@ using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	///     <c>DomainToVector2<O></c> allows a function on a lower-dimensional domain to be used in places that
+	///     <c>DomainToVector2<TOut></c> allows a function on a lower-dimensional domain to be used in places that
 	///		expect a higher-dimensional domain. For example, one might want to use a 1D function to describe the
 	///		height of a 2D plane along just a single axis (such as the shape of a corrugated sheet). Since the 2D
 	///		plane expects a 2D function to describe its height, one cannot use a 1D function to describe its height
-	///		properly, since it is unknown which axis the function should use. <c>DomainToVector2<O></c> solves this
+	///		properly, since it is unknown which axis the function should use. <c>DomainToVector2<TOut></c> solves this
 	///		issue by stretching a 1D function onto a 2D domain.
 	/// </summary>
 	/// <param name="direction">
 	/// 	The direction in which the 1D function is placed onto the 2D domain.
 	/// </param>
-	public class DomainToVector2<O> : ContinuousMap<Vector2, O>
+	public class DomainToVector2<TOut> : ContinuousMap<Vector2, TOut>
 	{
 		public Vector2 ParameterDirection { get; set; }
-		public ContinuousMap<float, O> Function { get; set; }
+		public ContinuousMap<float, TOut> Function { get; set; }
 		
 		/// <summary>
 		///		Constructs a ContinuousMap taking 2D input values, based on a ContinuousMap that takes 1D input values.
@@ -55,14 +55,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="direction">
 		/// 	The direction in which the 1D function is placed onto the 2D domain.
 		/// </param>
-		public DomainToVector2(Vector2 direction, ContinuousMap<float, O> function)
+		public DomainToVector2(Vector2 direction, ContinuousMap<float, TOut> function)
 		{
 			this.ParameterDirection = direction;
 			this.Function = function;
 		}
 		
 		/// <inheritdoc />
-		public override O GetValueAt(Vector2 t)
+		public override TOut GetValueAt(Vector2 t)
 		{
 			return Function.GetValueAt(Vector2.Dot(ParameterDirection, t));
 		}

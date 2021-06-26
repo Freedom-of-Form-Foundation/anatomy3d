@@ -25,16 +25,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// feed in constant values as a ContinuousMap, since many classes that expect a ContinuousMap won't work when
 	/// a bare float, double, or Real is used.
 	/// </summary>
-	public class ConstantFunction<I, O> : ContinuousMap<I, O>
+	public class ConstantFunction<TIn, TOut> : ContinuousMap<TIn, TOut>
 	{
-		O constant;
+		TOut constant;
 		
-		public ConstantFunction(O constant)
+		public ConstantFunction(TOut constant)
 		{
 			this.constant = constant;
 		}
 		
-		public override O GetValueAt(I t)
+		public override TOut GetValueAt(TIn t)
 		{
 			return constant;
 		}
