@@ -49,7 +49,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	creates a cubic spline that passes through three points: (0.0, 1.1), (0.3, 0.4) and (1.0, 2.0).
 		/// 	</example>
 		/// </summary>
-		/// <param name="points">A list of points that is sorted by the x-coordinate.</param>
+		/// <param name="points">A list of points that is sorted by the x-coordinate. This collection is copied.</param>
 		/// <exception cref="ArgumentException">
 		/// 	A cubic spline must have at least two points to be properly defined. If <c>points</c> contains less than
 		/// 	two points, the spline is undefined, so an <c>ArgumentException</c> is thrown.
