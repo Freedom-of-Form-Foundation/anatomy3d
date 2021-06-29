@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 using FreedomOfFormFoundation.AnatomyEngine;
 using Xunit;
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
@@ -135,6 +136,39 @@ namespace EngineTests.calculus
             Assert.True(Near(q.GetAt(x, 2), atD2));
             Assert.Equal(q.GetAt(x, 3), 0);
             Assert.Equal(q.GetAt(x, 4), 0);
+        }
+
+
+        [Theory]
+        [InlineData(0f, 1f, 1f, new float[]{-1f, 0f})]
+        public void TestSolve(float a0, float a1, float a2, float[] want)
+        {
+            IList<float> got = QuadraticFunction.Solve(a0, a1, a2);
+            Assert.Equal(want.Length, got.Count);
+            // There are no guarantees as to the order of values returned, so sort both sequences and compare items
+            // at equal locations in the sorted sequence. Expect them all to match. We don't need to try any other
+            // permutations of these lists to find out if there's some way they do match:
+            //
+            // If the smallest unmatched elements of each set are not adequately near each other, there is no way to
+            // match the smaller of the two to any element in its other set. We have just compared it against the
+            // smallest element in the other set, and found it to be too large. It cannot be too small, because we
+            // are specifically considering the smaller element of the mismatched pair. Since the too-large element
+            // was a smallest element of its set, all other elements are at least that large. Therefore, there is no
+            // element small enough to match the smallest unmatched element between both sets, so the sets are unequal.
+            // Backtracking does not help, because to find a smaller element of the opposite set, we must take it away
+            // from its match to an element that is no larger than the one we are now matching (because all larger
+            // elements are still in the unmatched portion of the set), and now _that_ element has the same problem
+            // but worse.
+            //
+            // Therefore, there is no reason to attempt any other order than an element-by-element pairwise comparison
+            // of the sorted sequences. ∎
+            Array.Sort(want);
+            int i = 0;
+            var gotSorted = from c in got orderby c select c;
+            foreach(float f in gotSorted)
+            {
+                Assert.True(Near(want[i++], f));
+            }
         }
     }
 }
