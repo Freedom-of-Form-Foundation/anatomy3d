@@ -119,11 +119,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, 0.0f),
-									   new Numerics.Vector3(0.01f, 0.0f, 1.0f));
+			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, -0.5f),
+									   new Numerics.Vector3(0.0f, 0.0f, 1.5f));
 			
 			// Add a long bone to the character:
-			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, -0.5f*(float)Math.PI, 0.5f*(float)Math.PI));
+			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(float)Math.PI));
 			
 			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
 			UVMesh mesh = skeleton.joints[0].GetArticularSurface().GenerateMesh(64, 64);

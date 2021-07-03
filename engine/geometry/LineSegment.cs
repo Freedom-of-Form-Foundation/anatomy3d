@@ -1,3 +1,19 @@
+﻿/*
+ * Copyright (C) 2021 Freedom of Form Foundation, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License, version 2 (GPLv2) as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License, version 2 (GPLv2) for more details.
+ * 
+ * You should have received a copy of the GNU General Public License, version 2 (GPLv2)
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 using System.Collections.Generic;
 using System.Numerics;
 using System;
@@ -16,13 +32,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.end = end;
 			
 			// No normal supplied, pick arbitrary normal vector:
-			Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
-			if (Vector3.Dot(end - start, new Vector3(0.0f, 0.0f, 1.0f)) < 0.1)
-			{
-				up = new Vector3(0.0f, 1.0f, 0.0f);
-			}
-			
-			this.normal = Vector3.Normalize(Vector3.Cross(end - start, up));
+			this.normal = InventNormal(end - start);
 		}
 		
 		public LineSegment(Vector3 start, Vector3 end, Vector3 normal)

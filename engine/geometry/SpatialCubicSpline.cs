@@ -1,3 +1,19 @@
+﻿/*
+ * Copyright (C) 2021 Freedom of Form Foundation, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License, version 2 (GPLv2) as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License, version 2 (GPLv2) for more details.
+ * 
+ * You should have received a copy of the GNU General Public License, version 2 (GPLv2)
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 using System.Collections.Generic;
 using System.Numerics;
 using System;
@@ -99,12 +115,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			SortedList<float, float> normalY = new SortedList<float, float>();
 			SortedList<float, float> normalZ = new SortedList<float, float>();
 			
-			// No normal supplied, pick arbitrary normal vector:
-			Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
-			if (Vector3.Dot(GetTangentAt(0.0f), new Vector3(0.0f, 0.0f, 1.0f)) < 0.1)
-			{
-				up = new Vector3(0.0f, 1.0f, 0.0f);
-			}
+			// No normal supplied, pick arbitrary normal vector and calculate a binormal:
+			Vector3 binormal = Vector3.Cross(InventNormal(GetTangentAt(0.0f)), GetTangentAt(0.0f));
 			
 			// Traverse through all the points in the spline, and calculate the next normal, maintaining smoothness by
 			// memorizing the previous normal:
@@ -121,8 +133,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 					float t = previousValue + segmentSize*(float)j/(float)kInterpolationStepCount;
 					
 					Vector3 direction = Vector3.Normalize(GetTangentAt(t));
-					Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, up));
-					up = Vector3.Cross(normal, direction);
+					Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, binormal));
+					binormal = Vector3.Cross(normal, direction);
 					
 					normalX.Add(t, normal.X);
 					normalY.Add(t, normal.Y);
@@ -137,8 +149,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				float t = X.Points.Key[X.Points.Count - 1];
 				
 				Vector3 direction = Vector3.Normalize(GetTangentAt(t));
-				Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, up));
-				up = Vector3.Cross(normal, direction);
+				Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, binormal));
+				binormal = Vector3.Cross(normal, direction);
 				
 				normalX.Add(t, normal.X);
 				normalY.Add(t, normal.Y);
