@@ -23,6 +23,11 @@ using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
+	/// <summary>
+	/// A <c>QuarticFunction</c> defines a polynomial function up to power four. It is defined by the function
+	/// \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$. See https://en.wikipedia.org/wiki/Quartic_function
+	///	for more information.
+	/// </summary>
 	public class QuarticFunction : ContinuousMap<float, float>
 	{
 		public float a0 { get; }
@@ -84,7 +89,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			return GetAt(x, 1);
 		}
 		
-		public List<float> Roots()
+		public IEnumerable<float> Roots()
 		{
 			return QuarticFunction.Solve(a0, a1, a2, a3, a4);
 		}
@@ -94,12 +99,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Quartic_function for the
 		///		algorithm used.
 		/// </summary>
-		[MethodImpl(MethodImplOptions.NoOptimization)]
-		public static List<float> Solve(float e2, float d2, float c2, float b2, float a2)
+		public static IEnumerable<float> Solve(float e2, float d2, float c2, float b2, float a2)
 		{
 			if(Math.Abs(a2) <= 0.005f)
 			{
-				return CubicFunction.Solve(e2, d2, c2, b2);
+				foreach (float v in CubicFunction.Solve(e2, d2, c2, b2))
+				{
+					yield return v;
+				}
+				yield break;
 			}
 			
 			double a = a2;
@@ -112,8 +120,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			double ca = c/a;
 			double da = d/a;
 			double ea = e/a;
-			
-			List<float> output = new List<float>(4);
 			
 			double p1 = c*c*c - 4.5*b*c*d + 13.5*a*d*d + 13.5*b*b*e - 36.0*a*c*e;
 			
@@ -143,11 +149,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				if(Math.Abs(root.Imaginary) <= 0.005f)
 				{
-					output.Add((float)root.Real);
+					yield return (float)root.Real;
 				}
 			}
-			
-			return output;
 		}
 	}
 }

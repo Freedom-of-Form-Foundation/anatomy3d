@@ -197,10 +197,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		public override List<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
+		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
-			List<float> output = new List<float>();
-			
 			// Solve the polynomial equation for each segment:
 			for (int i = 1; i < PointsX.Count; i++)
 			{
@@ -234,7 +232,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				Real p4 = surfaceFunction.a4 - A2*A2;
 				
 				// Solve the quartic polynomial:
-				List<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
+				IEnumerable<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
 				
 				// Only return the value if it is sampled within the segment that we are currently considering,
 				// otherwise the value we got is invalid:
@@ -242,12 +240,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				{
 					if (((z0 + c*j) > x1) && ((z0 + c*j) <= x2))
 					{
-						output.Add(j);
+						yield return j;
 					}
 				}
 			}
-			
-			return output;
 		}
 		
 	}

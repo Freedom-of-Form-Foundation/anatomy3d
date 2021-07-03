@@ -24,7 +24,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			CreateExampleBones(skeleton);
 			
 			// Test:
-			List<float> intersections = QuarticFunction.Solve(5.0f, 8.0f, 2.0f, -2.0f, -7.0f);
+			IEnumerable<float> intersections = QuarticFunction.Solve(5.0f, 8.0f, 2.0f, -2.0f, -7.0f);
 			foreach (float i in intersections)
 			{
 				Console.WriteLine("quarticfunction solve: " + i);
@@ -47,15 +47,16 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<float, float> radiusPoints = new SortedList<float, float>();
-			radiusPoints.Add(-3.5f, 0.7f*0.92f);
-			radiusPoints.Add(0.02f, 0.7f*0.92f);
-			radiusPoints.Add(0.15f, 0.7f*0.8f);
+			radiusPoints.Add(-3.5f, 0.7f*1.2f);
+			radiusPoints.Add(-1.0f, 0.7f*1.2f);
+			radiusPoints.Add(0.02f, 0.7f*1.2f);
+			radiusPoints.Add(0.15f, 0.7f*1.0f);
 			radiusPoints.Add(0.5f, 0.7f*0.7f);
 			radiusPoints.Add(0.8f, 0.7f*0.76f);
 			radiusPoints.Add(0.98f, 0.7f*0.8f);
 			radiusPoints.Add(4.5f, 0.7f*0.8f);
 			
-			CubicSpline1D boneRadius = new CubicSpline1D(radiusPoints);
+			QuadraticSpline1D boneRadius = new QuadraticSpline1D(radiusPoints);
 
 			// Define the center curve of the long bone:
 			SortedList<float, Numerics.Vector3> centerPoints = new SortedList<float, Numerics.Vector3>();
@@ -68,7 +69,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
 			// Add first bone:
-			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.3f, 0.5f),
+			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, 0.5f),
 									   new Numerics.Vector3(0.001f, 10.0f, 0.51f));
 			
 			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
@@ -110,8 +111,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			splinePoints.Add(0.0f, radiusModifier*1.1f);
 			splinePoints.Add(0.15f, radiusModifier*0.95f);
 			splinePoints.Add(0.3f, radiusModifier*0.9f);
-			splinePoints.Add(0.5f, radiusModifier*1.2f);
-			splinePoints.Add(0.7f, radiusModifier*0.9f);
+			splinePoints.Add(0.5f, radiusModifier*1.15f);
+			splinePoints.Add(0.7f, radiusModifier*0.95f);
 			splinePoints.Add(0.8f, radiusModifier*0.95f);
 			splinePoints.Add(1.0f, radiusModifier*1.1f);
 			
@@ -132,7 +133,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			newMesh.Mesh = new GodotMeshConverter(mesh);
 			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
-			AddChild(newMesh);
+			//AddChild(newMesh);
 		}
 	}
 }

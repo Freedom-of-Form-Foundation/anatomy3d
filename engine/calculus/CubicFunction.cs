@@ -80,7 +80,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			return GetAt(x, 1);
 		}
 		
-		public List<float> Roots()
+		public IEnumerable<float> Roots()
 		{
 			return CubicFunction.Solve(a0, a1, a2, a3);
 		}
@@ -90,14 +90,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Cubic_equation for the
 		///		algorithm used.
 		/// </summary>
-		public static List<float> Solve(float d, float c, float b, float a)
+		public static IEnumerable<float> Solve(float d, float c, float b, float a)
 		{
 			if(Math.Abs(a) <= 0.005f)
 			{
-				return QuadraticFunction.Solve(d, c, b);
+				foreach (float v in QuadraticFunction.Solve(d, c, b))
+				{
+					yield return v;
+				}
+				yield break;
 			}
-			
-			List<float> output = new List<float>(4);
 			
 			double delta0 = b*b - 3.0*a*c;
 			double delta1 = 2.0*b*b*b - 9.0*a*b*c + 27.0*a*a*d;
@@ -107,7 +109,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// The sign we choose in the next equation is arbitrary. To prevent a divide-by-zero down the line, if p2 is
 			// zero, we must choose the opposite sign to make it nonzero:
 			Complex p2 = delta1 + p1;
-			//Complex p2 = delta1 - p1;
 			
 			Complex C = Complex.Pow(0.5*p2, (1.0/3.0));
 			
@@ -124,11 +125,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				if(Math.Abs(root.Imaginary) <= 0.05f)
 				{
-					output.Add((float)root.Real);
+					yield return (float)root.Real;
 				}
 			}
-			
-			return output;
 		}
 	}
 }

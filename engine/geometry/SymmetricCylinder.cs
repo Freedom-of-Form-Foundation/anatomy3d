@@ -74,7 +74,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// x = x_0 + a t and y = y_0 + b t:
 			QuarticFunction surfaceFunction = new QuarticFunction(x0*x0 + y0*y0, 2.0f*(x0*a + y0*b), a*a + b*b, 0.0f, 0.0f);
 			
-			List<float> intersections = Radius.SolveRaytrace(surfaceFunction, z0, c);
+			IEnumerable<float> intersections = Radius.SolveRaytrace(surfaceFunction, z0, c);
 			
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
