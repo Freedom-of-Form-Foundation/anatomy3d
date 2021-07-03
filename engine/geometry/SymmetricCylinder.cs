@@ -35,8 +35,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 		}
 		
-		public float RayIntersect(Vector3 rayStart, Vector3 rayDirection, RayCastDirection direction = RayCastDirection.Outwards)
+		public float RayIntersect(Ray ray)
 		{
+			Vector3 rayStart = ray.StartPosition;
+			Vector3 rayDirection = ray.Direction;
+			
 			// Since we raytrace only using a cylindrical surface that is horizontal and at the origin, we
 			// first shift and rotate the ray such that we get the right orientation:
 			Vector3 start = CenterCurve.GetStartPosition();
@@ -54,7 +57,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			                                         0.0f, 0.0f,   0.0f,  1.0f);
 			
 			Vector3 rescaledRay = Vector3.Transform(rayStart - start, rotationMatrix);
-			Vector3 newDirection = Vector3.TransformNormal(rayDirection, rotationMatrix);
+			Vector3 newDirection = Vector3.TransformNormal(Vector3.Normalize(rayDirection), rotationMatrix);
 			
 			
 			float x0 = rescaledRay.X;
@@ -75,20 +78,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
 			float minimum = Single.PositiveInfinity;
-			
-			float directionSign = 1.0f;
-			
-			switch (direction)
-			{
-				case RayCastDirection.Outwards:
-					directionSign = 1.0f;
-					break;
-				case RayCastDirection.Inwards:
-					directionSign = -1.0f;
-					break;
-				default:
-					throw new ArgumentException("direction does not have a valid enum value.");
-			}
 			
 			foreach (float i in intersections)
 			{
@@ -114,7 +103,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				
 				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
 				// otherwise discard:
-				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && directionSign*i > 0.0f)
+				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i > 0.0f)
 				{
 					minimum = Math.Sign(i)*(float)Math.Min(Math.Abs(minimum), Math.Abs(i));
 				}

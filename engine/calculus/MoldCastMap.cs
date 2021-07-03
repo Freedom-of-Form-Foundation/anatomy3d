@@ -138,9 +138,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <inheritdoc />
 		public override float GetValueAt(Vector2 uv)
 		{
-			float intersectionRadius = moldSurface.RayIntersect(raycastSurface.GetPositionAt(uv),
-																Vector3.Normalize(raycastSurface.GetNormalAt(uv)),
-																direction);
+			float directionSign = (direction == RayCastDirection.Outwards) ? 1.0f : -1.0f;
+			
+			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*Vector3.Normalize(raycastSurface.GetNormalAt(uv)));
+			float intersectionRadius = moldSurface.RayIntersect(ray);
 			
 			if (Math.Abs(intersectionRadius) <= maxDistance)
 			{

@@ -20,6 +20,9 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
+	/// <summary>
+	///		A <c>LineSegment</c> defines a straight line in 3D space, with a start and end point.
+	/// </summary>
 	public class LineSegment : Curve
 	{
 		private Vector3 start;
@@ -46,29 +49,34 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.normal = Vector3.Normalize(Vector3.Cross(up, tangent));
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetPositionAt(float t)
 		{
 			// Simply return the linearly interpolated position between `start` and `end`:
 			return t*end + (1.0f-t)*start;
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetTangentAt(float t)
 		{
 			// The tangent vector is always in the direction of the line:
 			return end - start; // TODO: Should this be normalized, or is length information useful?
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetNormalAt(float t)
 		{
 			// The tangent vector is always in the direction of the line:
 			return normal; // TODO: Should this be normalized, or is length information useful?
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetStartPosition()
 		{
 			return start;
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetEndPosition()
 		{
 			return end;

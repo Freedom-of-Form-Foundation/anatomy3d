@@ -82,7 +82,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		}
 		
 		/// <summary>
-		/// Invent a new, arbitrary normal to a vector by using a cross product between one of the unit vectors and
+		/// Invent a new, arbitrary normal to a vector by using a cross product between one of the axis vectors and
 		/// <c>v</c>. The result is not guaranteed to satisfy any properties other than that it is normal to vector
 		/// <c>v</c>, and is normalized.
 		/// </summary>
@@ -95,7 +95,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			
 			// TODO: Here it would be nice to add IsNormal instead of an arbitrary comparison, but alas...
-			if (Math.Sign(v.X) < 0.01 && Math.Sign(v.Y) < 0.01 && Math.Sign(v.Z) < 0.01)
+			if ((Math.Abs(v.X) < 0.001) && (Math.Abs(v.Y) < 0.001) && (Math.Abs(v.Z) < 0.001))
 			{
 				throw new ArgumentException("Vector is too small.", "v");
 			}

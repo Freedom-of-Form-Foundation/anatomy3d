@@ -14,27 +14,44 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
 using System;
-using FreedomOfFormFoundation.AnatomyEngine.Calculus;
-using FreedomOfFormFoundation.AnatomyEngine.Renderable;
+using System.Collections;
+using System.Numerics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	/// <summary>
-	///     An interface defining the ability to raytrace a surface analytically.
+	///		A <c>Ray</c> defines a ray with a starting position and a direction, to be used in the raytracer.
 	/// </summary>
-	public interface IRaytraceableSurface
+	public struct Ray
 	{
 		/// <summary>
-		///		Intersects the surface with a ray \f$\vec{p} + t \vec{s}\f$, returning all \f$t\f$ for which there
-		///		is an intersection. \f$\vec{p}\f$ is given by <c>ray.StartPosition</c>, and \f$\vec{s}\f$ is given by
-		///		<c>ray.Direction</c>.
+		///		The point from which the ray is cast.
 		/// </summary>
-		/// <param name="ray">
-		///		The Ray object that defines the starting point and direction of the ray to be cast.
+		public Vector3 StartPosition { get; set; }
+		
+		Vector3 direction;
+		/// <summary>
+		///		The direction in which the ray is cast.
+		/// </summary>
+		public Vector3 Direction {
+			get { return direction; }
+			set { direction = Vector3.Normalize(value); }
+		}
+		
+		/// <summary>
+		///		Defines a ray with a starting position and a direction, to be used in the raytracer.
+		/// </summary>
+		/// <param name="rayStart">
+		///		The point from which the ray is cast.
 		/// </param>
-		float RayIntersect(Ray ray);
+		/// <param name="rayDirection">
+		///		The direction in which the ray is cast.
+		/// </param>
+		public Ray(Vector3 rayStart, Vector3 rayDirection)
+		{
+			StartPosition = rayStart;
+			direction = rayDirection;
+		}
 	}
 }
