@@ -119,8 +119,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, -0.5f),
-									   new Numerics.Vector3(0.0f, 0.0f, 1.5f));
+			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, -0.5f, 0.0f),
+									   new Numerics.Vector3(0.0f, 1.5f, 0.5f));
 			
 			// Add a long bone to the character:
 			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(float)Math.PI));
@@ -133,7 +133,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			newMesh.Mesh = new GodotMeshConverter(mesh);
 			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
-			//AddChild(newMesh);
+			AddChild(newMesh);
 		}
 	}
 }

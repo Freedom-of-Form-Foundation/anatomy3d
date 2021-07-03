@@ -41,25 +41,21 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// first shift and rotate the ray such that we get the right orientation:
 			Vector3 start = CenterCurve.GetStartPosition();
 			Vector3 end = CenterCurve.GetEndPosition();
-			Vector3 tangent = CenterCurve.GetTangentAt(0.0f);
+			Vector3 tangent = Vector3.Normalize(CenterCurve.GetTangentAt(0.0f));
+			Vector3 normal = Vector3.Normalize(CenterCurve.GetNormalAt(0.0f));
+			Vector3 binormal = Vector3.Normalize(CenterCurve.GetBinormalAt(0.0f));
 			float length = Vector3.Distance(start, end);
-			
-			Vector3 shiftedRay = rayStart - start;
-			Vector3 rescaledRay = new Vector3(shiftedRay.X, shiftedRay.Y, shiftedRay.Z/length);
-			
-			Vector3 newDirection = new Vector3(rayDirection.X, rayDirection.Y, rayDirection.Z/length);
-			
 			
 			// TODO: ensure that CenterCurve is always a LineSegment!
 			
-			// If the ray direction is pointing horizontally with respect to the cylindrical surface, we get
-			// numerical instability issues. So, we rotate the scene such that it points upwards again:
-			//if(Math.Abs(Vector3.Dot(newDirection, new Vector3(1.0f, 0.0f, 0.0f))) < (float)1.0/Math.Sqrt(2.0))
-			//{
-				//Quaternion rotation = Quaternion.CreateFromAxisAngle(new Vector3(0.0f, 0.0f, 1.0f), 0.5f*(float)Math.PI);
-				//rescaledRay = Vector3.Transform(rescaledRay, rotation);
-				//newDirection = Vector3.Transform(newDirection, rotation);
-			//}
+			Matrix4x4 rotationMatrix = new Matrix4x4(normal.X, binormal.X, tangent.X/length, 0.0f,
+			                                         normal.Y, binormal.Y, tangent.Y/length, 0.0f,
+			                                         normal.Z, binormal.Z, tangent.Z/length, 0.0f,
+			                                         0.0f, 0.0f,   0.0f,  1.0f);
+			
+			Vector3 rescaledRay = Vector3.Transform(rayStart - start, rotationMatrix);
+			Vector3 newDirection = Vector3.TransformNormal(rayDirection, rotationMatrix);
+			
 			
 			float x0 = rescaledRay.X;
 			float y0 = rescaledRay.Y;
@@ -97,11 +93,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			foreach (float i in intersections)
 			{
 				// Calculate the 3d point at which the ray intersects the cylinder:
-				Vector3 intersectionPoint = rescaledRay + i*newDirection;
+				Vector3 intersectionPoint = rayStart + i*rayDirection;
 				
-				// Find the closest point to the intersectionPoint on the centerLine:
+				// Find the closest point to the intersectionPoint on the centerLine.
+				// Get the vector v from the start of the cylinder to the intersection point:
 				Vector3 v = intersectionPoint - start;
-				float t = -Vector3.Dot(intersectionPoint, tangent) / Vector3.Dot(tangent, tangent);
+				
+				// ...And project this vector onto the center line:
+				float t = -Vector3.Dot(intersectionPoint, tangent*length)/(length*length);
+				
+				// Now we have the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
 				
 				// Find the angle to the normal of the centerLine, so that we can determine whether the
 				// angle is within the bound of the pie-slice at position t:
@@ -109,7 +110,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				Vector3 centerLineBinormal = CenterCurve.GetBinormalAt(t);
 				Vector3 d = intersectionPoint - CenterCurve.GetPositionAt(t);
 				float correctionShift = (float)Math.Sign(Vector3.Dot(d, centerLineBinormal));
-				float phi = correctionShift*(float)Math.Acos(Vector3.Dot(d, centerLineNormal)) % (2.0f*(float)Math.PI);
+				float phi = (correctionShift*(float)Math.Acos(Vector3.Dot(d, centerLineNormal))) % (2.0f*(float)Math.PI);
 				
 				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
 				// otherwise discard:
