@@ -148,24 +148,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			float t = (x-x1)/dx;
 			
 			// Return a different function depending on the derivative level:
-			float returnValue = 0.0f;
 			switch (derivative)
 			{
-				case 0:
-					returnValue = (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*a;
-					break;
-				case 1:
-					returnValue = (dy + a * (1.0f - 2.0f * t))/dx;
-					break;
-				case 2:
-					returnValue = (2.0f * a * t)/(dx*dx);
-					break;
-				default:
-					returnValue = 0.0f;
-					break;
+				case 0: return (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*a;
+				case 1: return (dy + a * (1.0f - 2.0f * t))/dx;
+				case 2: return (2.0f * a * t)/(dx*dx);
+				default: return 0.0f;
 			}
-			
-			return returnValue;
 		}
 		
 		/// <summary>

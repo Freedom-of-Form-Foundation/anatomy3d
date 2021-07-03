@@ -44,24 +44,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public float GetAt(float x, uint derivative)
 		{
 			// Return a different function depending on the derivative level:
-			float output = 0.0f;
 			switch (derivative)
 			{
-				case 0:
-					output = a0 + a1*x + a2*x*x;
-					break;
-				case 1:
-					output = a1 + 2.0f*a2*x;
-					break;
-				case 2:
-					output = 2.0f*a2;
-					break;
-				default:
-					output = 0.0f;
-					break;
+				case 0: return a0 + a1*x + a2*x*x;
+				case 1: return a1 + 2.0f*a2*x;
+				case 2: return 2.0f*a2;
+				default: return 0.0f;
 			}
-			
-			return output;
 		}
 		
 		/// <inheritdoc />
