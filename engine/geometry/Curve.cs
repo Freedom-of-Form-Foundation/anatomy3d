@@ -93,6 +93,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			{
 				throw new ArgumentException("Vector must not contain infinite or NaN values.", "v");
 			}
+			
+			// TODO: Here it would be nice to add IsNormal instead of an arbitrary comparison, but alas...
+			if (Math.Sign(v.X) < 0.01 && Math.Sign(v.Y) < 0.01 && Math.Sign(v.Z) < 0.01)
+			{
+				throw new ArgumentException("Vector is too small.", "v");
+			}
+			
 			Vector3 normalizedV = Vector3.Normalize(v);
 			Vector3 up = Vector3.UnitZ;
 			
