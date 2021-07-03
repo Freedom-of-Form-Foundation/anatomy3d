@@ -33,8 +33,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	public class QuadraticSpline1D : RaytraceableFunction1D
 	{
 		private float[] parameters;
-		public List<float> PointsX { get; }
-		public List<float> PointsY { get; }
+		public SortedPointsList<float> Points { get; }
 		
 		/// <summary>
 		///     Construct a quadratic spline using a set of input points.
@@ -68,16 +67,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				}
 			}
 			
-			PointsX = points.Keys.ToList();
-			PointsY = points.Values.ToList();
+			Points = new SortedPointsList<float>(points);
 			
 			// Calculate the coefficients of the spline:
 			parameters = new float[points.Count];
 			
 			// Find the first segment parameter, which will be a straight line:
 			{
-				float dx = PointsX[1] - PointsX[0];
-				float dy = PointsY[1] - PointsY[0];
+				float dx = Points.Key[1] - Points.Key[0];
+				float dy = Points.Value[1] - Points.Value[0];
 				
 				parameters[0] = dy/dx;
 			}
@@ -85,8 +83,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Recursively find the other parameters:
 			for (int i = 1; i < points.Count; i++) 
 			{
-				float dx = PointsX[i] - PointsX[i-1];
-				float dy = PointsY[i] - PointsY[i-1];
+				float dx = Points.Key[i] - Points.Key[i-1];
+				float dy = Points.Value[i] - Points.Value[i-1];
 				
 				parameters[i] = -parameters[i-1] + 2.0f*dy/dx;
 			}
@@ -112,14 +110,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public float GetAt(float x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
-			if (!( x >= PointsX[0] && x <= PointsX[PointsX.Count - 1]))
+			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
 				throw new ArgumentOutOfRangeException("x","Cannot interpolate outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
 			// used to interpolate between. Therefore, `i-1` indicates the left point of the interval.
-			int i = PointsX.BinarySearch(x);
+			int i = Points.Key.BinarySearch(x);
 			
 			// BinarySearch returns a bitwise complement of the index if the point is not exactly in the list, such as
 			// when interpolating. To turn it into a valid index, we take the bitwise complement again if it is negative:
@@ -135,10 +133,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				i++;
 			}
 
-			float x1 = PointsX[i-1];
-			float x2 = PointsX[i];
-			float y1 = PointsY[i-1];
-			float y2 = PointsY[i];
+			float x1 = Points.Key[i-1];
+			float x2 = Points.Key[i];
+			float y1 = Points.Value[i-1];
+			float y2 = Points.Value[i];
 			
 			// Calculate and return the interpolated value:
 			float dx = x2 - x1;
@@ -189,12 +187,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
 			// Solve the polynomial equation for each segment:
-			for (int i = 1; i < PointsX.Count; i++)
+			for (int i = 1; i < Points.Count; i++)
 			{
-				Real x1 = PointsX[i-1];
-				Real x2 = PointsX[i];
-				Real y1 = PointsY[i-1];
-				Real y2 = PointsY[i];
+				Real x1 = Points.Key[i-1];
+				Real x2 = Points.Key[i];
+				Real y1 = Points.Value[i-1];
+				Real y2 = Points.Value[i];
 				
 				// Calculate and return the interpolated value:
 				Real dx = x2 - x1;

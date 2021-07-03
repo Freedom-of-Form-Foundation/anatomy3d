@@ -33,8 +33,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	public class CubicSpline1D : ContinuousMap<float, float>
 	{
 		private float[] parameters;
-		public List<float> PointsX { get; }
-		public List<float> PointsY { get; }
+		public SortedPointsList<float> Points { get; }
 		
 		/// <summary>
 		///     Construct a cubic spline using a set of input points.
@@ -68,8 +67,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				}
 			}
 			
-			PointsX = points.Keys.ToList();
-			PointsY = points.Values.ToList();
+			Points = new SortedPointsList<float>(points);
 			
 			// Calculate the coefficients of the spline:
 			float[] a = new float[points.Count];
@@ -79,8 +77,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			// Set up the boundary condition for a natural spline:
 			{
-				float x2 = 1.0f/(PointsX[1] - PointsX[0]);
-				float y2 = PointsY[1] - PointsY[0];
+				float x2 = 1.0f/(Points.Key[1] - Points.Key[0]);
+				float y2 = Points.Value[1] - Points.Value[0];
 				
 				a[0] = 0.0f;
 				b[0] = 2.0f*x2;
@@ -91,11 +89,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Set up the tridiagonal matrix linear system:
 			for (int i = 1; i < points.Count-1; i++) 
 			{
-				float x1 = 1.0f/(PointsX[i] - PointsX[i-1]);
-				float x2 = 1.0f/(PointsX[i+1] - PointsX[i]);
+				float x1 = 1.0f/(Points.Key[i] - Points.Key[i-1]);
+				float x2 = 1.0f/(Points.Key[i+1] - Points.Key[i]);
 				
-				float y1 = PointsY[i] - PointsY[i-1];
-				float y2 = PointsY[i+1] - PointsY[i];
+				float y1 = Points.Value[i] - Points.Value[i-1];
+				float y2 = Points.Value[i+1] - Points.Value[i];
 				
 				a[i] = x1;
 				b[i] = 2.0f*(x1 + x2);
@@ -105,8 +103,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			// Set up the boundary condition for a natural spline:
 			{
-				float x1 = 1.0f/(PointsX[points.Count-1] - PointsX[points.Count-2]);
-				float y1 = (PointsY[points.Count-1] - PointsY[points.Count-2]);
+				float x1 = 1.0f/(Points.Key[points.Count-1] - Points.Key[points.Count-2]);
+				float y1 = (Points.Value[points.Count-1] - Points.Value[points.Count-2]);
 				
 				a[points.Count-1] = x1;
 				b[points.Count-1] = 2.0f*x1;
@@ -137,14 +135,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public float GetAt(float x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
-			if (!( x >= PointsX[0] && x <= PointsX[PointsX.Count - 1]))
+			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
 				throw new ArgumentOutOfRangeException("x","Cannot interpolate outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
 			// used to interpolate between. Therefore, `i-1` indicates the left point of the interval.
-			int i = PointsX.BinarySearch(x);
+			int i = Points.Key.BinarySearch(x);
 			
 			// BinarySearch returns a bitwise complement of the index if the point is not exactly in the list, such as
 			// when interpolating. To turn it into a valid index, we take the bitwise complement again if it is negative:
@@ -160,10 +158,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				i++;
 			}
 
-			float x1 = PointsX[i-1];
-			float x2 = PointsX[i];
-			float y1 = PointsY[i-1];
-			float y2 = PointsY[i];
+			float x1 = Points.Key[i-1];
+			float x2 = Points.Key[i];
+			float y1 = Points.Value[i-1];
+			float y2 = Points.Value[i];
 			
 			// Calculate and return the interpolated value:
 			float dx = x2 - x1;

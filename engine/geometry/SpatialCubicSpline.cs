@@ -109,10 +109,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// Traverse through all the points in the spline, and calculate the next normal, maintaining smoothness by
 			// memorizing the previous normal:
 			
-			float previousValue = X.PointsX[0]; // X.PointsX is guaranteed to have at least 2 entries, this is safe.
-			for (int i = 1; i < X.PointsX.Count; i++)
+			float previousValue = X.Points.Key[0]; // X.Points.Key is guaranteed to have at least 2 entries, this is safe.
+			for (int i = 1; i < X.Points.Count; i++)
 			{
-				float currentValue = X.PointsX[i];
+				float currentValue = X.Points.Key[i];
 				float segmentSize = currentValue - previousValue;
 				
 				// Interpolate between each two points:
@@ -134,7 +134,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			// Add the final point as well:
 			{
-				float t = X.PointsX[X.PointsX.Count - 1];
+				float t = X.Points.Key[X.Points.Count - 1];
 				
 				Vector3 direction = Vector3.Normalize(GetTangentAt(t));
 				Vector3 normal = Vector3.Normalize(Vector3.Cross(direction, up));
