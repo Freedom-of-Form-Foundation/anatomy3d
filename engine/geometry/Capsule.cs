@@ -95,6 +95,29 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			List<Vertex> shaftList = shaft.GenerateVertexList(resolutionU, resolutionV)
 				.GetRange(resolutionU, Cylinder.CalculateVertexCount(resolutionU, resolutionV) - 2*resolutionU);
 			
+			// Recalculate the surface normal between the cylinder and the start cap:
+			for (int i = 0; i < (resolutionU - 1); i++)
+			{
+				Vector3 surfacePosition = startCapList[(resolutionU/4-1)*resolutionU + i + 1].Position;
+				Vector3 du = surfacePosition - startCapList[(resolutionU/4-1)*resolutionU + i + 1 + 1].Position;
+				Vector3 dv = surfacePosition - shaftList[i].Position;
+				
+				// Calculate the position of the rings of vertices:
+				Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
+				
+				startCapList[(resolutionU/4-1)*resolutionU + i + 1] = new Vertex(surfacePosition, surfaceNormal);
+			}
+			
+			// Stitch the end of the triangles:
+			Vector3 surfacePosition2 = startCapList[(resolutionU/4-1)*resolutionU + resolutionU].Position;
+			Vector3 du2 = surfacePosition2 - startCapList[(resolutionU/4-1)*resolutionU + 1].Position;
+			Vector3 dv2 = surfacePosition2 - shaftList[resolutionU].Position;
+			
+			// Calculate the position of the rings of vertices:
+			Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
+			
+			startCapList[(resolutionU/4-1)*resolutionU + resolutionU] = new Vertex(surfacePosition2, surfaceNormal2);
+			
 			return startCapList.Concat(shaftList).Concat(endCapList).ToList();
 		}
 		
