@@ -32,7 +32,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		
 		Vector3 direction;
 		/// <summary>
-		///		The direction in which the ray is cast.
+		///		The direction in which the ray is cast. The direction becomes normalized on assignment.
 		/// </summary>
 		public Vector3 Direction {
 			get { return direction; }
@@ -46,12 +46,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		///		The point from which the ray is cast.
 		/// </param>
 		/// <param name="rayDirection">
-		///		The direction in which the ray is cast.
+		///		The direction in which the ray is cast. The direction becomes normalized on initialization.
 		/// </param>
 		public Ray(Vector3 rayStart, Vector3 rayDirection)
 		{
 			StartPosition = rayStart;
-			direction = rayDirection;
+			direction = Vector3.Normalize(rayDirection);
 		}
 	}
 }
