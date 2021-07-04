@@ -51,6 +51,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="calculus\FunctionBackedContinuousMapTests.cs" />
         <Compile Include="RealTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
