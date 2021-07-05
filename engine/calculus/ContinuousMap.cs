@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2021 Freedom of Form Foundation, Inc.
  * 
  * This program is free software; you can redistribute it and/or
@@ -30,5 +30,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public abstract TOut GetValueAt(TIn t);
 		
 		public static implicit operator ContinuousMap<TIn, TOut>(TOut m) => new ConstantFunction<TIn, TOut>(m);
+
+		public static implicit operator ContinuousMap<TIn, TOut>(Func<TIn, TOut> f)
+		{
+			return new FunctionBackedContinuousMap<TIn, TOut>(f);
+		}
 	}
 }
