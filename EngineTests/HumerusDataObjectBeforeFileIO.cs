@@ -11,6 +11,17 @@ using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 
+
+
+public class HumanoidSkeletonDataObjectBeforeFileIO
+{
+
+
+
+}
+
+
+
 /**
  * This class represents data of a single humerus. Most coordinates
  * are given in Bone Local Space, with the exception of a transformation operation
@@ -27,6 +38,11 @@ public class HumerusDataObjectBeforeFileIO
 
 
 	private LongitudinalStructure longitudinalStructure = new LongitudinalStructure();
+
+	// TODO Consider refactoring to include other ExtrinsicModifiers like muscle/tendon insertion sites
+	public List<(Joint joint, RayCastDirection direction, float maxDistance)> InteractingJoints { get; set; }
+
+
 
 
 	// Internal classes for now to develop the concept. These will need refactored
@@ -177,20 +193,6 @@ public class HumerusDataObjectBeforeFileIO
 
 
 
-	// TODO
-	internal class ExtrinsicModifiers
-	{
-		// Collection<Joint> //use InteractingJoints functionality
-		// Collection<MuscleOrTendon> //influence provided by muscle-induced tension
-
-
-		// Provided a linkage to a joint, along with information about
-		// the type of relationship (e.g., the relationship represents
-		// a negative space into which the bone should fill),
-		// that should be enough information from the standpoint of THIS
-		// bone.
-
-	}
 
 
 
@@ -201,7 +203,13 @@ public class HumerusDataObjectBeforeFileIO
 	{
 
 		longitudinalStructure = new LongitudinalStructure();
+
+
+
+
 	}
+
+
 
 
 
