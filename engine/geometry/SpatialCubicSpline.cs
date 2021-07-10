@@ -116,7 +116,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			SortedList<float, float> normalZ = new SortedList<float, float>();
 			
 			// No normal supplied, pick arbitrary normal vector and calculate a binormal:
-			Vector3 binormal = Vector3.Cross(InventNormal(GetTangentAt(0.0f)), GetTangentAt(0.0f));
+			Vector3 binormal = Vector3.Cross(VectorUtilities.InventNormal(GetTangentAt(0.0f)), GetTangentAt(0.0f));
 			
 			// Traverse through all the points in the spline, and calculate the next normal, maintaining smoothness by
 			// memorizing the previous normal:

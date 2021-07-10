@@ -80,37 +80,5 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			return GetPositionAt(t);
 		}
-		
-		/// <summary>
-		/// Invent a new, arbitrary normal to a vector by using a cross product between one of the axis vectors and
-		/// <c>v</c>. The result is not guaranteed to satisfy any properties other than that it is normal to vector
-		/// <c>v</c>, and is normalized.
-		/// </summary>
-		protected static Vector3 InventNormal(Vector3 v)
-		{
-			// If the vector has infinite or NaN components, throw an error:
-			if (Single.IsNaN(Vector3.Dot(Vector3.One, v)) || Single.IsInfinity(Vector3.Dot(Vector3.One, v)))
-			{
-				throw new ArgumentException("Vector must not contain infinite or NaN values.", "v");
-			}
-			
-			// TODO: Here it would be nice to add IsNormal instead of an arbitrary comparison, but alas...
-			if ((Math.Abs(v.X) < 0.001) && (Math.Abs(v.Y) < 0.001) && (Math.Abs(v.Z) < 0.001))
-			{
-				throw new ArgumentException("Vector is too small.", "v");
-			}
-			
-			Vector3 normalizedV = Vector3.Normalize(v);
-			Vector3 up = Vector3.UnitZ;
-			
-			// If the vector is pointing in the same direction as the up vector, the cross product can not be trusted.
-			// So we use a different up vector.
-			if (Math.Sign(normalizedV.Z) > 1/Math.Sqrt(2))
-			{
-				up = Vector3.UnitY;
-			}
-			
-			return Vector3.Normalize(Vector3.Cross(normalizedV, up));
-		}
 	}
 }

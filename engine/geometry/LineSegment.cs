@@ -35,7 +35,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.end = end;
 			
 			// No normal supplied, pick arbitrary normal vector:
-			this.normal = InventNormal(end - start);
+			this.normal = VectorUtilities.InventNormal(end - start);
 		}
 		
 		public LineSegment(Vector3 start, Vector3 end, Vector3 normal)
