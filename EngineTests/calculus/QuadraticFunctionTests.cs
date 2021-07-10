@@ -85,7 +85,7 @@ namespace EngineTests.calculus
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
             Assert.NotNull(q);
             Assert.True(Near(expected, q.GetValueAt(x)));
-            Assert.True(Near(expected, q.GetAt(x, 0)));
+            Assert.True(Near(expected, q.GetNthDerivativeAt(x, 0)));
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace EngineTests.calculus
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
             Assert.NotNull(q);
             Assert.True(float.IsNaN(q.GetValueAt(x)));
-            Assert.True(float.IsNaN(q.GetAt(x, 0)));
+            Assert.True(float.IsNaN(q.GetNthDerivativeAt(x, 0)));
         }
 
         /// <summary>
@@ -130,12 +130,12 @@ namespace EngineTests.calculus
         {
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
             Assert.NotNull(q);
-            Assert.True(Near(q.GetAt(x, 0), atD0));
-            Assert.True(Near(q.GetAt(x, 1), atD1));
+            Assert.True(Near(q.GetNthDerivativeAt(x, 0), atD0));
+            Assert.True(Near(q.GetNthDerivativeAt(x, 1), atD1));
             Assert.True(Near(q.GetDerivativeAt(x), atD1));
-            Assert.True(Near(q.GetAt(x, 2), atD2));
-            Assert.Equal(q.GetAt(x, 3), 0);
-            Assert.Equal(q.GetAt(x, 4), 0);
+            Assert.True(Near(q.GetNthDerivativeAt(x, 2), atD2));
+            Assert.Equal(q.GetNthDerivativeAt(x, 3), 0);
+            Assert.Equal(q.GetNthDerivativeAt(x, 4), 0);
         }
 
 
@@ -143,7 +143,7 @@ namespace EngineTests.calculus
         [InlineData(0f, 1f, 1f, new float[]{-1f, 0f})]
         public void TestSolve(float a0, float a1, float a2, float[] want)
         {
-            IList<float> got = QuadraticFunction.Solve(a0, a1, a2);
+            IList<float> got = QuadraticFunction.Solve(a0, a1, a2).ToList();
             Assert.Equal(want.Length, got.Count);
             // There are no guarantees as to the order of values returned, so sort both sequences and compare items
             // at equal locations in the sorted sequence. Expect them all to match. We don't need to try any other

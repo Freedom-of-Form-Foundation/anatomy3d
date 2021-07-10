@@ -41,7 +41,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			this.a2 = a2;
 		}
 		
-		public float GetAt(float x, uint derivative)
+		public float GetNthDerivativeAt(float x, uint derivative)
 		{
 			// Return a different function depending on the derivative level:
 			switch (derivative)
@@ -56,12 +56,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <inheritdoc />
 		public override float GetValueAt(float x)
 		{
-			return GetAt(x, 0);
+			return GetNthDerivativeAt(x, 0);
 		}
 		
 		public float GetDerivativeAt(float x)
 		{
-			return GetAt(x, 1);
+			return GetNthDerivativeAt(x, 1);
 		}
 		
 		/// <summary>
