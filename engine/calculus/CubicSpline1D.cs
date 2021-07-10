@@ -132,7 +132,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public float GetAt(float x, uint derivative)
+		public float GetNthDerivativeAt(float x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
@@ -191,7 +191,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public override float GetValueAt(float x)
 		{
-			return GetAt(x, 0);
+			return GetNthDerivativeAt(x, 0);
 		}
 
 		/// <summary>
@@ -203,7 +203,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public float GetDerivativeAt(float x)
 		{
-			return GetAt(x, 1);
+			return GetNthDerivativeAt(x, 1);
 		}
 		
 		/// <summary>
