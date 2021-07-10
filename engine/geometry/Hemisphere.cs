@@ -1,3 +1,19 @@
+﻿/*
+ * Copyright (C) 2021 Freedom of Form Foundation, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License, version 2 (GPLv2) as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License, version 2 (GPLv2) for more details.
+ * 
+ * You should have received a copy of the GNU General Public License, version 2 (GPLv2)
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 using System.Collections.Generic;
 using System.Numerics;
 using System;
@@ -5,10 +21,27 @@ using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
+	/// <summary>
+	/// 	A <c>Hemisphere</c> represents a hemispherical surface parametrized in spherical coordinates, and can have
+	/// 	a varying radius on each point on the hemisphere by using a radial heightmap.
+	/// </summary>
 	public class Hemisphere : Surface
 	{
 
 #region Constructors
+		/// <summary>
+		/// 	Construct a new <c>Hemisphere</c> at the point <c>center</c>, pointing in the direction of
+		/// 	<c>direction</c>. The radius is defined by a two-dimensional function <c>radius</c>.
+		/// 	
+		/// 	The surface is parametrized with the coordinates \f$u \in [0, 2\pi]\f$ (the azimuthal angle) and
+		/// 	\f$v \in [0, \frac{1}{2} \pi]\f$ (the inclination angle).
+		/// </summary>
+		/// <param name="center">
+		/// 	The position of the hemisphere.
+		/// </param>
+		/// <param name="direction">
+		/// 	The vector that defines which way is 'forward' for the object. Will be normalized on initialization.
+		/// </param>
 		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction)
 			: this(radius,
 					center,
@@ -20,6 +53,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 		}
 		
+		/// <summary>
+		/// 	Construct a new <c>Hemisphere</c> at the point <c>center</c>, pointing in the direction of
+		/// 	<c>direction</c>. The radius is defined by a two-dimensional function <c>radius</c>.
+		/// 	
+		/// 	The surface is parametrized with the coordinates \f$u \in [0, 2\pi]\f$ (the azimuthal angle) and
+		/// 	\f$v \in [0, \frac{1}{2} \pi]\f$ (the inclination angle).
+		/// </summary>
+		/// <param name="center">
+		/// 	The position of the hemisphere.
+		/// </param>
+		/// <param name="direction">
+		/// 	The vector that defines which way is 'forward' for the object. Will be normalized on initialization.
+		/// </param>
+		/// <param name="normal">
+		/// 	The vector that defines which way is 'up' for the object. Should be perpendicular to
+		/// 	<c>direction</c> and <c>binormal</c>. Will be normalized on initialization.
+		/// </param>
+		/// <param name="binormal">
+		/// 	The vector that defines which way is 'left' for the object. Should be perpendicular to
+		/// 	<c>direction</c> and <c>normal</c>. Will be normalized on initialization.
+		/// </param>
 		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction, Vector3 normal, Vector3 binormal)
 		{
 			this.Radius = radius;
@@ -33,24 +87,38 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 #region Properties
 		private ContinuousMap<Vector2, float> Radius { get; set; }
 		
+		/// <summary>
+		/// 	The position of the hemisphere.
+		/// </summary>
 		public Vector3 Center { get; set; }
 		
-		public Vector3 direction;
-		Vector3 Direction
+		private Vector3 direction;
+		/// <summary>
+		/// 	The vector that defines which way is 'forward' for the object. Will be normalized on initialization.
+		/// </summary>
+		public Vector3 Direction
 		{
 			get { return direction; }
 			set { direction = Vector3.Normalize(value); }
 		}
 		
-		public Vector3 pointNormal;
-		Vector3 Normal
+		private Vector3 pointNormal;
+		/// <summary>
+		/// 	The vector that defines which way is 'up' for the object. Should be perpendicular to
+		/// 	<c>direction</c> and <c>binormal</c>. Will be normalized on initialization.
+		/// </summary>
+		public Vector3 Normal
 		{
 			get { return pointNormal; }
 			set { pointNormal = Vector3.Normalize(value); }
 		}
+		private Vector3 pointBinormal;
 		
-		public Vector3 pointBinormal;
-		Vector3 Binormal
+		/// <summary>
+		/// 	The vector that defines which way is 'left' for the object. Should be perpendicular to
+		/// 	<c>direction</c> and <c>normal</c>. Will be normalized on initialization.
+		/// </summary>
+		public Vector3 Binormal
 		{
 			get { return pointBinormal; }
 			set { pointBinormal = Vector3.Normalize(value); }
@@ -58,11 +126,17 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 #endregion
 
 #region Static Methods
+		/// <summary>
+		/// 	Returns the amount of vertices that the hemisphere would have at a certain resolution.
+		/// </summary>
 		public static int CalculateVertexCount(int resolutionU, int resolutionV)
 		{
 			return resolutionU * resolutionV + 1;
 		}
 		
+		/// <summary>
+		/// 	Returns the amount of indices that the hemisphere would have at a certain resolution.
+		/// </summary>
 		public static int CalculateIndexCount(int resolutionU, int resolutionV)
 		{
 			return resolutionU * resolutionV * 6 + resolutionU * 3;
@@ -70,6 +144,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 #endregion
 
 #region Base Class Method Overrides
+		/// <inheritdoc />
 		public override Vector3 GetNormalAt(Vector2 uv)
 		{
 			float u = uv.X;
@@ -83,6 +158,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return x*Normal + y*Binormal + z*Direction;
 		}
 		
+		/// <inheritdoc />
 		public override Vector3 GetPositionAt(Vector2 uv)
 		{
 			Vector3 translation = Center;
@@ -91,6 +167,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return translation + radius*GetNormalAt(uv);
 		}
 		
+		/// <inheritdoc />
 		public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
 		{
 			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
@@ -162,6 +239,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return output;
 		}
 		
+		/// <inheritdoc />
 		public override List<int> GenerateIndexList(int resolutionU, int resolutionV, int indexOffset = 0)
 		{
 			List<int> output = new List<int>(CalculateIndexCount(resolutionU, resolutionV));

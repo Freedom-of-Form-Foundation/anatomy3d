@@ -14,12 +14,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
-using System;
-using FreedomOfFormFoundation.AnatomyEngine.Calculus;
-using FreedomOfFormFoundation.AnatomyEngine.Renderable;
-
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	/// <summary>
@@ -28,9 +22,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 	public interface IRaytraceableSurface
 	{
 		/// <summary>
-		///		Intersects the surface with a ray \f$\vec{p} + t \vec{s}\f$, returning all \f$t\f$ for which there
-		///		is an intersection. \f$\vec{p}\f$ is given by <c>ray.StartPosition</c>, and \f$\vec{s}\f$ is given by
-		///		<c>ray.Direction</c>.
+		///		Intersects the surface with a ray \f$\vec{p} + t \vec{s}\f$, with \f$t \geq 0\f$, returning the minimum
+		/// 	\f$t\f$ for which there is an intersection. \f$\vec{p}\f$ is given by <c>ray.StartPosition</c>, and
+		/// 	\f$\vec{s}\f$ is given by <c>ray.Direction</c>.
 		/// </summary>
 		/// <param name="ray">
 		///		The Ray object that defines the starting point and direction of the ray to be cast.
