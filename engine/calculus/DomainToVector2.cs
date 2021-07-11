@@ -53,7 +53,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	</example>
 		/// </summary>
 		/// <param name="direction">
-		/// 	The direction in which the 1D function is placed onto the 2D domain.
+		/// 	The direction in which the 1D function is placed onto the 2D domain. The magnitude of this vector
+		/// 	has an effect on the scale of the function.
 		/// </param>
 		public DomainToVector2(Vector2 direction, ContinuousMap<float, TOut> function)
 		{
