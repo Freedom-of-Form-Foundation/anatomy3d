@@ -73,7 +73,9 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 									   new Numerics.Vector3(0.001f, 10.0f, 0.51f));
 			
 			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
-			bone1.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards, 3.0f));
+			
+			var jointInteraction = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f);
+			bone1.InteractingJoints.Add(jointInteraction);
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
