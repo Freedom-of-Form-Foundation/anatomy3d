@@ -137,7 +137,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
         {
             unchecked
             {
-                int hash = 928750194;  // arbitrary
+                int hash = 0x1B15D00D;  // arbitrary
+
+                foreach(Real r in _v)
+                {
+                    hash = hash << 1 ^ r.GetHashCode();
+                }
 
                 return hash ^ EqualityComparer<TSpace>.Default.GetHashCode(Space);
             }
