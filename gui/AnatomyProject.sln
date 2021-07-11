@@ -11,6 +11,9 @@ Global
 	Debug|Any CPU = Debug|Any CPU
 	ExportDebug|Any CPU = ExportDebug|Any CPU
 	ExportRelease|Any CPU = ExportRelease|Any CPU
+		UnitTests Real Float|Any CPU = UnitTests Real Float|Any CPU
+		UnitTests Real Double|Any CPU = UnitTests Real Double|Any CPU
+		UnitTests Real Decimal|Any CPU = UnitTests Real Decimal|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -19,17 +22,32 @@ Global
 		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.UnitTests Real Float|Any CPU.ActiveCfg = UnitTests Real Float|Any CPU
+		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.UnitTests Real Double|Any CPU.ActiveCfg = UnitTests Real Double|Any CPU
+		{67442733-B150-4B9A-9F6C-1DCECDA08CCF}.UnitTests Real Decimal|Any CPU.ActiveCfg = UnitTests Real Decimal|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Float|Any CPU.ActiveCfg = UnitTests Real Float|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Float|Any CPU.Build.0 = UnitTests Real Float|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Double|Any CPU.ActiveCfg = UnitTests Real Double|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Double|Any CPU.Build.0 = UnitTests Real Double|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Decimal|Any CPU.ActiveCfg = UnitTests Real Decimal|Any CPU
+		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Decimal|Any CPU.Build.0 = UnitTests Real Decimal|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Float|Any CPU.ActiveCfg = UnitTests Real Float|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Float|Any CPU.Build.0 = UnitTests Real Float|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Double|Any CPU.ActiveCfg = UnitTests Real Double|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Double|Any CPU.Build.0 = UnitTests Real Double|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Decimal|Any CPU.ActiveCfg = UnitTests Real Decimal|Any CPU
+		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Decimal|Any CPU.Build.0 = UnitTests Real Decimal|Any CPU
 	EndGlobalSection
 EndGlobal

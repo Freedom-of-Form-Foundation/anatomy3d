@@ -32,6 +32,24 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UnitTests Real Float|AnyCPU' ">
+      <OutputPath>bin\UnitTests Real Float\</OutputPath>
+      <DefineConstants>DEBUG;TRACE;REALTYPE_FLOAT</DefineConstants>
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UnitTests Real Double|AnyCPU' ">
+      <OutputPath>bin\UnitTests Real Double\</OutputPath>
+      <DefineConstants>DEBUG;TRACE;REALTYPE_DOUBLE</DefineConstants>
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UnitTests Real Decimal|AnyCPU' ">
+      <OutputPath>bin\UnitTests Real Decimal\</OutputPath>
+      <DefineConstants>DEBUG;TRACE;REALTYPE_DECIMAL</DefineConstants>
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="System" />
         <Reference Include="System.Core" />

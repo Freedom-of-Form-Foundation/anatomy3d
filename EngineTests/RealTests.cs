@@ -77,8 +77,8 @@ namespace EngineTests
         public void TestIsNormalSubnormalDecimal(Decimal x, bool wantNormal)
         {
             Real r = new Real(x);
-            Assert.Equal(wantNormal, r.IsNormal)
-            Assert.False(r.IsSubnormal)
+            Assert.Equal(wantNormal, r.IsNormal);
+            Assert.False(r.IsSubnormal);
         }
 #elif REALTYPE_DOUBLE
         [Theory]
