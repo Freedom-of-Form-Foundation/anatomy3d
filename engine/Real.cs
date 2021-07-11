@@ -484,7 +484,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 #endif
 				// Subnormal numbers are nonzero and have a zero exponent.
 				// We already checked for zero.
-				return expBits != 0;
+				return expBits == 0;
 			}
 #else
 #error Real doesn't know how to calculate IsNormal for its current type.
