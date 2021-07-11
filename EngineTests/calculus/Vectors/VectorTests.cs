@@ -21,6 +21,14 @@ namespace EngineTests.calculus.Vectors
                 new Vector<WorldSpace>(w, 1, 1, 1));
             Assert.NotEqual(new Vector<WorldSpace>(w, 1, 1, 1),
                 new Vector<WorldSpace>(w, 1, 1, 2));
+
+            ArbitraryVectorSpace arbA = new ArbitraryVectorSpace("a", 2);
+            ArbitraryVectorSpace arbB = new ArbitraryVectorSpace("b", 2);
+
+            Assert.Equal(new Vector<ArbitraryVectorSpace>(arbA, 5, 10),
+                new Vector<ArbitraryVectorSpace>(arbA, 5, 10));
+            Assert.NotEqual(new Vector<ArbitraryVectorSpace>(arbA, 5, 10),
+                new Vector<ArbitraryVectorSpace>(arbB, 5, 10));
         }
     }
 }
