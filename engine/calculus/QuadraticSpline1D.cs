@@ -18,104 +18,79 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
 using System;
+using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	///     Class <c>CubicSpline1D</c> describes a one-dimensional cubic spline, which is a piecewise function.
-	///		Each piece is defined by a cubic function, \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3\f$, for which the
-	///		parameters are defined such that the piecewise function is continuous. A spline is defined by a series of
-	///		points that the function must intersect, and the program will automatically generate a curve that passes
-	///		through these points. A cubic spline is continuous in its derivative and its second derivative. It is
-	/// 	therefore 'smoother' than a quadratic spline, but as a result it is not analytically raytracable when used
-	/// 	as a heightmap.
+	///     Class <c>QuadraticSpline1D</c> describes a one-dimensional quadratic spline, which is a piecewise function.
+	///		Each piece is defined by a quadratic function, \f$q(x) = a_0 + a_1 x + a_2 x^2\f$, for which the parameters
+	///		are defined such that the piecewise function is continuous. A spline is defined by a series of points that
+	///		the function must intersect, and the program will automatically generate a curve that passes through these
+	///		points. As opposed to a cubic spline, a quadratic spline is not continuous in its second derivative. It is
+	///		therefore 'less smooth', but as a result it is possible to raytrace a quadratic spline analytically.
 	/// </summary>
-	public class CubicSpline1D : ContinuousMap<float, float>
+	public class QuadraticSpline1D : RaytraceableFunction1D
 	{
 		private float[] parameters;
 		public SortedPointsList<float> Points { get; }
 		
 		/// <summary>
-		///     Construct a cubic spline using a set of input points.
+		///     Construct a quadratic spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
 		/// 		SortedList<float, float> splinePoints = new SortedList<float, float>();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);
-		/// 		CubicSpline1D spline = new CubicSpline1D(splinePoints);
+		/// 		QuadraticSpline1D spline = new QuadraticSpline1D(splinePoints);
 		/// 	</code>
-		/// 	creates a cubic spline that passes through three points: (0.0, 1.1), (0.3, 0.4) and (1.0, 2.0).
+		/// 	creates a quadratic spline that passes through three points: (0.0, 1.1), (0.3, 0.4) and (1.0, 2.0).
 		/// 	</example>
 		/// </summary>
 		/// <param name="points">A list of points that is sorted by the x-coordinate. This collection is copied.</param>
 		/// <exception cref="ArgumentException">
-		/// 	A cubic spline must have at least two points to be properly defined. If <c>points</c> contains less than
-		/// 	two points, the spline is undefined, so an <c>ArgumentException</c> is thrown.
+		/// 	A spline must have at least two points to be properly defined. If <c>points</c> contains less than two
+		/// 	points, the spline is undefined, so an <c>ArgumentException</c> is thrown.
 		/// </exception>
-		public CubicSpline1D(SortedList<float, float> points)
+		public QuadraticSpline1D(SortedList<float, float> points)
 		{
 			if (points.Count < 2)
 			{
 				if (points.Count == 1)
 				{
-					throw new ArgumentException("List contains only a single point. A spline must have at least two points.", "points");
+					throw new ArgumentException("points","List contains only a single point. A spline must have at least two points.");
 				}
 				else
 				{
-					throw new ArgumentException("List is empty. A spline must have at least two points.", "points");
+					throw new ArgumentException("points","List is empty. A spline must have at least two points.");
 				}
 			}
 			
 			Points = new SortedPointsList<float>(points);
 			
 			// Calculate the coefficients of the spline:
-			float[] a = new float[points.Count];
-			float[] b = new float[points.Count];
-			float[] c = new float[points.Count];
-			float[] d = new float[points.Count];
+			parameters = new float[points.Count];
 			
-			// Set up the boundary condition for a natural spline:
+			// Find the first segment parameter, which will be a straight line:
 			{
-				float x2 = 1.0f/(Points.Key[1] - Points.Key[0]);
-				float y2 = Points.Value[1] - Points.Value[0];
+				float dx = Points.Key[1] - Points.Key[0];
+				float dy = Points.Value[1] - Points.Value[0];
 				
-				a[0] = 0.0f;
-				b[0] = 2.0f*x2;
-				c[0] = x2;
-				d[0] = 3.0f*(y2*x2*x2);
+				parameters[0] = dy/dx;
 			}
 			
-			// Set up the tridiagonal matrix linear system:
-			for (int i = 1; i < points.Count-1; i++) 
+			// Recursively find the other parameters:
+			for (int i = 1; i < points.Count; i++) 
 			{
-				float x1 = 1.0f/(Points.Key[i] - Points.Key[i-1]);
-				float x2 = 1.0f/(Points.Key[i+1] - Points.Key[i]);
+				float dx = Points.Key[i] - Points.Key[i-1];
+				float dy = Points.Value[i] - Points.Value[i-1];
 				
-				float y1 = Points.Value[i] - Points.Value[i-1];
-				float y2 = Points.Value[i+1] - Points.Value[i];
-				
-				a[i] = x1;
-				b[i] = 2.0f*(x1 + x2);
-				c[i] = x2;
-				d[i] = 3.0f*(y1*x1*x1 + y2*x2*x2);
+				parameters[i] = -parameters[i-1] + 2.0f*dy/dx;
 			}
 			
-			// Set up the boundary condition for a natural spline:
-			{
-				float x1 = 1.0f/(Points.Key[points.Count-1] - Points.Key[points.Count-2]);
-				float y1 = (Points.Value[points.Count-1] - Points.Value[points.Count-2]);
-				
-				a[points.Count-1] = x1;
-				b[points.Count-1] = 2.0f*x1;
-				c[points.Count-1] = 0.0f;
-				d[points.Count-1] = 3.0f*(y1*x1*x1);
-			}
-			
-			// Solve the linear system using the Thomas algorithm:
-			this.parameters = ThomasAlgorithm(a, b, c, d);
 		}
-
+		
 		/// <summary>
 		///     Get the value of this function \f$q(x)\f$ at the given x-position, or the value of the
 		/// 	<c>derivative</c>th derivative of this function. Mathematically, this gives \f$q^{(n)}(x)\f$, where
@@ -167,38 +142,36 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			float dx = x2 - x1;
 			float dy = y2 - y1;
 			
-			float a = parameters[i-1]*dx - dy;
-			float b = -parameters[i]*dx + dy;
+			float a = -parameters[i]*dx + dy;
 			float t = (x-x1)/dx;
 			
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*((1.0f-t)*a + t*b);
-				case 1: return (y2 - y1 + 3.0f*(a-b)*t*t + (2.0f*b - 4.0f*a)*t + a)/dx;
-				case 2: return (a*(6.0f*t - 4.0f) + b*(1.0f-3.0f*t))/(dx*dx);
-				case 3: return 6.0f*(a-b)/(dx*dx*dx);
+				case 0: return (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*a;
+				case 1: return (dy + a * (1.0f - 2.0f * t))/dx;
+				case 2: return (2.0f * a * t)/(dx*dx);
 				default: return 0.0f;
 			}
 		}
-
+		
 		/// <summary>
 		///     Get the value of this function \f$q(x)\f$ at the given x-position.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
+		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
 		public override float GetValueAt(float x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
-
+		
 		/// <summary>
 		///     Get the value of the first derivative of this function \f$q'(x)\f$ at the given x-position.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
+		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
 		public float GetDerivativeAt(float x)
@@ -207,34 +180,58 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Find the solution to a tridiagonal matrix linear system Ax = d using the Thomas algorithm.
+		///     Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
+		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The parameters z0 and c
+		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		private static float[] ThomasAlgorithm(float[] a, float[] b, float[] c, float[] d)
+		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
-			int size = d.Count();
-			
-			// Perform forward sweep:
-			float[] newC = new float[size];
-			float[] newD = new float[size];
-			
-			newC[0] = c[0] / b[0];
-			newD[0] = d[0] / b[0];
-			for (int i = 1; i < size; i++) 
+			// Solve the polynomial equation for each segment:
+			for (int i = 1; i < Points.Count; i++)
 			{
-				newC[i] = c[i] / ( b[i] - a[i]*newC[i-1] );
-				newD[i] = (d[i] - a[i]*newD[i-1]) / ( b[i] - a[i]*newC[i-1] );
+				Real x1 = Points.Key[i-1];
+				Real x2 = Points.Key[i];
+				Real y1 = Points.Value[i-1];
+				Real y2 = Points.Value[i];
+				
+				// Calculate and return the interpolated value:
+				Real dx = x2 - x1;
+				Real div = 1.0/dx;
+				Real dy = y2 - y1;
+				
+				Real a = -parameters[i]*dx + dy;
+				
+				// Write in the form of a0 + a1 z + a2 z^2:
+				Real a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
+				Real a1 = 2.0*a*x1*div*div + (a + dy)*div;
+				Real a2 = -a*div*div;
+				
+				// Substitute z = z0 + c t:
+				Real A0 = a0 + a1*z0 + a2*z0*z0;
+				Real A1 = (a1 + 2.0*a2*z0)*c;
+				Real A2 = a2*c*c;
+				
+				// Find the quartic polynomial to solve:
+				Real p0 = surfaceFunction.a0 - A0*A0;
+				Real p1 = surfaceFunction.a1 - 2.0*A0*A1;
+				Real p2 = surfaceFunction.a2 - (2.0*A0*A2 + A1*A1);
+				Real p3 = surfaceFunction.a3 - 2.0*A1*A2;
+				Real p4 = surfaceFunction.a4 - A2*A2;
+				
+				// Solve the quartic polynomial:
+				IEnumerable<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
+				
+				// Only return the value if it is sampled within the segment that we are currently considering,
+				// otherwise the value we got is invalid:
+				foreach (var j in intersections)
+				{
+					if (((z0 + c*j) > x1) && ((z0 + c*j) <= x2))
+					{
+						yield return j;
+					}
+				}
 			}
-			
-			// Perform back substitution:
-			float[] x = new float[size];
-			
-			x[size-1] = newD[size-1];
-			for (int i = (size - 2); i >= 0; i--) 
-			{
-				x[i] = newD[i] - newC[i]*x[i+1];
-			}
-			
-			return x;
 		}
+		
 	}
 }

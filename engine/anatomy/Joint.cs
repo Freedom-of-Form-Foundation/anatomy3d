@@ -12,11 +12,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy
 		public abstract Surface GetArticularSurface();
 		
 		/// <summary>
-		///     Returns the surface geometry used by this IBodyPart.
+		///     Returns the raytraceable surface geometry used by this Hinge Joint.
+		/// </summary>
+		public abstract IRaytraceableSurface GetRaytraceableSurface();
+		
+		/// <summary>
+		///     Returns the surface geometry used by this BodyPart.
 		/// </summary>
 		public override Surface GetGeometry()
 		{
-			return new Hemisphere(1.0f, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f));
+			return this.GetArticularSurface();
 		}
 	}
 }

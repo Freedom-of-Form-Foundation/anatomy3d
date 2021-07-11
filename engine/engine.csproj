@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Configurations>Debug;Release;UnitTests Real Float;UnitTests Real Double;UnitTests Real Decimal</Configurations>
+    <Configurations>Debug;Release;UnitTests;UnitTests Real Float;UnitTests Real Double;UnitTests Real Decimal</Configurations>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests Real Float' ">

@@ -32,6 +32,9 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UnitTests|AnyCPU' ">
+      <OutputPath>bin\UnitTests\</OutputPath>
+    </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UnitTests Real Float|AnyCPU' ">
       <OutputPath>bin\UnitTests Real Float\</OutputPath>
       <DefineConstants>DEBUG;TRACE;REALTYPE_FLOAT</DefineConstants>
@@ -69,6 +72,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="calculus\QuadraticFunctionTests.cs" />
         <Compile Include="calculus\FunctionBackedContinuousMapTests.cs" />
         <Compile Include="RealTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
