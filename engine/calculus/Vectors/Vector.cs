@@ -71,27 +71,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
         /// </summary>
         /// <param name="space">Vector space for this vector.</param>
         /// <param name="values">Values in this vector.</param>
-        public Vector(TSpace space, params double[] values) : this(space, (IEnumerable<double>) values)
-        {
-        }
-
-        /// <summary>
-        /// <see cref="Vector{TSpace}(TSpace, IEnumerable{double})"/>.
-        /// </summary>
-        /// <param name="space">Vector space for this vector.</param>
-        /// <param name="values">Values in this vector.</param>
         public Vector(TSpace space, IEnumerable<float> values) : this(space, from x in values select new Real(x))
         {
         }
 
-        /// <summary>
-        /// <see cref="Vector{TSpace}(TSpace, IEnumerable{double})"/>.
-        /// </summary>
-        /// <param name="space">Vector space for this vector.</param>
-        /// <param name="values">Values in this vector.</param>
-        public Vector(TSpace space, params float[] values) : this(space, (IEnumerable<float>) values)
-        {
-        }
         #endregion
 
         #region Private constructors
@@ -132,6 +115,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
         }
 
         public override bool Equals(object obj) => obj is Vector<TSpace> other && Equals(other);
+
+        public static bool operator ==(Vector<TSpace> a, Vector<TSpace> b) => a.Equals(b);
+
+        public static bool operator !=(Vector<TSpace> a, Vector<TSpace> b) => !(a == b);
 
         public override int GetHashCode()
         {
