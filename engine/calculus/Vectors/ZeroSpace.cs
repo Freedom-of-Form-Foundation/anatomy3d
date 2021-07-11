@@ -21,10 +21,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
     /// </summary>
     public struct ZeroSpace : IVectorSpace
     {
-        public bool Equals(IVectorSpace other)
-        {
-            return other is ZeroSpace;
-        }
+        public bool Equals(IVectorSpace other) => other is ZeroSpace;
+
+        public override bool Equals(object obj) => obj is ZeroSpace;
+        public override int GetHashCode() => 782347; // arbitrary
 
         public int Dimension() => 0;
     }

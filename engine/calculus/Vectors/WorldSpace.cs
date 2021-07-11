@@ -24,6 +24,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
     {
         public bool Equals(IVectorSpace other) => other is WorldSpace;
 
+        public override bool Equals(object obj) => obj is WorldSpace;
+
+        public override int GetHashCode() => 9542347; // arbitrary
+
         public int Dimension() => 3;
 
         /// <summary>

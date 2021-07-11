@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
 {
@@ -127,19 +128,18 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus.Vectors
 
         public bool Equals(Vector<TSpace> other)
         {
-            return _v.Equals(other._v) && EqualityComparer<TSpace>.Default.Equals(Space, other.Space);
+            return _v.SequenceEqual(other._v) && EqualityComparer<TSpace>.Default.Equals(Space, other.Space);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is Vector<TSpace> other && Equals(other);
-        }
+        public override bool Equals(object obj) => obj is Vector<TSpace> other && Equals(other);
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (_v.GetHashCode() * 397) ^ EqualityComparer<TSpace>.Default.GetHashCode(Space);
+                int hash = 928750194;  // arbitrary
+
+                return hash ^ EqualityComparer<TSpace>.Default.GetHashCode(Space);
             }
         }
     }
