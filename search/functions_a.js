@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['moldcastmap_418',['MoldCastMap',['../dd/d5a/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Calculus_1_1MoldCastMap.html#aaf266979ce380c439e4a4bcd837d355a',1,'FreedomOfFormFoundation.AnatomyEngine.Calculus.MoldCastMap.MoldCastMap(Curve raycastCurve, IRaytraceableSurface moldSurface, ContinuousMap&lt; Vector2, float &gt; defaultRadius, RayCastDirection direction=RayCastDirection.Outwards, float maxDistance=Single.PositiveInfinity)'],['../dd/d5a/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Calculus_1_1MoldCastMap.html#a329a8a9dbd2a3a4ee8bff46c15d537dc',1,'FreedomOfFormFoundation.AnatomyEngine.Calculus.MoldCastMap.MoldCastMap(Surface raycastSurface, IRaytraceableSurface moldSurface, ContinuousMap&lt; Vector2, float &gt; defaultRadius, RayCastDirection direction=RayCastDirection.Outwards, float maxDistance=Single.PositiveInfinity)']]]
+];

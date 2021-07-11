@@ -1,0 +1,13 @@
+var searchData=
+[
+  ['nan_144',['NaN',['../da/d28/structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Real.html#ab50d859c7bc69dc1929b473bd862ab7d',1,'FreedomOfFormFoundation::AnatomyEngine::Real']]],
+  ['near_145',['Near',['../d9/dd4/classEngineTests_1_1calculus_1_1QuadraticFunctionTests.html#ab8855fadcfd0b02d19e54933dd610320',1,'EngineTests.calculus.QuadraticFunctionTests.Near(Real a, Real b, Real tolerance)'],['../d9/dd4/classEngineTests_1_1calculus_1_1QuadraticFunctionTests.html#a068c17523ea50894a57c7738d94b90e6',1,'EngineTests.calculus.QuadraticFunctionTests.Near(Real a, Real b)']]],
+  ['nearspecialcases_146',['NearSpecialCases',['../da/d28/structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Real.html#a590ec6811b17039d2775a1876f851d0c',1,'FreedomOfFormFoundation::AnatomyEngine::Real']]],
+  ['negativeinfinity_147',['NegativeInfinity',['../da/d28/structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Real.html#a5785569db131381b8b57dafeb42cff2d',1,'FreedomOfFormFoundation::AnatomyEngine::Real']]],
+  ['normal_148',['Normal',['../d0/df5/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1Hemisphere.html#a5b729cf195f8050c2364349e0019855d',1,'FreedomOfFormFoundation.AnatomyEngine.Geometry.Hemisphere.Normal()'],['../d7/dca/structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1Vertex.html#abec25a283ab7510e60b80e346075486b',1,'FreedomOfFormFoundation.AnatomyEngine.Geometry.Vertex.Normal()']]],
+  ['normal_149',['normal',['../d8/d7e/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1LineSegment.html#ac7621b5f909e3b6231f9f72aaab4b9ee',1,'FreedomOfFormFoundation::AnatomyEngine::Geometry::LineSegment']]],
+  ['normalx_150',['NormalX',['../d1/d3f/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1SpatialCubicSpline.html#a60acf9bb932695a5c64168d637f95335',1,'FreedomOfFormFoundation::AnatomyEngine::Geometry::SpatialCubicSpline']]],
+  ['normaly_151',['NormalY',['../d1/d3f/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1SpatialCubicSpline.html#afac56ed846b403b6314d79bc1e8c3208',1,'FreedomOfFormFoundation::AnatomyEngine::Geometry::SpatialCubicSpline']]],
+  ['normalz_152',['NormalZ',['../d1/d3f/classFreedomOfFormFoundation_1_1AnatomyEngine_1_1Geometry_1_1SpatialCubicSpline.html#a61c2b896aea77825e997d46d85899062',1,'FreedomOfFormFoundation::AnatomyEngine::Geometry::SpatialCubicSpline']]],
+  ['numerics_153',['Numerics',['../d2/dce/ExampleBone_8cs.html#a6cdbbb5faff1cd4df50cbe580492dede',1,'Numerics():&#160;ExampleBone.cs'],['../df/d8a/GodotMeshConverter_8cs.html#a6cdbbb5faff1cd4df50cbe580492dede',1,'Numerics():&#160;GodotMeshConverter.cs']]]
+];
