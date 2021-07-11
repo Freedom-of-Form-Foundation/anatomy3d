@@ -22,19 +22,6 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			CreateExampleJoint(skeleton);
 			CreateExampleBones(skeleton);
-			
-			// Test:
-			IEnumerable<float> intersections = QuarticFunction.Solve(5.0f, 8.0f, 2.0f, -2.0f, -7.0f);
-			foreach (float i in intersections)
-			{
-				Console.WriteLine("quarticfunction solve: " + i);
-			}
-			
-			// Should be: -1.3162 and 1.2934 and -0.13149 +- 0.90659 i.
-			
-			Console.WriteLine("END QUARTIC TEST");
-			
-			// End test.
 		}
 
 		// Called every frame. 'delta' is the elapsed time since the previous frame.
