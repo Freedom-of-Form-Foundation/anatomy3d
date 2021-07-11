@@ -14,29 +14,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
-using System;
-
-namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
+namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	/// <summary>
-	/// A ConstantFunction returns a constant value for any input when GetValueAt() is called. This allows the user to
-	/// feed in constant values as a ContinuousMap, since many classes that expect a ContinuousMap won't work when
-	/// a bare float, double, or Real is used.
+	///     An interface defining the ability to raytrace a surface analytically.
 	/// </summary>
-	public class ConstantFunction<TIn, TOut> : ContinuousMap<TIn, TOut>
+	public interface IRaytraceableSurface
 	{
-		TOut constant;
-		
-		public ConstantFunction(TOut constant)
-		{
-			this.constant = constant;
-		}
-		
-		public override TOut GetValueAt(TIn t)
-		{
-			return constant;
-		}
+		/// <summary>
+		///		Intersects the surface with a ray \f$\vec{p} + t \vec{s}\f$, with \f$t \geq 0\f$, returning the minimum
+		/// 	\f$t\f$ for which there is an intersection. \f$\vec{p}\f$ is given by <c>ray.StartPosition</c>, and
+		/// 	\f$\vec{s}\f$ is given by <c>ray.Direction</c>.
+		/// </summary>
+		/// <param name="ray">
+		///		The Ray object that defines the starting point and direction of the ray to be cast.
+		/// </param>
+		float RayIntersect(Ray ray);
 	}
 }
