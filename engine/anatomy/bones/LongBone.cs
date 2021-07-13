@@ -30,6 +30,22 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 	public class LongBone : Bone
 	{
 #region Constructors
+	
+		/// <summary>
+		/// 	Construct a new <c>LongBone</c> using a LongitudinalStructure to define 
+		/// 	(1) a central curve, the <c>centerCurve</c>, and (2) a radius at each point on the central 
+		/// 	axis, as defined by a heightmap function <c>radius</c>.
+		/// </summary>
+		/// <param name="longitudinalApproximation">
+		/// 	<inheritdoc cref="LongBone.LongitudinalApproximation"/>
+		/// </param>
+		public LongBone(LongitudinalStructure longitudinalApproximation)
+		{
+			this.LongitudinalApproximation = longitudinalApproximation;
+			this.InteractingJoints = new List<JointDeformation>(0);
+		}
+
+
 		/// <summary>
 		/// 	Construct a new <c>LongBone</c> around a central curve, the <c>centerCurve</c>.
 		/// 	The radius at each point on the central axis is defined by a two-dimensional heightmap function
@@ -42,11 +58,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 		/// 	<inheritdoc cref="LongBone.Radius"/>
 		/// </param>
 		public LongBone(Curve centerCurve, ContinuousMap<Vector2, float> radius)
+			: this( new LongitudinalStructure(centerCurve, radius))
 		{
-			this.CenterCurve = centerCurve;
-			this.Radius = radius;
-			this.InteractingJoints = new List<JointDeformation>(0);
 		}
+
+
 		
 		/// <summary>
 		/// 	Construct a new <c>LongBone</c> around a central curve, the <c>centerCurve</c>.
@@ -84,19 +100,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 
 #region Properties
 		/// <summary>
-		/// The two-dimensional height map defining the radius of the <c>Capsule</c> that represents the long bone.
-		/// 
-		/// <see cref="FreedomOfFormFoundation.AnatomyEngine.Geometry.Capsule"/> for more information on the
-		/// properties and domain of this height map.
+		/// The lengthwise, simplest geometry defining a first-order approximation
+		/// of this long anatomical shape, including information about the central spline as well
+		/// as the cross-sectional profile.
 		/// </summary>
-		public ContinuousMap<Vector2, float> Radius { get; set; }
+		public LongitudinalStructure LongitudinalApproximation { get; set; }
 		
-		/// <summary>
-		/// The central curve along the length of the shaft of the long bone around which the <c>Capsule</c> is
-		/// generated.
-		/// </summary>
-		public Curve CenterCurve { get; set; }
-		
+
+
 		/// <summary>
 		/// The list of joints that the bone interacts with. The bone is sequentially deformed by the entries of
 		/// this list to ensure that the bone correctly fits inside each joint geometry.
@@ -112,10 +123,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 		public override Surface GetGeometry()
 		{
 			// Sequentially add the influence of each joint to the bone's radial deformations:
-			ContinuousMap<Vector2, float> deformations = Radius;
+			ContinuousMap<Vector2, float> deformations = LongitudinalApproximation.getRadius();
 			foreach (var i in InteractingJoints)
 			{
-				MoldCastMap boneHeightMap = new MoldCastMap(CenterCurve,
+				// TODO: Perhaps MoldCastMap should act only upon a zone of influence,
+				// and should furthermore have blurry boundaries,
+				// rather than acting upon the whole bone with (I'm assuming) hard boundaries, if boundaries exist?
+				// Maybe this could help avoid the sharp edges we've observed between raytraced and non-raytraced areas?
+				MoldCastMap boneHeightMap = new MoldCastMap(LongitudinalApproximation.getCenterCurve(),
 				                                            i.InteractingJoint.GetRaytraceableSurface(),
 				                                            deformations,
 				                                            i.Direction,
