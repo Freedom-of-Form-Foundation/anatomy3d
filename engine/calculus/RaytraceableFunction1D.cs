@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2021 Freedom of Form Foundation, Inc.
  * 
  * This program is free software; you can redistribute it and/or
@@ -20,20 +20,13 @@ using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-	/// A ContinuousMap is an abstract class that defines some function that outputs a value of type `TOut` for each
-	/// input of type `TIn`. Mathematically, this means it defines a mapping from one space to another. For example, a
-	/// ContinuousMap<Real, Real> defines a function that takes a Real value and outputs a Real value, such as
-	/// a polynomial function. ContinuousMap<Vector2, Real> takes a Vector2 as input and gives a Real as output, which
-	/// could for instance be used as a height map.
-	public abstract class ContinuousMap<TIn, TOut>
+	public abstract class RaytraceableFunction1D : ContinuousMap<float, float>
 	{
-		public abstract TOut GetValueAt(TIn t);
-		
-		public static implicit operator ContinuousMap<TIn, TOut>(TOut m) => new ConstantFunction<TIn, TOut>(m);
-
-		public static implicit operator ContinuousMap<TIn, TOut>(Func<TIn, TOut> f)
-		{
-			return new FunctionBackedContinuousMap<TIn, TOut>(f);
-		}
+		/// <summary>
+		/// Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
+		///	\f$x\f$ for which the equation is true. \f$q(x)\f$ is the continuous map. The parameters z0 and c
+		///	can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
+		/// </summary>
+		public abstract IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f);
 	}
 }
