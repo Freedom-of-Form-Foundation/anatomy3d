@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2021 Freedom of Form Foundation, Inc.
  * 
  * This program is free software; you can redistribute it and/or
@@ -16,24 +16,27 @@
 
 using System.Collections.Generic;
 using System.Numerics;
+using System.Linq;
 using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-	/// A ContinuousMap is an abstract class that defines some function that outputs a value of type `TOut` for each
-	/// input of type `TIn`. Mathematically, this means it defines a mapping from one space to another. For example, a
-	/// ContinuousMap<Real, Real> defines a function that takes a Real value and outputs a Real value, such as
-	/// a polynomial function. ContinuousMap<Vector2, Real> takes a Vector2 as input and gives a Real as output, which
-	/// could for instance be used as a height map.
-	public abstract class ContinuousMap<TIn, TOut>
+	/// <summary>
+	/// A <c>SortedPointsList</c> stores points in <c>List</c>s so that BinarySearch can be used. The points in this
+	/// list are guaranteed to be sorted by X-value and to have no duplicate entries for the X-coordinate. This is a
+	/// bit roundabout, and should probably be replaced once a BinarySearch is added for IList or SortedList.
+	/// </summary>
+	public class SortedPointsList<T>
 	{
-		public abstract TOut GetValueAt(TIn t);
+		public List<T> Key { get; }
+		public List<T> Value { get; }
+		public Int32 Count { get; }
 		
-		public static implicit operator ContinuousMap<TIn, TOut>(TOut m) => new ConstantFunction<TIn, TOut>(m);
-
-		public static implicit operator ContinuousMap<TIn, TOut>(Func<TIn, TOut> f)
+		public SortedPointsList(SortedList<T, T> points)
 		{
-			return new FunctionBackedContinuousMap<TIn, TOut>(f);
+			Key = points.Keys.ToList();
+			Value = points.Values.ToList();
+			Count = points.Count;
 		}
 	}
 }
