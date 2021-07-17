@@ -1,7 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Configurations>Debug;Release;UnitTests</Configurations>
+    <Configurations>Debug;Release;UnitTests;UnitTests Real Float;UnitTests Real Double;UnitTests Real Decimal</Configurations>
     <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests Real Float' ">
+    <DefineConstants>TRACE;DEBUG;REALTYPE_FLOAT</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests Real Double' ">
+    <DefineConstants>TRACE;DEBUG;REALTYPE_DOUBLE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests Real Decimal' ">
+    <DefineConstants>TRACE;DEBUG;REALTYPE_DECIMAL</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 </Project>
