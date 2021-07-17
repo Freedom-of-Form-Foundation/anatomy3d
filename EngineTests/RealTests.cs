@@ -23,6 +23,19 @@ using FreedomOfFormFoundation.AnatomyEngine;
 // That's often useful because it's usually a mistake, but here it's a very deliberate part of testing == itself.
 // ReSharper disable EqualExpressionComparison
 
+// Specify REALTYPE_DOUBLE, REALTYPE_FLOAT, or REALTYPE_DECIMAL in your compiler flags to set
+// behavior of Real. Otherwise, defaults are DOUBLE for a production build and FLOAT for a
+// debug build, to reveal numerical instability. This logic is also in Real.cs, but it's a
+// separate assembly so its flags don't apply here.
+#if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
+#if DEBUG
+  #define REALTYPE_FLOAT
+#else
+#define REALTYPE_DOUBLE
+#endif
+#endif
+
+
 namespace EngineTests
 {
     public class RealTests
@@ -98,7 +111,7 @@ namespace EngineTests
             Assert.Equal(wantSubnormal, r.IsSubnormal);
         }
 
-#elif REALTYPE_FLOAT || DEBUG  // assigned by default in debug mode if no other kind specified
+#elif REALTYPE_FLOAT
         [Theory]
         [InlineData(0f, false, false)]
         [InlineData(Single.NaN, false, false)]
