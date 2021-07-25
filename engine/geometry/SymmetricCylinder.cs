@@ -23,7 +23,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	/// <summary>
 	/// 	A <c>SymmetricCylinder</c> represents a cylindrical surface that can have a varying radius along
-	/// 	its length. Unlike a <c>Cylinder/c>, however, its central axis cannot be bent and must be a straight line,
+	/// 	its length. Unlike a <c>Cylinder</c>, however, its central axis cannot be bent and must be a straight line,
 	/// 	and the radius must be radially constant, i.e. the radius can only change along the length of the cylinder,
 	/// 	but not along the radial axis. These properties make this surface perfect to represent a hinge joint
 	/// 	surface. Due to its simplicity, it is raytraceable.
