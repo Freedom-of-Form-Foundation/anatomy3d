@@ -14,10 +14,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System;
-using Xunit;
-using FreedomOfFormFoundation.AnatomyEngine;
-
 // IDE-specific warning suppression comments go here.
 // ReSharper warns about "obvious equals", when I have the same literal expression on each side of the == operator.
 // That's often useful because it's usually a mistake, but here it's a very deliberate part of testing == itself.
@@ -29,12 +25,15 @@ using FreedomOfFormFoundation.AnatomyEngine;
 // separate assembly so its flags don't apply here.
 #if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
 #if DEBUG
-  #define REALTYPE_FLOAT
+#define REALTYPE_FLOAT
 #else
 #define REALTYPE_DOUBLE
 #endif
 #endif
 
+using System;
+using Xunit;
+using FreedomOfFormFoundation.AnatomyEngine;
 
 namespace EngineTests
 {
