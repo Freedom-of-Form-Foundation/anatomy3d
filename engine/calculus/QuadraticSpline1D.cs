@@ -24,7 +24,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
 	///     Class <c>QuadraticSpline1D</c> describes a one-dimensional quadratic spline, which is a piecewise function.
-	///		Each piece is defined by a quadratic function, \f$q(x) = a_0 + a_1 x + a_2 x^2\f$, for which the _parameters
+	///		Each piece is defined by a quadratic function, \f$q(x) = a_0 + a_1 x + a_2 x^2\f$, for which the parameters
 	///		are defined such that the piecewise function is continuous. A spline is defined by a series of points that
 	///		the function must intersect, and the program will automatically generate a curve that passes through these
 	///		points. As opposed to a cubic spline, a quadratic spline is not continuous in its second derivative. It is
@@ -32,7 +32,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// </summary>
 	public class QuadraticSpline1D : RaytraceableFunction1D
 	{
-		private float[] _parameters;
+		private float[] parameters;
 		public SortedPointsList<float> Points { get; }
 		
 		/// <summary>
@@ -70,23 +70,23 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			Points = new SortedPointsList<float>(points);
 			
 			// Calculate the coefficients of the spline:
-			_parameters = new float[points.Count];
+			parameters = new float[points.Count];
 			
 			// Find the first segment parameter, which will be a straight line:
 			{
 				float dx = Points.Key[1] - Points.Key[0];
 				float dy = Points.Value[1] - Points.Value[0];
 				
-				_parameters[0] = dy/dx;
+				parameters[0] = dy/dx;
 			}
 			
-			// Recursively find the other _parameters:
+			// Recursively find the other parameters:
 			for (int i = 1; i < points.Count; i++) 
 			{
 				float dx = Points.Key[i] - Points.Key[i-1];
 				float dy = Points.Value[i] - Points.Value[i-1];
 				
-				_parameters[i] = -_parameters[i-1] + 2.0f*dy/dx;
+				parameters[i] = -parameters[i-1] + 2.0f*dy/dx;
 			}
 			
 		}
@@ -142,7 +142,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			float dx = x2 - x1;
 			float dy = y2 - y1;
 			
-			float a = -_parameters[i]*dx + dy;
+			float a = -parameters[i]*dx + dy;
 			float t = (x-x1)/dx;
 			
 			// Return a different function depending on the derivative level:
@@ -181,7 +181,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		
 		/// <summary>
 		///     Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
-		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The _parameters z0 and c
+		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
 		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
@@ -199,7 +199,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				Real div = 1.0/dx;
 				Real dy = y2 - y1;
 				
-				Real a = -_parameters[i]*dx + dy;
+				Real a = -parameters[i]*dx + dy;
 				
 				// Write in the form of a0 + a1 z + a2 z^2:
 				Real a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
