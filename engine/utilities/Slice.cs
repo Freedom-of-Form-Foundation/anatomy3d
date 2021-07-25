@@ -6,7 +6,7 @@ using System.Linq;
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
     // A Slice is a lightweight, shallow view of part of an underlying IList. It can be used to avoid copying.
-    public class Slice<T> : IReadOnlyList<T>
+    public struct Slice<T> : IReadOnlyList<T>
     {
         public Slice(IList<T> list, int offset, int count)
         {
