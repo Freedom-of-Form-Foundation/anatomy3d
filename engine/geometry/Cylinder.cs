@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
+using System.Linq;
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
@@ -208,37 +209,35 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
 		{
-			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
-			
-			for (int j = 0; j < (resolutionV + 1); j++)
+			var roughs = ParallelEnumerable.Range(0, resolutionV + 1).AsOrdered().SelectMany((j =>
 			{
-				float v = (float)j/(float)resolutionV;
-				
+				float v = (float) j / (float) resolutionV;
+
 				// Find the values at each ring:
 				Vector3 curveTangent = Vector3.Normalize(CenterCurve.GetTangentAt(v));
 				Vector3 curveNormal = Vector3.Normalize(CenterCurve.GetNormalAt(v));
 				Vector3 curveBinormal = Vector3.Cross(curveTangent, curveNormal);
-				
+
 				Vector3 translation = CenterCurve.GetPositionAt(v);
-				
+
 				float startAngle = StartAngle.GetValueAt(v);
 				float endAngle = EndAngle.GetValueAt(v);
-				
-				for (int i = 0; i < resolutionU; i++)
+
+				return Enumerable.Range(0, resolutionU).Select((i) =>
 				{
-					// First find the normalized uv-coordinates, u = [0, 2pi], v = [0, 1]:
-					float u = startAngle + (endAngle-startAngle)*(float)i/(float)resolutionU;
-					
+					float u = startAngle + (endAngle - startAngle) * (float) i / (float) resolutionU;
+
 					float radius = Radius.GetValueAt(new Vector2(u, v));
-					
+
 					// Calculate the position of the rings of vertices:
-					Vector3 surfaceNormal = (float)Math.Cos(u)*curveNormal + (float)Math.Sin(u)*curveBinormal;
-					Vector3 surfacePosition = translation + radius*surfaceNormal;
-					
-					output.Add(new Vertex(surfacePosition, surfaceNormal));
-				}
-			}
-			
+					Vector3 surfaceNormal = (float) Math.Cos(u) * curveNormal + (float) Math.Sin(u) * curveBinormal;
+					Vector3 surfacePosition = translation + radius * surfaceNormal;
+					return new Vertex(surfacePosition, surfaceNormal);
+				});
+			}));
+
+			List<Vertex> output = roughs.ToList();
+
 			// Recalculate the surface normal after deformation:
 			for (int j = 1; j < resolutionV; j++)
 			{
