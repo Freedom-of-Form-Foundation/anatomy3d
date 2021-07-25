@@ -148,7 +148,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			List<Vertex> startCapList = startCap.GenerateVertexList(resolutionU, resolutionU/4);
 			List<Vertex> endCapList = endCap.GenerateVertexList(resolutionU, resolutionU/4);
 			
-			// Using GetRange(), remove the first and last ring of vertices of the shaft, which overlap with the last
+			// Using a slice, remove the first and last ring of vertices of the shaft, which overlap with the last
 			// rings of the startCap and endCap respectively. Later we will stitch the shaft and end caps together with
 			// triangles between them, during the GenerateIndexList() step.
 			Slice<Vertex> shaftSlice = new Slice<Vertex>(
