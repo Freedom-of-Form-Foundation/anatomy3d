@@ -23,6 +23,19 @@ using FreedomOfFormFoundation.AnatomyEngine;
 // That's often useful because it's usually a mistake, but here it's a very deliberate part of testing == itself.
 // ReSharper disable EqualExpressionComparison
 
+// Specify REALTYPE_DOUBLE, REALTYPE_FLOAT, or REALTYPE_DECIMAL in your compiler flags to set
+// behavior of Real. Otherwise, defaults are DOUBLE for a production build and FLOAT for a
+// debug build, to reveal numerical instability. This logic is also in Real.cs, but it's a
+// separate assembly so its flags don't apply here.
+#if !REALTYPE_DOUBLE && !REALTYPE_FLOAT && !REALTYPE_DECIMAL
+#if DEBUG
+  #define REALTYPE_FLOAT
+#else
+#define REALTYPE_DOUBLE
+#endif
+#endif
+
+
 namespace EngineTests
 {
     public class RealTests
@@ -67,5 +80,56 @@ namespace EngineTests
             // floating-point arithmetic.
             Assert.False(Real.NaN == Real.NaN);
         }
+        // Denormalized values are different depending on the backing type of Real.
+#if REALTYPE_DECIMAL
+        [Theory]
+        [InlineData(0d, false)]
+        [InlineData(100d, true)]
+        [InlineData(0.00002d, true)]
+        [InlineData(4.5e-75d, true)]
+        public void TestIsNormalSubnormalDecimal(Decimal x, bool wantNormal)
+        {
+            Real r = new Real(x);
+            Assert.Equal(wantNormal, r.IsNormal);
+            Assert.False(r.IsSubnormal);
+        }
+#elif REALTYPE_DOUBLE
+        [Theory]
+        [InlineData(0.0, false, false)]
+        [InlineData(Double.NaN, false, false)]
+        [InlineData(Double.NegativeInfinity, false, false)]
+        [InlineData(Double.PositiveInfinity, false, false)]
+        [InlineData(-0.0, false, false)]
+        [InlineData(1.5, true, false)]
+        [InlineData(4875293824932, true, false)]
+        [InlineData(0.89812784, true, false)]
+        [InlineData(5.5e-310, false, true)]
+        public void TestIsNormalSubnormalDouble(double x, bool wantNormal, bool wantSubnormal)
+        {
+            Real r = new Real(x);
+            Assert.Equal(wantNormal, r.IsNormal);
+            Assert.Equal(wantSubnormal, r.IsSubnormal);
+        }
+
+#elif REALTYPE_FLOAT
+        [Theory]
+        [InlineData(0f, false, false)]
+        [InlineData(Single.NaN, false, false)]
+        [InlineData(Single.NegativeInfinity, false, false)]
+        [InlineData(Single.PositiveInfinity, false, false)]
+        [InlineData(-0f, false, false)]
+        [InlineData(1f, true, false)]
+        [InlineData(19384.29f, true, false)]
+        [InlineData(2.9387e-39f, false, true)]
+        [InlineData(4.78e-42f, false, true)]
+        public void TestIsNormalSubnormalFloat(float x, bool wantNormal, bool wantSubnormal)
+        {
+            Real r = new Real(x);
+            Assert.Equal(wantNormal, r.IsNormal);
+            Assert.Equal(wantSubnormal, r.IsSubnormal);
+        }
+#else
+    #error Unknown backing type for Real - cannot test IsNormal, IsSubnormal.
+#endif
     }
 }

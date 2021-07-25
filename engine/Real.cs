@@ -34,6 +34,7 @@
 #endif
 
 using System;
+using System.ComponentModel;
 using System.Numerics;
 
 // IDE configuration: This file will contain some redundant casts because it's
@@ -53,8 +54,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 	{
 #if REALTYPE_DOUBLE
 		private readonly double _v;
+		// Bits of a double that represent the exponent, in big-endian format. BitConverter will make it look
+		// big-endian, mathematically - this const will be stored with the same endianness as the double.
+		private const long kExponentMask = 0x7FF0000000000000;
 #elif REALTYPE_FLOAT
 		private readonly float _v;
+		// See comment for REALTYPE_DOUBLE version of this field.
+		private const int kExponentMask = 0x7F800000;
 #elif REALTYPE_DECIMAL
 		private readonly decimal _v;
 #else
@@ -422,6 +428,69 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		}
 
 		public bool IsFinite => !IsInfinity && !IsNaN;
+		/// <summary>
+		/// Whether this is a nonzero, numerical, finite value in the range that is represented with the ordinary
+		/// precision of the underlying type of the Real. See IsSubnormal for details on extra-small values represented
+		/// with lower precision.
+		/// </summary>
+		public bool IsNormal
+		{
+#if REALTYPE_DECIMAL
+				get => _v != new Decimal(0);
+#elif REALTYPE_FLOAT || REALTYPE_DOUBLE
+			get
+			{
+	#if REALTYPE_FLOAT
+				int expBits = kExponentMask & BitConverter.ToInt32(BitConverter.GetBytes(_v), 0);
+	#else  // double
+				long expBits = kExponentMask & BitConverter.DoubleToInt64Bits(_v);
+	#endif
+				// Normal numbers are:
+				// * nonzero
+				// * not denormalized
+				// * noninfinite
+				// * numbers
+				// Maximum exponent represents infinity or NaN, minimum exponent is 0 or denormalized.
+				return (expBits != kExponentMask) && (expBits != 0);
+			}
+#else
+#error Real doesn't know how to calculate IsNormal for its current type.
+#endif
+		}
+
+		/// <summary>
+		/// Whether this is a nonzero finite value in the range where bits used for the fractional part of the value
+		/// are interpreted in a way that trades off precision for range, for values extremely close to zero.
+		/// </summary>
+		public bool IsSubnormal
+		{
+#if REALTYPE_DECIMAL
+				get => false;
+#elif REALTYPE_FLOAT || REALTYPE_DOUBLE
+			get
+			{
+#if REALTYPE_FLOAT
+				if (_v == 0f)
+				{
+					return false;
+				}
+				int expBits = kExponentMask & BitConverter.ToInt32(BitConverter.GetBytes(_v), 0);
+#else  // double
+				if (_v == 0.0)
+				{
+					return false;
+				}
+				long expBits = kExponentMask & BitConverter.DoubleToInt64Bits(_v);
+#endif
+				// Subnormal numbers are nonzero and have a zero exponent.
+				// We already checked for zero.
+				return expBits == 0;
+			}
+#else
+#error Real doesn't know how to calculate IsNormal for its current type.
+#endif
+		}
+
 #endregion
 
 #region Convenience functions
