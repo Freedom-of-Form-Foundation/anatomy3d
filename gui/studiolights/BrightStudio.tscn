@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_color = Color( 0.227451, 0.227451, 0.227451, 1 )
+
+[node name="BrightStudio" type="WorldEnvironment"]
+environment = SubResource( 1 )
+
+[node name="SpotLight1" type="DirectionalLight" parent="."]
+transform = Transform( -0.521309, -0.0381757, 0.852514, 0.0760213, 0.992949, 0.0909511, -0.849975, 0.112223, -0.514731, 31.1274, 7.45084, -15.5257 )
+light_color = Color( 0.788235, 0.878431, 1, 1 )
+
+[node name="SpotLight2" type="DirectionalLight" parent="."]
+transform = Transform( 0.339098, 0.203035, -0.91858, -0.00145433, 0.976545, 0.21531, 0.94075, -0.0716752, 0.331439, -18.2357, 3.02746, 5.65486 )
+light_color = Color( 0.823529, 0.905882, 1, 1 )
+
+[node name="SpotLight3" type="DirectionalLight" parent="."]
+transform = Transform( 0.016908, 0.486021, -0.873783, -0.103508, 0.870064, 0.481949, 0.994485, 0.0822946, 0.065018, -11.9414, 9.92281, 2.08138 )
+light_color = Color( 0.733333, 0.827451, 0.796078, 1 )
+light_energy = 0.89
+
+[node name="SpotLight4" type="DirectionalLight" parent="."]
+transform = Transform( 0.646922, -0.347692, 0.678677, 0.0243401, 0.898964, 0.437346, -0.762168, -0.26641, 0.590022, 41.6905, 27.316, 24.1203 )
+light_color = Color( 0.901961, 0.917647, 0.964706, 1 )
+light_energy = 0.78
+
+[node name="GroundLight" type="DirectionalLight" parent="."]
+transform = Transform( -0.0463951, 0.99874, -0.0191384, 0.0691234, -0.0159033, -0.997481, -0.996529, -0.0476012, -0.0682985, 2.9591, -32.2353, -6.47292 )
+light_color = Color( 0.317647, 0.34902, 0.364706, 1 )
+light_specular = 0.12
