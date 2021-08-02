@@ -24,15 +24,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <summary>
 		/// 	The distance from the start point of the ray to the intersection point.
 		/// </summary>
-		public float RayLength { get; set; }
+		public double RayLength { get; set; }
 
 		/// <summary>
 		/// 	This value is <c>0.0f</c> when the ray intersects the surface. When the ray intersection is outside of
 		/// 	the surface, this value indicates the distance to the closest boundary.
 		/// </summary>
-		public float DistanceToSurface { get; set; }
+		public double DistanceToSurface { get; set; }
 
-		public RayExtendedSurfaceIntersection(float rayLength, float distanceToSurface)
+		public RayExtendedSurfaceIntersection(double rayLength, double distanceToSurface)
 		{
 			RayLength = rayLength;
 			DistanceToSurface = distanceToSurface;

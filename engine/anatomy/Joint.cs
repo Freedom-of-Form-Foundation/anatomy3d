@@ -14,7 +14,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy
 		/// <summary>
 		///     Returns the raytraceable surface geometry used by this Hinge Joint.
 		/// </summary>
-		public abstract IRaytraceableSurface GetRaytraceableSurface();
+		public abstract IExtendedRaytraceableSurface GetExtendedRaytraceableSurface();
+
 		
 		/// <summary>
 		///     Returns the surface geometry used by this BodyPart.

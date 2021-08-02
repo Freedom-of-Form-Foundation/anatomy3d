@@ -175,7 +175,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
 
-			RaySurfaceIntersection minimum = new RaySurfaceIntersection(Single.PositiveInfinity, 0.0, 0.0);
+			RaySurfaceIntersection minimum = new RaySurfaceIntersection(Double.PositiveInfinity, 0.0, 0.0);
 
 			foreach (double i in intersections)
 			{
@@ -223,18 +223,18 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			RaySurfaceIntersection intersection = RayIntersect(ray);
 
-			if(Single.IsNaN(intersection.RayLength) == false && Single.IsInfinity(intersection.RayLength) == false)
+			if(Double.IsNaN(intersection.RayLength) == false && Double.IsInfinity(intersection.RayLength) == false)
 			{
-				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0f);
+				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0);
 			} else
 			{
-				Vector3 tangent = centerLine.GetTangentAt(0.0f);
+				dvec3 tangent = centerLine.GetTangentAt(0.0);
 				LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
 				SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, Radius);
 				RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
 
-				float distanceFromBoundary = (Math.Abs(extendedIntersection.V - 0.5f) - 1.0f / 6.0f) * 3.0f;
-				distanceFromBoundary = (distanceFromBoundary > 0.0f) ? distanceFromBoundary : 0.0f;
+				double distanceFromBoundary = (Math.Abs(extendedIntersection.V - 0.5) - 1.0 / 6.0) * 3.0;
+				distanceFromBoundary = (distanceFromBoundary > 0.0) ? distanceFromBoundary : 0.0;
 
 				return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
 			}
