@@ -29,7 +29,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 	/// 	but not along the radial axis. These properties make this surface perfect to represent a hinge joint
 	/// 	surface. Due to its simplicity, it is raytraceable.
 	/// </summary>
-	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
+	public class SymmetricCylinder : Cylinder, IExtendedRaytraceableSurface
 	{
 		#region Constructors
 		/// <summary>
@@ -216,5 +216,29 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			return minimum;
 		}
 		#endregion IRaytraceableSurface
+
+		#region IExtendedRaytraceableSurface
+		/// <inheritdoc />
+		public RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray)
+		{
+			RaySurfaceIntersection intersection = RayIntersect(ray);
+
+			if(Single.IsNaN(intersection.RayLength) == false && Single.IsInfinity(intersection.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0f);
+			} else
+			{
+				Vector3 tangent = centerLine.GetTangentAt(0.0f);
+				LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
+				SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, Radius);
+				RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
+
+				float distanceFromBoundary = (Math.Abs(extendedIntersection.V - 0.5f) - 1.0f / 6.0f) * 3.0f;
+				distanceFromBoundary = (distanceFromBoundary > 0.0f) ? distanceFromBoundary : 0.0f;
+
+				return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
+			}
+		}
+		#endregion IExtendedRaytraceableSurface
 	}
 }
