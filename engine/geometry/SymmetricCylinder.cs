@@ -122,7 +122,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 
 		#region IRaytraceableSurface
 		/// <inheritdoc />
-		public double RayIntersect(Ray ray)
+		public RaySurfaceIntersection RayIntersect(Ray ray)
 		{
 			dvec3 rayStart = ray.StartPosition;
 			dvec3 rayDirection = ray.Direction;
@@ -174,8 +174,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
-			double minimum = Single.PositiveInfinity;
-			
+
+			RaySurfaceIntersection minimum = new RaySurfaceIntersection(Single.PositiveInfinity, 0.0, 0.0);
+
 			foreach (double i in intersections)
 			{
 				// First calculate the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
@@ -203,7 +204,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				// otherwise discard:
 				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i >= 0.0)
 				{
-					minimum = Math.Sign(i) * Math.Min(Math.Abs(minimum), Math.Abs(i));
+					if (Math.Abs(i) < Math.Abs(minimum.RayLength))
+					{
+						minimum.RayLength = i;
+						minimum.U = phi;
+						minimum.V = t;
+					}
 				}
 			}
 			

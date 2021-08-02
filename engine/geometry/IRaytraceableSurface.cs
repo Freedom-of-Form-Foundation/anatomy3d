@@ -17,6 +17,34 @@
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
 	/// <summary>
+	/// 	The intersection point on a surface after a raycast.
+	/// </summary>
+	public struct RaySurfaceIntersection
+	{
+		/// <summary>
+		/// 	The distance from the start point of the ray to the intersection point.
+		/// </summary>
+		public double RayLength { get; set; }
+
+		/// <summary>
+		/// 	The U coordinate on the surface at the point of intersection.
+		/// </summary>
+		public double U { get; set; }
+
+		/// <summary>
+		/// 	The V coordinate on the surface at the point of intersection.
+		/// </summary>
+		public double V { get; set; }
+
+		public RaySurfaceIntersection(double rayLength, double u, double v)
+		{
+			RayLength = rayLength;
+			U = u;
+			V = v;
+		}
+	}
+
+	/// <summary>
 	///     An interface defining the ability to raytrace a surface analytically.
 	/// </summary>
 	public interface IRaytraceableSurface
@@ -29,6 +57,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="ray">
 		///		The Ray object that defines the starting point and direction of the ray to be cast.
 		/// </param>
-		double RayIntersect(Ray ray);
+		RaySurfaceIntersection RayIntersect(Ray ray);
 	}
 }

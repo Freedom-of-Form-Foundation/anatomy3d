@@ -140,13 +140,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		{
 			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double directionSign = (direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
-
-			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
-			double intersectionRadius = moldSurface.RayIntersect(ray);
 			
-			if (Math.Abs(intersectionRadius) <= maxDistance)
+			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
+			RaySurfaceIntersection intersection = moldSurface.RayIntersect(ray);
+
+			if (Math.Abs(intersection.RayLength) <= maxDistance)
 			{
-				return intersectionRadius;
+				return intersection.RayLength;
 			} else {
 				return defaultRadius.GetValueAt(uv);
 			}
