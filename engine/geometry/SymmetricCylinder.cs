@@ -230,10 +230,17 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			{
 				dvec3 tangent = centerLine.GetTangentAt(0.0);
 				LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
-				SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, Radius);
+				SortedList<double, double> radiusPoints = new SortedList<double, double>
+				{
+					{ 0.0, Radius.GetValueAt(0.0) },
+					{ 1.0, Radius.GetValueAt(1.0) }
+				};
+
+				QuadraticSpline1D extendedRadius = new QuadraticSpline1D(radiusPoints);
+				SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, extendedRadius);
 				RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
 
-				double distanceFromBoundary = (Math.Abs(extendedIntersection.V - 0.5) - 1.0 / 6.0) * 3.0;
+				double distanceFromBoundary = (Math.Abs(extendedIntersection.V * 3.0 - 1.5) - 1.0 / 2.0);
 				distanceFromBoundary = (distanceFromBoundary > 0.0) ? distanceFromBoundary : 0.0;
 
 				return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
