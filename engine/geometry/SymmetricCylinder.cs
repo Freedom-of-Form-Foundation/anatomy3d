@@ -31,7 +31,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 	/// </summary>
 	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
 	{
-#region Constructors
+		#region Constructors
 		/// <summary>
 		/// 	Construct a new <c>SymmetricCylinder</c> around a central axis, the <c>centerLine</c>. The radius at
 		/// 	each point on the central axis is defined by a one-dimensional function <c>radius</c>.
@@ -88,9 +88,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			radius1D = radius;
 			this.centerLine = centerLine;
 		}
-#endregion
+		#endregion
 
-#region Properties
+		#region Properties
 		protected RaytraceableFunction1D radius1D;
 		
 		/// <summary>
@@ -118,9 +118,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				base.CenterCurve = value;
 			}
 		}
-#endregion Properties
+		#endregion Properties
 
-#region IRaytraceableSurface
+		#region IRaytraceableSurface
 		/// <inheritdoc />
 		public double RayIntersect(Ray ray)
 		{
@@ -178,26 +178,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			foreach (double i in intersections)
 			{
-				// Calculate the 3d point at which the ray intersects the cylinder:
-				dvec3 intersectionPoint = rayStart + i*rayDirection;
-				
-				// Find the closest point to the intersectionPoint on the centerLine.
-				// Get the vector v from the start of the cylinder to the intersection point:
-				dvec3 v = intersectionPoint - start;
-				
-				// ...And project this vector onto the center line:
-				double t = -dvec3.Dot(intersectionPoint, tangent*length)/(length*length);
-				
-				// Now we have the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
-				
+				// First calculate the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
+				double t = rescaledRay.z + i*newDirection.z;
+
+				// t must be within the bounds of the SymmetricCylinder. t ranges from 0.0 to 1.0, so if it is outside
+				// of this region, the ray does not intersect the cylinder.
+				if (!(t >= 0.0 && t <= 1.0))
+				{
+					break;
+				}
+
 				// Find the angle to the normal of the centerLine, so that we can determine whether the
 				// angle is within the bound of the pie-slice at position t:
+
+				// Calculate the 3d point at which the ray intersects the cylinder:
+				dvec3 intersectionPoint = rayStart + i * rayDirection;
 				dvec3 centerLineNormal = CenterCurve.GetNormalAt(t);
 				dvec3 centerLineBinormal = CenterCurve.GetBinormalAt(t);
 				dvec3 d = intersectionPoint - CenterCurve.GetPositionAt(t);
 				double correctionShift = Math.Sign(dvec3.Dot(d, centerLineBinormal));
-				double phi = (correctionShift * Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0*Math.PI);
-				
+				double phi = (correctionShift*Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0*Math.PI);
+
 				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
 				// otherwise discard:
 				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i >= 0.0)
@@ -208,6 +209,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			return minimum;
 		}
-#endregion IRaytraceableSurface
+		#endregion IRaytraceableSurface
 	}
 }
