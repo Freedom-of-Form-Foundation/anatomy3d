@@ -223,28 +223,63 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			RaySurfaceIntersection intersection = RayIntersect(ray);
 
-			if(Double.IsNaN(intersection.RayLength) == false && Double.IsInfinity(intersection.RayLength) == false)
+			if (Double.IsNaN(intersection.RayLength) == false && Double.IsInfinity(intersection.RayLength) == false)
 			{
 				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0);
-			} else
-			{
-				dvec3 tangent = centerLine.GetTangentAt(0.0);
-				LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
-				SortedList<double, double> radiusPoints = new SortedList<double, double>
-				{
-					{ 0.0, Radius.GetValueAt(0.0) },
-					{ 1.0, Radius.GetValueAt(1.0) }
-				};
-
-				QuadraticSpline1D extendedRadius = new QuadraticSpline1D(radiusPoints);
-				SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, extendedRadius);
-				RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
-
-				double distanceFromBoundary = (Math.Abs(extendedIntersection.V * 3.0 - 1.5) - 1.0 / 2.0);
-				distanceFromBoundary = (distanceFromBoundary > 0.0) ? distanceFromBoundary : 0.0;
-
-				return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
 			}
+
+			dvec3 tangent = centerLine.GetTangentAt(0.0);
+
+			dvec3 curveNormal = CenterCurve.GetNormalAt(0.0);
+			dvec3 curveBinormal = CenterCurve.GetBinormalAt(0.0);
+
+			dvec3 planeOrigin1 = GetPositionAt(new dvec2(StartAngle.GetValueAt(0.0), 0.0));
+			double phi1 = StartAngle.GetValueAt(0.0);
+			dvec3 vectorV1 = Math.Sin(phi1) * curveNormal - Math.Cos(phi1) * curveBinormal;
+			CorrugatedPlane extendedPlane1 = new CorrugatedPlane(CenterCurve.GetStartPosition(), tangent, vectorV1, Radius, 1.0);
+
+			RaySurfaceIntersection extendedPlaneIntersection1 = extendedPlane1.RayIntersect(ray);
+
+			double distanceFromBoundary1 = extendedPlaneIntersection1.V;
+
+			if (Double.IsNaN(extendedPlaneIntersection1.RayLength) == false && Double.IsInfinity(extendedPlaneIntersection1.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(extendedPlaneIntersection1.RayLength, distanceFromBoundary1);
+			}
+
+			dvec3 planeOrigin2 = GetPositionAt(new dvec2(EndAngle.GetValueAt(0.0), 0.0));
+			double phi2 = EndAngle.GetValueAt(0.0);
+			dvec3 vectorV2 = -Math.Sin(phi2) * curveNormal + Math.Cos(phi2) * curveBinormal;
+			CorrugatedPlane extendedPlane2 = new CorrugatedPlane(CenterCurve.GetStartPosition(), tangent, vectorV2, Radius, -1.0);
+
+			RaySurfaceIntersection extendedPlaneIntersection2 = extendedPlane2.RayIntersect(ray);
+
+			double distanceFromBoundary2 = extendedPlaneIntersection2.V;
+
+			if (Double.IsNaN(extendedPlaneIntersection2.RayLength) == false && Double.IsInfinity(extendedPlaneIntersection2.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(extendedPlaneIntersection2.RayLength, distanceFromBoundary2);
+			}
+
+			LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
+			SortedList<double, double> radiusPoints = new SortedList<double, double>
+						{
+							{ 0.0, 0.0 },
+							{ 0.05, 0.05 },
+							{ 1.0/3.0, Radius.GetValueAt(0.0) },
+							{ 2.0/3.0, Radius.GetValueAt(1.0) },
+							{ 0.95, 0.05 },
+							{ 1.0, 0.0 }
+						};
+
+			QuadraticSpline1D extendedRadius = new QuadraticSpline1D(radiusPoints);
+			SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, extendedRadius);
+			RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
+
+			double distanceFromBoundary = (Math.Abs(extendedIntersection.V * 3.0 - 1.5) - 1.0 / 2.0);
+			distanceFromBoundary = (distanceFromBoundary > 0.0) ? distanceFromBoundary : 0.0;
+
+			return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
 		}
 		#endregion IExtendedRaytraceableSurface
 	}

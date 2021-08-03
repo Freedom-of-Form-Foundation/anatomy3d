@@ -107,12 +107,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
 			RayExtendedSurfaceIntersection intersection = moldSurface.ExtendedRayIntersect(ray);
 
-			double weight = Math.Exp(-intersection.DistanceToSurface*10.0);
-			
+			double x = intersection.DistanceToSurface;
+			double pow = Math.Pow(x * 10.0, 3.0);
+			double weight = pow / (1.0 + pow);
+
 			if (Math.Abs(intersection.RayLength) <= maxDistance)
 			{
-				return intersection.RayLength * weight + (1.0 - weight) * defaultRadius.GetValueAt(uv);
-			} else {
+				return intersection.RayLength * (1.0 - weight) + weight * defaultRadius.GetValueAt(uv);
+			}
+			else {
 				return defaultRadius.GetValueAt(uv);
 			}
 		}

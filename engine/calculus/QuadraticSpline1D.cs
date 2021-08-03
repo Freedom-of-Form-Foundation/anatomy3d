@@ -16,11 +16,12 @@
 
 using System.Collections.Generic;
 using System;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	///     Class <c>QuadraticSpline1D</c> describes a one-dimensional quadratic spline, which is a piecewise function.
+	/// 	Class <c>QuadraticSpline1D</c> describes a one-dimensional quadratic spline, which is a piecewise function.
 	///		Each piece is defined by a quadratic function, \f$q(x) = a_0 + a_1 x + a_2 x^2\f$, for which the _parameters
 	///		are defined such that the piecewise function is continuous. A spline is defined by a series of points that
 	///		the function must intersect, and the program will automatically generate a curve that passes through these
@@ -33,7 +34,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public SortedPointsList<double> Points { get; }
 
 		/// <summary>
-		///     Construct a quadratic spline using a set of input points.
+		/// 	Construct a quadratic spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
 		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
@@ -89,7 +90,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Get the value of this function \f$q(x)\f$ at the given x-position, or the value of the
+		/// 	Get the value of this function \f$q(x)\f$ at the given x-position, or the value of the
 		/// 	<c>derivative</c>th derivative of this function. Mathematically, this gives \f$q^{(n)}(x)\f$, where
 		/// 	\f$n\f$ is equal to the <c>derivative</c> parameter.
 		/// </summary>
@@ -153,7 +154,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Get the value of this function \f$q(x)\f$ at the given x-position.
+		/// 	Get the value of this function \f$q(x)\f$ at the given x-position.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// 	The value that is sampled must lie between or on the outermost points on which the spline is defined. If 
@@ -165,7 +166,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
+		/// 	Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
 		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The _parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
@@ -217,6 +218,51 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				}
 			}
 		}
-		
+
+		/// <summary>
+		/// 	Solves the Monge Gauge equation \f$\vec{r_0} + t \vec{r_1} = \langle u, v, f(u,v) \rangle\f$, returning
+		///		all values of\f$t\f$ for which the equation is true. \f$f(u, v)\f$ is the quadratic spline.
+		/// </summary>
+		public override IEnumerable<double> SolveRaytracePlanar(dvec3 r0, dvec3 r1)
+		{
+			// Solve the polynomial equation for each segment:
+			for (int i = 1; i < Points.Count; i++)
+			{
+				double x1 = Points.Key[i - 1];
+				double x2 = Points.Key[i];
+				double y1 = Points.Value[i - 1];
+				double y2 = Points.Value[i];
+
+				// Calculate and return the interpolated value:
+				double dx = x2 - x1;
+				double div = 1.0 / dx;
+				double dy = y2 - y1;
+
+				double a = -_parameters[i] * dx + dy;
+
+				// Write in the form of a0 + a1 z + a2 z^2:
+				double a0 = -a * x1 * x1 * div * div - (a + dy) * x1 * div + y1;
+				double a1 = 2.0 * a * x1 * div * div + (a + dy) * div;
+				double a2 = -a * div * div;
+
+				// Substitute u = u0 + d0 t:
+				double A0 = a0 + a1 * r0.x + a2 * r0.x * r0.x - r0.z;
+				double A1 = a1 * r1.x + 2.0*a2*r0.x*r1.x - r1.z;
+				double A2 = a2 * r1.x * r1.x;
+
+				// Solve the quartic polynomial:
+				IEnumerable<double> intersections = QuadraticFunction.Solve(A0, A1, A2);
+
+				// Only return the value if it is sampled within the segment that we are currently considering,
+				// otherwise the value we got is invalid:
+				foreach (var j in intersections)
+				{
+					if (((r0.x + r1.x * j) > x1) && ((r0.x + r1.x * j) <= x2))
+					{
+						yield return j;
+					}
+				}
+			}
+		}
 	}
 }
