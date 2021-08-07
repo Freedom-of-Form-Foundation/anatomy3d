@@ -148,18 +148,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			List<Vertex> startCapList = startCap.GenerateVertexList(resolutionU, resolutionU/4);
 			List<Vertex> endCapList = endCap.GenerateVertexList(resolutionU, resolutionU/4);
 			
-			// Using GetRange(), remove the first and last ring of vertices of the shaft, which overlap with the last
+			// Using a slice, remove the first and last ring of vertices of the shaft, which overlap with the last
 			// rings of the startCap and endCap respectively. Later we will stitch the shaft and end caps together with
 			// triangles between them, during the GenerateIndexList() step.
-			List<Vertex> shaftList = shaft.GenerateVertexList(resolutionU, resolutionV)
-				.GetRange(resolutionU, Cylinder.CalculateVertexCount(resolutionU, resolutionV) - 2*resolutionU);
+			Slice<Vertex> shaftSlice = new Slice<Vertex>(
+				shaft.GenerateVertexList(resolutionU, resolutionV),
+				resolutionU,
+				Cylinder.CalculateVertexCount(resolutionU, resolutionV) - 2*resolutionU);
 			
 			// Recalculate the surface normal between the cylinder and the start cap:
 			for (int i = 0; i < (resolutionU - 1); i++)
 			{
 				Vector3 surfacePosition = startCapList[(resolutionU/4-1)*resolutionU + i + 1].Position;
 				Vector3 du = surfacePosition - startCapList[(resolutionU/4-1)*resolutionU + i + 1 + 1].Position;
-				Vector3 dv = surfacePosition - shaftList[i].Position;
+				Vector3 dv = surfacePosition - shaftSlice[i].Position;
 				
 				// Calculate the position of the rings of vertices:
 				Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
@@ -170,14 +172,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// Stitch the end of the triangles:
 			Vector3 surfacePosition2 = startCapList[(resolutionU/4-1)*resolutionU + resolutionU].Position;
 			Vector3 du2 = surfacePosition2 - startCapList[(resolutionU/4-1)*resolutionU + 1].Position;
-			Vector3 dv2 = surfacePosition2 - shaftList[resolutionU].Position;
+			Vector3 dv2 = surfacePosition2 - shaftSlice[resolutionU].Position;
 			
 			// Calculate the position of the rings of vertices:
 			Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
 			
 			startCapList[(resolutionU/4-1)*resolutionU + resolutionU] = new Vertex(surfacePosition2, surfaceNormal2);
 			
-			return startCapList.Concat(shaftList).Concat(endCapList).ToList();
+			return startCapList.Concat(shaftSlice).Concat(endCapList).ToList();
 		}
 		
 		/// <inheritdoc />
