@@ -1,4 +1,20 @@
-﻿using System;
+﻿/*
+ * Copyright (C) 2021 Freedom of Form Foundation, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License, version 2 (GPLv2) as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License, version 2 (GPLv2) for more details.
+ *
+ * You should have received a copy of the GNU General Public License, version 2 (GPLv2)
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+using System;
 using System.Collections.Generic;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
@@ -12,6 +28,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     ///
     /// MovingPoint2D's sort order is to sort by X, breaking ties by Y. NaN is sorted according to Microsoft's
     /// CompareTo implementation which, unlike operators, has a defined sort order for NaN.
+    ///
+    /// MovingPoint2D implements Equals(MovingPoint2D) but not Equals(object) or GetHashCode() because it is
+    /// mutable and unsuitable for hashing. MovingPoint2D instances are considered equal if they refer to
+    /// equal locations, even if they are part of different collections. Comparison operators therefore
+    /// refer to the sort order of the point at some instant in time rather than any immutable property
+    /// of the (mutable) object.
     /// </summary>
     public class MovingPoint2D: IComparable<MovingPoint2D>,IEquatable<MovingPoint2D>
     {
