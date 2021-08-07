@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -58,6 +59,53 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="changeCallback">Invoked when the point moves.</param>
         public MovingPoint2D(Action changeCallback) : this(changeCallback, 0, 0)
         {
+        }
+
+        /// <inheritdoc/>
+        public int CompareTo(MovingPoint2D other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            int xComparison = _x.CompareTo(other._x);
+            if (xComparison != 0) return xComparison;
+            return _y.CompareTo(other._y);
+        }
+
+        public static bool operator <(MovingPoint2D left, MovingPoint2D right)
+        {
+            return Comparer<MovingPoint2D>.Default.Compare(left, right) < 0;
+        }
+
+        public static bool operator >(MovingPoint2D left, MovingPoint2D right)
+        {
+            return Comparer<MovingPoint2D>.Default.Compare(left, right) > 0;
+        }
+
+        public static bool operator <=(MovingPoint2D left, MovingPoint2D right)
+        {
+            return Comparer<MovingPoint2D>.Default.Compare(left, right) <= 0;
+        }
+
+        public static bool operator >=(MovingPoint2D left, MovingPoint2D right)
+        {
+            return Comparer<MovingPoint2D>.Default.Compare(left, right) >= 0;
+        }
+
+        public bool Equals(MovingPoint2D other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _x.Equals(other._x) && _y.Equals(other._y);
+        }
+
+        public static bool operator ==(MovingPoint2D left, MovingPoint2D right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(MovingPoint2D left, MovingPoint2D right)
+        {
+            return !Equals(left, right);
         }
     }
 }
