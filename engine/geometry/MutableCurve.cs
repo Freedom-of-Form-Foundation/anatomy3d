@@ -61,6 +61,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
             }
         }
 
+        public void RemoveAt(int index)
+        {
+            lock (_curveLock)
+            {
+                _points.RemoveAt(index);
+                _currentCurve = null;
+            }
+        }
+
+        public int Count => _points.Count;
+
+        public TControl this[int index] => _points[index];
+
         public ICurve<TOut> CurrentCurve()
         {
             lock (_curveLock)
