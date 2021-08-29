@@ -75,6 +75,7 @@
     <ItemGroup>
         <Compile Include="calculus\QuadraticFunctionTests.cs" />
         <Compile Include="calculus\FunctionBackedContinuousMapTests.cs" />
+        <Compile Include="geometry\MutableCurveTests.cs" />
         <Compile Include="RealTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
