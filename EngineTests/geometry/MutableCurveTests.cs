@@ -135,25 +135,97 @@ namespace EngineTests.geometry
             if (!_points.TryGetValue(x, out p)) return Real.NaN;
             return derivative < p.Derivatives.Count ? p.Derivatives[(int)derivative] : 0;
         }
+
+        public static MutableCurve<MutableLiteralResultPoint, Real> NewMutable()
+        {
+            return new MutableCurve<MutableLiteralResultPoint, Real>(new LiteralCurveFactory(),
+                new MutableLiteralResultPointFactory());
+        }
     }
 
     public class LiteralCurveFactory : ICurveFactory<MutableLiteralResultPoint, Real>
     {
-        public uint CurvesBuilt { get; private set; }
-
-        public LiteralCurveFactory()
-        {
-            CurvesBuilt = 0;
-        }
-        public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters)
-        {
-            ++CurvesBuilt;
-            return new LiteralCurve(parameters);
-        }
+        public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) => new LiteralCurve(parameters);
     }
 
     public class MutableCurveTests
     {
+        private static readonly Random Rand = new Random();
+        public static IEnumerable<object[]> RandomPointLists() => from pointCount in Enumerable.Range(1, 25) select new object[] {RandomPoints(pointCount)};
 
+        private static IEnumerable<LiteralResultPoint> RandomPoints(int pointCount) => from _ in Enumerable.Range(0, pointCount) select RandomPoint();
+
+        private static LiteralResultPoint RandomPoint() =>  new LiteralResultPoint
+        {
+            X = new Real(Rand.NextDouble()),
+            Derivatives = new List<Real>(from discard2 in Enumerable.Range(0, Rand.Next(1, 25))
+                select new Real(Rand.Next(-10_000_000, 10_000_000)))
+        };
+
+        [Theory]
+        [MemberData(nameof(RandomPointLists))]
+        public void TestUnchangingCurveWithPoints(IEnumerable<LiteralResultPoint> pointsEnumerable)
+        {
+            var points = new List<LiteralResultPoint>(pointsEnumerable);
+            var mutableCurve = LiteralCurve.NewMutable();
+            foreach (var p in points)
+            {
+                var mutablePoint = mutableCurve.NewPoint();
+                mutablePoint.CompletePoint = p;
+            }
+
+            foreach (var p in points)
+            {
+                p.AssertOnCurve(mutableCurve);
+            }
+
+            ICurve<Real> fixedCurve = mutableCurve.CurrentCurve();
+            foreach (var p in points)
+            {
+                p.AssertOnCurve(fixedCurve);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(RandomPointLists))]
+        public void TestChangingCurveWithPoints(IEnumerable<LiteralResultPoint> pointsEnumerable)
+        {
+            var origPoints = new List<LiteralResultPoint>(pointsEnumerable);
+            var mutablePoints = new List<MutableLiteralResultPoint>(origPoints.Count);
+            var mutableCurve = LiteralCurve.NewMutable();
+            foreach (var p in origPoints)
+            {
+                var mutablePoint = mutableCurve.NewPoint();
+                mutablePoint.CompletePoint = p;
+                mutablePoints.Add(mutablePoint);
+            }
+
+            ICurve<Real> firstCurve = mutableCurve.CurrentCurve();
+            foreach (var p in origPoints)
+            {
+                p.AssertOnCurve(firstCurve);
+                p.AssertOnCurve(mutableCurve);
+            }
+
+            var replacementPoints = new List<LiteralResultPoint>(mutablePoints.Zip(RandomPoints(mutablePoints.Count),
+                (mutablePoint, newValue) => mutablePoint.CompletePoint = newValue));
+
+            // The new curve, and the current state of the mutable curve, should represent the new points.
+            foreach (var p in replacementPoints)
+            {
+                p.AssertOnCurve(mutableCurve);
+            }
+            ICurve<Real> secondCurve = mutableCurve.CurrentCurve();
+            foreach (var p in replacementPoints)
+            {
+                p.AssertOnCurve(secondCurve);
+            }
+
+            // But the original curve should be unchanged.
+            foreach (var p in origPoints)
+            {
+                p.AssertOnCurve(firstCurve);
+            }
+        }
     }
 }
