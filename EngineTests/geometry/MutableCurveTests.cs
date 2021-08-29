@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using FreedomOfFormFoundation.AnatomyEngine;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
+using Xunit;
 
 namespace EngineTests.geometry
 {
@@ -20,6 +21,26 @@ namespace EngineTests.geometry
         public List<Real> Derivatives;
 
         public bool IsValid => !(Derivatives is null);
+
+        public void AssertOnCurve(ICurve<Real> curve)
+        {
+            if (Derivatives.Count == 0)
+            {
+                Assert.Equal(0, curve.GetValueAt(X));
+                Assert.Equal(0, curve.GetDerivativeAt(X));
+                foreach (int d in Enumerable.Range(0, 10))
+                {
+                    Assert.Equal(0, curve.GetDerivativeAt(X, (uint)d));
+                }
+                return;
+            }
+
+            Assert.Equal(Derivatives[0], curve.GetValueAt(X));
+            for (uint d = 0; d < Derivatives.Count; ++d)
+            {
+                Assert.Equal(Derivatives[(int)d], curve.GetDerivativeAt(X, d));
+            }
+        }
     }
 
     /// <summary>
@@ -118,8 +139,17 @@ namespace EngineTests.geometry
 
     public class LiteralCurveFactory : ICurveFactory<MutableLiteralResultPoint, Real>
     {
-        public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) =>
-            new LiteralCurve(parameters);
+        public uint CurvesBuilt { get; private set; }
+
+        public LiteralCurveFactory()
+        {
+            CurvesBuilt = 0;
+        }
+        public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters)
+        {
+            ++CurvesBuilt;
+            return new LiteralCurve(parameters);
+        }
     }
 
     public class MutableCurveTests
