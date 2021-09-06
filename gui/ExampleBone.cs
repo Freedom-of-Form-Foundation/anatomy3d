@@ -43,7 +43,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			radiusPoints.Add(0.98f, 0.7f*0.8f);
 			radiusPoints.Add(4.5f, 0.7f*0.8f);
 			
-			QuadraticSpline1D boneRadius = new QuadraticSpline1D(radiusPoints);
+			LinearSpline1D boneRadius = new LinearSpline1D(radiusPoints);
 
 			// Define the center curve of the long bone:
 			SortedList<float, Numerics.Vector3> centerPoints = new SortedList<float, Numerics.Vector3>();
