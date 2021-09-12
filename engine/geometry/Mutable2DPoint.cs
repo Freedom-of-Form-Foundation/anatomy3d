@@ -69,7 +69,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         }
     }
 
-    public class Mutable2DPointFactory : IMutablePointFactory<Mutable2DPoint>
+    public struct Mutable2DPointFactory : IMutablePointFactory<Mutable2DPoint>
     {
         public Mutable2DPoint NewPoint(Action mutationCallback) => new Mutable2DPoint(mutationCallback);
     }

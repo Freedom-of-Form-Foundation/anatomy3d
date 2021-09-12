@@ -26,7 +26,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         {
         }
 
-        private class CubicSpline1DFactory : ICurveFactory<Mutable2DPoint, Real>
+        private struct CubicSpline1DFactory : ICurveFactory<Mutable2DPoint, Real>
         {
             public ICurve<Real> NewCurve(IEnumerable<Mutable2DPoint> parameters)
             {
@@ -41,7 +41,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
             }
         }
 
-        private class CubicSpline1DAdapter : ICurve<Real>
+        private struct CubicSpline1DAdapter : ICurve<Real>
         {
             private CubicSpline1D _spline;
 
