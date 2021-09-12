@@ -69,6 +69,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
         }
     }
 
+    /// <summary>
+    /// Mutable2DPointFactory generates Mutable2DPoint instances so a MutableCurve can spawn them.
+    /// </summary>
     public struct Mutable2DPointFactory : IMutablePointFactory<Mutable2DPoint>
     {
         public Mutable2DPoint NewPoint(Action mutationCallback) => new Mutable2DPoint(mutationCallback);
