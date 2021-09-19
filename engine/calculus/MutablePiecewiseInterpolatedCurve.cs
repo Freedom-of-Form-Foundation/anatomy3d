@@ -22,14 +22,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 
     /// <summary>
-    /// MutableCurve represents a curve of some shape defined by a collection of some variety of control points, which
+    /// MutablePiecewiseInterpolatedCurve represents a curve of some shape defined by a collection of some variety of control points, which
     /// can be moved during the course of the program. It is safe to update different points concurrently and
     /// safe to read concurrently, but it is not safe to read while updating points. Control points must issue
     /// a callback when their data changes to provoke this class to recalculate its curve.
     /// </summary>
     /// <typeparam name="TControl">Control point type to define the curve.</typeparam>
     /// <typeparam name="TOut">Point type for the output curve. (This will usually be an immutable type.)</typeparam>
-    public class MutableCurve<TControl, TOut>:ICurve<TOut>,IEnumerable<TControl> where TControl:class
+    public class MutablePiecewiseInterpolatedCurve<TControl, TOut>:ICurve<TOut>,IEnumerable<TControl> where TControl:class
     {
         private readonly ICurveFactory<TControl, TOut> _curveFactory;
         private readonly IMutablePointFactory<TControl> _pointFactory;
@@ -38,13 +38,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         private ICurve<TOut> _currentCurve;
 
         ///<summary>
-        /// Construct a MutableCurve, using a provided algorithm to calculate curves (given a snapshot of control points
+        /// Construct a MutablePiecewiseInterpolatedCurve, using a provided algorithm to calculate curves (given a snapshot of control points
         /// at an instant in time) and to create points (from callbacks to use when modified).
         /// </summary>
         /// <param name="curveFactory">Algorithm for calculating immutable ICurve{TOut} curves from a collection of
         /// TControl points at one specific point in time.</param>
         /// <param name="pointFactory">Factory for TControl points.</param>
-        public MutableCurve(ICurveFactory<TControl, TOut> curveFactory, IMutablePointFactory<TControl> pointFactory)
+        public MutablePiecewiseInterpolatedCurve(ICurveFactory<TControl, TOut> curveFactory, IMutablePointFactory<TControl> pointFactory)
         {
             _curveFactory = curveFactory ?? throw new ArgumentNullException(nameof(curveFactory));
             _pointFactory = pointFactory ?? throw new ArgumentNullException(nameof(pointFactory));
@@ -184,7 +184,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     }
 
     /// <summary>
-    /// Interface for a factory that calculates curves given the current state of the points in the MutableCurve.
+    /// Interface for a factory that calculates curves given the current state of the points in the MutablePiecewiseInterpolatedCurve.
     /// The output curve must have its own internal, immutable copy of the points, since the point locations may later
     /// be updated but the output curve needs to be constant.
     /// </summary>

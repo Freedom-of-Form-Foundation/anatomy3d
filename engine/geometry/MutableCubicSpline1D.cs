@@ -22,9 +22,9 @@ using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
     /// <summary>
-    /// MutableCubicSpline1D uses MutableCurve to implement moveable point behavior for CubicSpline1D.
+    /// MutableCubicSpline1D uses MutablePiecewiseInterpolatedCurve to implement moveable point behavior for CubicSpline1D.
     /// </summary>
-    public class MutableCubicSpline1D : MutableCurve<Mutable2DPoint, Real>
+    public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<Mutable2DPoint, Real>
     {
         /// <summary>
         /// Build a MutableCubicSpline1D with, initially, no points. (Attempts to evaluate the curve will throw

@@ -22,6 +22,11 @@ namespace EngineTests.calculus
 
         public bool IsValid => !(Derivatives is null);
 
+        /// <summary>
+        /// AssertOnCurve asserts that this point's derivatives at location X on the given curve are all as stored
+        /// in this point. The 0th derivative is the value, and is tested both as the 0th derivative and the value.
+        /// </summary>
+        /// <param name="curve"></param>
         public void AssertOnCurve(ICurve<Real> curve)
         {
             if (Derivatives.Count == 0)
@@ -44,7 +49,7 @@ namespace EngineTests.calculus
     }
 
     /// <summary>
-    /// A mutable wrapper for a LiteralResultPoint, following MutableCurve control point rules of issuing a callback
+    /// A mutable wrapper for a LiteralResultPoint, following MutablePiecewiseInterpolatedCurve control point rules of issuing a callback
     /// immediately after being modified (when any call to an accessor that happens after the callback starts would
     /// observe the new values).
     /// </summary>
@@ -136,9 +141,9 @@ namespace EngineTests.calculus
             return derivative < p.Derivatives.Count ? p.Derivatives[(int)derivative] : 0;
         }
 
-        public static MutableCurve<MutableLiteralResultPoint, Real> NewMutable()
+        public static MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, Real> NewMutable()
         {
-            return new MutableCurve<MutableLiteralResultPoint, Real>(new LiteralCurveFactory(),
+            return new MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, Real>(new LiteralCurveFactory(),
                 new MutableLiteralResultPointFactory());
         }
     }
@@ -148,7 +153,7 @@ namespace EngineTests.calculus
         public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) => new LiteralCurve(parameters);
     }
 
-    public class MutableCurveTests
+    public class MutablePiecewiseInterpolatedCurveTests
     {
         private static readonly Random Rand = new Random();
         public static IEnumerable<object[]> RandomPointLists() => from pointCount in Enumerable.Range(1, 25) select new object[] {RandomPoints(pointCount)};

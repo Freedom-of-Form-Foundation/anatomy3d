@@ -73,7 +73,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="calculus\MutableCurveTests.cs" />
+        <Compile Include="calculus\MutablePiecewiseInterpolatedCurveTests.cs" />
         <Compile Include="calculus\QuadraticFunctionTests.cs" />
         <Compile Include="calculus\FunctionBackedContinuousMapTests.cs" />
         <Compile Include="RealTests.cs" />
