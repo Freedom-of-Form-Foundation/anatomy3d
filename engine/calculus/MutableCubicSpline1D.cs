@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Linq;
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
-namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
+namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
     /// <summary>
     /// MutableCubicSpline1D uses MutablePiecewiseInterpolatedCurve to implement moveable point behavior for CubicSpline1D.
