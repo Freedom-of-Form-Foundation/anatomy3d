@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
+namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 
     /// <summary>

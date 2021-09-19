@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using FreedomOfFormFoundation.AnatomyEngine;
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using Xunit;
 
-namespace EngineTests.geometry
+namespace EngineTests.calculus
 {
 
     /// <summary>

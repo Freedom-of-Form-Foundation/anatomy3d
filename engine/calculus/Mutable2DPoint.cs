@@ -17,7 +17,7 @@
 using System;
 using System.Diagnostics;
 
-namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
+namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
     /// <summary>
     /// Mutable2DPoint is a 2D point that can have its location updated. When
