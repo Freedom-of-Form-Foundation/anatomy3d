@@ -20,60 +20,60 @@ using System.Diagnostics;
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
     /// <summary>
-    /// Mutable2DPoint is a 2D point that can have its location updated. When
+    /// MutablePair is a 2D point that can have its location updated. When
     /// its location is written, it calls a callback created at instantiation.
     /// </summary>
-    public class Mutable2DPoint
+    public class MutablePair
     {
-        private Real _x, _y;
+        private Real _location, _value;
 
-        public Real X
+        public Real Location
         {
             set
             {
-                _x = value;
+                _location = value;
                 _mutationCallback();
             }
-            get => _x;
+            get => _location;
         }
 
-        public Real Y
+        public Real Value
         {
             set
             {
-                _y = value;
+                _value = value;
                 _mutationCallback();
             }
-            get => _y;
+            get => _value;
         }
         private Action _mutationCallback;
 
-        public Mutable2DPoint(Action mutationCallback)
+        public MutablePair(Action mutationCallback)
         {
             Debug.Assert(!(mutationCallback is null));
             _mutationCallback = mutationCallback;
-            _x = 0;
-            _y = 0;
+            _location = 0;
+            _value = 0;
         }
 
         /// <summary>
-        /// Set both X and Y with only one callback.
+        /// Set both Location and Value with only one callback.
         /// </summary>
-        /// <param name="x">New X value for the point.</param>
-        /// <param name="y">New Y value for the point.</param>
-        public void Set(Real x, Real y)
+        /// <param name="x">New Location value for the point.</param>
+        /// <param name="y">New Value value for the point.</param>
+        public void Set(Real location, Real value)
         {
-            _x = x;
-            _y = y;
+            _location = location;
+            _value = value;
             _mutationCallback();
         }
     }
 
     /// <summary>
-    /// Mutable2DPointFactory generates Mutable2DPoint instances so a MutablePiecewiseInterpolatedCurve can spawn them.
+    /// Mutable2DPointFactory generates MutablePair instances so a MutablePiecewiseInterpolatedCurve can spawn them.
     /// </summary>
-    public struct Mutable2DPointFactory : IMutablePointFactory<Mutable2DPoint>
+    public struct Mutable2DPointFactory : IMutablePointFactory<MutablePair>
     {
-        public Mutable2DPoint NewPoint(Action mutationCallback) => new Mutable2DPoint(mutationCallback);
+        public MutablePair NewPoint(Action mutationCallback) => new MutablePair(mutationCallback);
     }
 }

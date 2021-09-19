@@ -24,7 +24,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// <summary>
     /// MutableCubicSpline1D uses MutablePiecewiseInterpolatedCurve to implement moveable point behavior for CubicSpline1D.
     /// </summary>
-    public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<Mutable2DPoint, Real>
+    public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<MutablePair, Real>
     {
         /// <summary>
         /// Build a MutableCubicSpline1D with, initially, no points. (Attempts to evaluate the curve will throw
@@ -34,19 +34,26 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         {
         }
 
+        public MutablePair NewPoint(Real location, Real value)
+        {
+            MutablePair mp = base.NewPoint();
+            mp.Set(location, value);
+            return mp;
+        }
+
         /// <summary>
-        /// Algorithm for converting a sequence of Mutable2DPoint instances at one point in time into an immutable
+        /// Algorithm for converting a sequence of MutablePair instances at one point in time into an immutable
         /// CubicSpline1D. Because CubicSpline1D operates on `float`, but this type declares Real (because we're
         /// planning to migrate), we introduce CubicSpline1DAdapter to marshal in and out of Real.
         /// </summary>
-        private struct CubicSpline1DFactory : ICurveFactory<Mutable2DPoint, Real>
+        private struct CubicSpline1DFactory : ICurveFactory<MutablePair, Real>
         {
-            public ICurve<Real> NewCurve(IEnumerable<Mutable2DPoint> parameters)
+            public ICurve<Real> NewCurve(IEnumerable<MutablePair> parameters)
             {
                 SortedList<float, float> sortedPoints = new SortedList<float, float>();
-                foreach (var point in parameters.OrderBy(point => point.X))
+                foreach (var point in parameters.OrderBy(point => point.Location))
                 {
-                    sortedPoints.Add((float)point.X, (float)point.Y);
+                    sortedPoints.Add((float)point.Location, (float)point.Value);
                 }
 
                 CubicSpline1D spline = new CubicSpline1D(sortedPoints);
