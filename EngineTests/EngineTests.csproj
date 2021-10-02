@@ -73,7 +73,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="calculus\MovingPoint2DTests.cs" />
+        <Compile Include="calculus\MutablePiecewiseInterpolatedCurveTests.cs" />
         <Compile Include="calculus\QuadraticFunctionTests.cs" />
         <Compile Include="calculus\FunctionBackedContinuousMapTests.cs" />
         <Compile Include="RealTests.cs" />
@@ -87,6 +87,9 @@
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="geometry" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
