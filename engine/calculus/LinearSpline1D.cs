@@ -71,7 +71,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			_parameters = new float[points.Count];
 
 			// Recursively find the _parameters:
-			for (int i = 0; i < points.Count; i++)
+			for (int i = 1; i < points.Count; i++)
 			{
 				float dx = Points.Key[i] - Points.Key[i - 1];
 				float dy = Points.Value[i] - Points.Value[i - 1];
