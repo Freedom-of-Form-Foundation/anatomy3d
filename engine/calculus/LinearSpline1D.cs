@@ -135,11 +135,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
 			float local_x = x - x1;
 
-			float local_y = local_x * (slope);
+			float local_y = local_x * slope;
 			float global_y = local_y + y1;
-
-			//float a = -_parameters[i] * dx + dy;
-			//float t = (x - x1) / dx;
 
 			// Return the result of evaluating a derivative function, depending on the derivative level:
 			switch (derivative)
@@ -176,58 +173,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
 		/// <summary>
 		///     Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of
-		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the quadratic spline. The _parameters z0 and c
+		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the linear spline. The _parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
 		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
 		{
-			/*
-			// Solve the polynomial equation for each segment:
-			for (int i = 1; i < Points.Count; i++)
-			{
-				Real x1 = Points.Key[i - 1];
-				Real x2 = Points.Key[i];
-				Real y1 = Points.Value[i - 1];
-				Real y2 = Points.Value[i];
-
-				// Calculate and return the interpolated value:
-				Real dx = x2 - x1;
-				Real div = 1.0 / dx;
-				Real dy = y2 - y1;
-
-				Real a = -_parameters[i] * dx + dy;
-
-				// Write in the form of a0 + a1 z + a2 z^2:
-				Real a0 = -a * x1 * x1 * div * div - (a + dy) * x1 * div + y1;
-				Real a1 = 2.0 * a * x1 * div * div + (a + dy) * div;
-				Real a2 = -a * div * div;
-
-				// Substitute z = z0 + c t:
-				Real A0 = a0 + a1 * z0 + a2 * z0 * z0;
-				Real A1 = (a1 + 2.0 * a2 * z0) * c;
-				Real A2 = a2 * c * c;
-
-				// Find the quartic polynomial to solve:
-				Real p0 = surfaceFunction.a0 - A0 * A0;
-				Real p1 = surfaceFunction.a1 - 2.0 * A0 * A1;
-				Real p2 = surfaceFunction.a2 - (2.0 * A0 * A2 + A1 * A1);
-				Real p3 = surfaceFunction.a3 - 2.0 * A1 * A2;
-				Real p4 = surfaceFunction.a4 - A2 * A2;
-
-				// Solve the quartic polynomial:
-				IEnumerable<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);
-
-				// Only return the value if it is sampled within the segment that we are currently considering,
-				// otherwise the value we got is invalid:
-				foreach (var j in intersections)
-				{
-					if (((z0 + c * j) > x1) && ((z0 + c * j) <= x2))
-					{
-						yield return j;
-					}
-				}
-			}
-			*/
+			throw new NotImplementedException();
 			return null;
 		}
 	}
