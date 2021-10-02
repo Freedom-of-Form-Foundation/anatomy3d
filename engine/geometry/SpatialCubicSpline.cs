@@ -145,7 +145,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// Traverse through all the points in the spline, and calculate the next normal, maintaining smoothness by
 			// memorizing the previous normal:
 			
-			float previousValue = X.Points.Key[0]; // X.Points.Key is guaranteed to have at least 2 entries, this is safe.
+			float previousValue = X.Points.Key[0]; // Location.Points.Key is guaranteed to have at least 2 entries, this is safe.
 			for (int i = 1; i < X.Points.Count; i++)
 			{
 				float currentValue = X.Points.Key[i];

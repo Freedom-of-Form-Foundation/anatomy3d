@@ -117,7 +117,7 @@ namespace EngineTests.calculus
         /// <param name="a0">Constant term in the quadratic function.</param>
         /// <param name="a1">Linear term in the quadratic function.</param>
         /// <param name="a2">Quadratic term in the quadratic function.</param>
-        /// <param name="x">Value of X to test at.</param>
+        /// <param name="x">Value of Location to test at.</param>
         /// <param name="atD0">Expected value of the function (the 0th derivative) at x.</param>
         /// <param name="atD1">Expected value of the first derivative at x.</param>
         /// <param name="atD2">Expected value of the second derivative at x.</param>

@@ -23,7 +23,7 @@ namespace EngineTests.calculus
         public bool IsValid => !(Derivatives is null);
 
         /// <summary>
-        /// AssertOnCurve asserts that this point's derivatives at location X on the given curve are all as stored
+        /// AssertOnCurve asserts that this point's derivatives at location Location on the given curve are all as stored
         /// in this point. The 0th derivative is the value, and is tested both as the 0th derivative and the value.
         /// </summary>
         /// <param name="curve"></param>

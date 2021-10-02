@@ -23,7 +23,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
 	/// A <c>SortedPointsList</c> stores points in <c>List</c>s so that BinarySearch can be used. The points in this
-	/// list are guaranteed to be sorted by X-value and to have no duplicate entries for the X-coordinate. This is a
+	/// list are guaranteed to be sorted by Location-value and to have no duplicate entries for the Location-coordinate. This is a
 	/// bit roundabout, and should probably be replaced once a BinarySearch is added for IList or SortedList.
 	/// </summary>
 	public class SortedPointsList<T>

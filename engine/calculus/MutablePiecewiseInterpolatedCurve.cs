@@ -121,6 +121,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         {
             lock (_curveLock)
             {
+                // This uses the lazily-evaluated null-coalescence operator to either return the curve we have
+                // or, if we don't have one, calculate a new one, save it, and then return that.
+                // We save the curves we calculate to avoid the (potentially expensive) recalculation every time
+                // a single value is requested, but recalculate whenever we did not have one (either because it
+                // was never calculated before, or because we dropped it since a point moved and we need to
+                // recalculate the curve next time something wants it - which is right now).
                 return _currentCurve ?? (_currentCurve = _curveFactory.NewCurve(_points));
             }
         }
