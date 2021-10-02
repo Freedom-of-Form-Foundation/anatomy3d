@@ -70,16 +70,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Calculate the coefficients for each segment of the spline:
 			_parameters = new float[points.Count];
 
-			// Find the first segment parameter, which will be a straight line:
-			{
-				float dx = Points.Key[1] - Points.Key[0];
-				float dy = Points.Value[1] - Points.Value[0];
-
-				_parameters[0] = dy / dx;
-			}
-
-			// Recursively find the other _parameters:
-			for (int i = 1; i < points.Count; i++)
+			// Recursively find the _parameters:
+			for (int i = 0; i < points.Count; i++)
 			{
 				float dx = Points.Key[i] - Points.Key[i - 1];
 				float dy = Points.Value[i] - Points.Value[i - 1];
