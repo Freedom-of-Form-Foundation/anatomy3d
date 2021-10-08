@@ -43,8 +43,6 @@ Global
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Decimal|Any CPU.ActiveCfg = UnitTests Real Decimal|Any CPU
 		{C05AA306-D502-4117-AAD9-B3B702D0FEB1}.UnitTests Real Decimal|Any CPU.Build.0 = UnitTests Real Decimal|Any CPU
 		
-		{9D10705A-A834-4049-94B2-CE7501EBAB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D10705A-A834-4049-94B2-CE7501EBAB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests|Any CPU.ActiveCfg = UnitTests|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests|Any CPU.Build.0 = UnitTests|Any CPU
 		{9D10705A-A834-4049-94B2-CE7501EBAB28}.UnitTests Real Float|Any CPU.ActiveCfg = UnitTests Real Float|Any CPU
