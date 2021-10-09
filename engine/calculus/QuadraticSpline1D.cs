@@ -189,34 +189,34 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Solve the polynomial equation for each segment:
 			for (int i = 1; i < Points.Count; i++)
 			{
-				Real x1 = Points.Key[i-1];
-				Real x2 = Points.Key[i];
-				Real y1 = Points.Value[i-1];
-				Real y2 = Points.Value[i];
+				double x1 = Points.Key[i-1];
+				double x2 = Points.Key[i];
+				double y1 = Points.Value[i-1];
+				double y2 = Points.Value[i];
 				
 				// Calculate and return the interpolated value:
-				Real dx = x2 - x1;
-				Real div = 1.0/dx;
-				Real dy = y2 - y1;
+				double dx = x2 - x1;
+				double div = 1.0/dx;
+				double dy = y2 - y1;
 				
-				Real a = -_parameters[i]*dx + dy;
+				double a = -_parameters[i]*dx + dy;
 				
 				// Write in the form of a0 + a1 z + a2 z^2:
-				Real a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
-				Real a1 = 2.0*a*x1*div*div + (a + dy)*div;
-				Real a2 = -a*div*div;
+				double a0 = -a*x1*x1*div*div - (a + dy)*x1*div + y1;
+				double a1 = 2.0*a*x1*div*div + (a + dy)*div;
+				double a2 = -a*div*div;
 				
 				// Substitute z = z0 + c t:
-				Real A0 = a0 + a1*z0 + a2*z0*z0;
-				Real A1 = (a1 + 2.0*a2*z0)*c;
-				Real A2 = a2*c*c;
+				double A0 = a0 + a1*z0 + a2*z0*z0;
+				double A1 = (a1 + 2.0*a2*z0)*c;
+				double A2 = a2*c*c;
 				
 				// Find the quartic polynomial to solve:
-				Real p0 = surfaceFunction.a0 - A0*A0;
-				Real p1 = surfaceFunction.a1 - 2.0*A0*A1;
-				Real p2 = surfaceFunction.a2 - (2.0*A0*A2 + A1*A1);
-				Real p3 = surfaceFunction.a3 - 2.0*A1*A2;
-				Real p4 = surfaceFunction.a4 - A2*A2;
+				double p0 = surfaceFunction.a0 - A0*A0;
+				double p1 = surfaceFunction.a1 - 2.0*A0*A1;
+				double p2 = surfaceFunction.a2 - (2.0*A0*A2 + A1*A1);
+				double p3 = surfaceFunction.a3 - 2.0*A1*A2;
+				double p4 = surfaceFunction.a4 - A2*A2;
 				
 				// Solve the quartic polynomial:
 				IEnumerable<float> intersections = QuarticFunction.Solve((float)p0, (float)p1, (float)p2, (float)p3, (float)p4);

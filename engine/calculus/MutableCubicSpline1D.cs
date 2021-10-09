@@ -24,7 +24,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// <summary>
     /// MutableCubicSpline1D uses MutablePiecewiseInterpolatedCurve to implement moveable point behavior for CubicSpline1D.
     /// </summary>
-    public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<MutablePair, Real>
+    public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<MutablePair, double>
     {
         /// <summary>
         /// Build a MutableCubicSpline1D with, initially, no points. (Attempts to evaluate the curve will throw
@@ -34,7 +34,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         {
         }
 
-        public MutablePair NewPoint(Real location, Real value)
+        public MutablePair NewPoint(double location, double value)
         {
             MutablePair mp = base.NewPoint();
             mp.Set(location, value);
@@ -43,12 +43,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
         /// <summary>
         /// Algorithm for converting a sequence of MutablePair instances at one point in time into an immutable
-        /// CubicSpline1D. Because CubicSpline1D operates on `float`, but this type declares Real (because we're
-        /// planning to migrate), we introduce CubicSpline1DAdapter to marshal in and out of Real.
+        /// CubicSpline1D. Because CubicSpline1D operates on `float`, but this type declares double (because we're
+        /// planning to migrate), we introduce CubicSpline1DAdapter to marshal in and out of double.
         /// </summary>
-        private struct CubicSpline1DFactory : ICurveFactory<MutablePair, Real>
+        private struct CubicSpline1DFactory : ICurveFactory<MutablePair, double>
         {
-            public ICurve<Real> NewCurve(IEnumerable<MutablePair> parameters)
+            public ICurve<double> NewCurve(IEnumerable<MutablePair> parameters)
             {
                 SortedList<float, float> sortedPoints = new SortedList<float, float>();
                 foreach (var point in parameters.OrderBy(point => point.Location))
@@ -62,11 +62,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         }
 
         /// <summary>
-        /// ICurve{Real} view of CubicSpline1D, which doesn't exactly match the ICurve interface and - if it did -
+        /// ICurve{double} view of CubicSpline1D, which doesn't exactly match the ICurve interface and - if it did -
         /// would be an ICurve{Float} anyway. This wrapper implements the interface by calling the equivalent functions
-        /// on the underlying CubicSpline1D, marshalling between Real and float as required.
+        /// on the underlying CubicSpline1D, marshalling between double and float as required.
         /// </summary>
-        private struct CubicSpline1DAdapter : ICurve<Real>
+        private struct CubicSpline1DAdapter : ICurve<double>
         {
             private CubicSpline1D _spline;
 
@@ -81,10 +81,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             }
 
 
-            public Real GetValueAt(Real x) => new Real(_spline.GetValueAt((float)x));
+            public double GetValueAt(double x) => _spline.GetValueAt((float)x);
 
-            public Real GetDerivativeAt(Real x, uint derivative) =>
-                new Real(_spline.GetNthDerivativeAt((float)x, derivative));
+            public double GetDerivativeAt(double x, uint derivative) =>
+                _spline.GetNthDerivativeAt((float)x, derivative);
         }
     }
 }

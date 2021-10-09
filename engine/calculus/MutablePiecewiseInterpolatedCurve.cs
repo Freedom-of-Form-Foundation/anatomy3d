@@ -148,7 +148,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// </summary>
         /// <param name="x">Location to calculate the value of on the current state of the curve.</param>
         /// <returns>The curve's value at position x.</returns>
-        public TOut GetValueAt(Real x) => CurrentCurve().GetValueAt(x);
+        public TOut GetValueAt(double x) => CurrentCurve().GetValueAt(x);
 
         /// <summary>
         /// Calculate the derivative of the current curve at the specified point. The underlying curve type defines the
@@ -157,7 +157,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="x">Location on the curve to calculate a derivative.</param>
         /// <param name="derivative">Degree of derivation. 0th derivative is the function itself.</param>
         /// <returns>The value of the given derivative of the curve at location x.</returns>
-        public TOut GetDerivativeAt(Real x, uint derivative) => CurrentCurve().GetDerivativeAt(x, derivative);
+        public TOut GetDerivativeAt(double x, uint derivative) => CurrentCurve().GetDerivativeAt(x, derivative);
 
         /// <summary>
         /// Get an enumerator over the control points on this curve.
@@ -208,7 +208,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     }
 
     /// <summary>
-    /// Interface representing an arbitrary curve that calculates values in some output space given a single Real
+    /// Interface representing an arbitrary curve that calculates values in some output space given a single double
     /// input parameter.
     /// </summary>
     /// <typeparam name="TOut">Type representing the output space of this curve.</typeparam>
@@ -218,7 +218,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// </summary>
         /// <param name="x">Location to calculate at.</param>
         /// <returns>Value of this curve at x.</returns>
-        TOut GetValueAt(Real x);
+        TOut GetValueAt(double x);
         /// <summary>
         /// Calculate the given derivative of this curve at the provided location. There is no standard for representing
         /// undefined derivatives; document your decisions.
@@ -231,7 +231,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="x">Location to calculate the derivative at.</param>
         /// <param name="derivative">The degree of derivative to calculate.</param>
         /// <returns>The given derivative of this curve at x.</returns>
-        TOut GetDerivativeAt(Real x, uint derivative);
+        TOut GetDerivativeAt(double x, uint derivative);
     }
 
     // Convenience functions for ICurve.
@@ -245,6 +245,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="x">Location to calculate the curve's first derivative at.</param>
         /// <typeparam name="TOut">Output point type of the curve.</typeparam>
         /// <returns>The first derivative of this curve at the specified location.</returns>
-        public static TOut GetDerivativeAt<TOut>(this ICurve<TOut> curve, Real x) => curve.GetDerivativeAt(x, 1);
+        public static TOut GetDerivativeAt<TOut>(this ICurve<TOut> curve, double x) => curve.GetDerivativeAt(x, 1);
     }
 }

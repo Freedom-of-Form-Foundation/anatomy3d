@@ -19,50 +19,8 @@ namespace EngineTests.calculus
         }
 
         /// <summary>
-        /// Helper method: are these numeric values relatively near each other?
-        ///
-        /// This is pretty much just wrapping a cast to Real and using its IsRelativelyNear algorithm.
-        ///
-        /// Developer note: 0 isn't "relatively near" anything else because no amount of nonzero multiplication will get
-        /// a nonzero value to zero. This is part of why I'm using "relatively near" here - I think unexpected
-        /// transitions into or out of 0 will cause discontinuities and errors.
-        /// </summary>
-        /// <param name="a">First value to compare.</param>
-        /// <param name="b">Second value to compare.</param>
-        /// <param name="tolerance">Proportional error allowed to still consider the elements near each other.</param>
-        /// <returns>Whether the proportional difference between a and b is within the tolerance.</returns>
-        private bool Near(Real a, Real b, Real tolerance)
-        {
-            bool ret = a.IsRelativelyNear(b, tolerance);
-            if (!ret)
-            {
-                testLogger.WriteLine(
-                    "Impending test failure: {0} is not near {1} (tolerance {2})",
-                    a, b, tolerance
-                );
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        /// Helper method: are these numeric values proportionally within 1e-5 of each other?
-        ///
-        /// Developer note: If 1e-5 turns out to be a bad default tolerance, change it, it's vaguely arbitrary.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        private bool Near(Real a, Real b)
-        {
-            return Near(a, b, 1e-5);
-        }
-
-        /// <summary>
         /// Tests quadratic function evaluation in cases where the expected value is a number. This test passes if the
-        /// actual result is relatively near the expected result
-        /// (<see cref="Near(FreedomOfFormFoundation.AnatomyEngine.Real,FreedomOfFormFoundation.AnatomyEngine.Real)"/>
-        /// for how near "relatively near" is).
+        /// actual result is relatively near the expected result.
         /// </summary>
         /// <param name="a0">Constant term in quadratic function.</param>
         /// <param name="a1">Linear term in quadratic function.</param>
@@ -84,8 +42,8 @@ namespace EngineTests.calculus
         {
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
             Assert.NotNull(q);
-            Assert.True(Near(expected, q.GetValueAt(x)));
-            Assert.True(Near(expected, q.GetNthDerivativeAt(x, 0)));
+            Assert.Equal(expected, q.GetValueAt(x), 6);
+            Assert.Equal(expected, q.GetNthDerivativeAt(x, 0), 6);
         }
 
         /// <summary>
@@ -130,10 +88,10 @@ namespace EngineTests.calculus
         {
             QuadraticFunction q = new QuadraticFunction(a0, a1, a2);
             Assert.NotNull(q);
-            Assert.True(Near(q.GetNthDerivativeAt(x, 0), atD0));
-            Assert.True(Near(q.GetNthDerivativeAt(x, 1), atD1));
-            Assert.True(Near(q.GetDerivativeAt(x), atD1));
-            Assert.True(Near(q.GetNthDerivativeAt(x, 2), atD2));
+            Assert.Equal(q.GetNthDerivativeAt(x, 0), atD0, 6);
+            Assert.Equal(q.GetNthDerivativeAt(x, 1), atD1, 6);
+            Assert.Equal(q.GetDerivativeAt(x), atD1, 6);
+            Assert.Equal(q.GetNthDerivativeAt(x, 2), atD2, 6);
             Assert.Equal(q.GetNthDerivativeAt(x, 3), 0);
             Assert.Equal(q.GetNthDerivativeAt(x, 4), 0);
         }
@@ -167,7 +125,7 @@ namespace EngineTests.calculus
             var gotSorted = from c in got orderby c select c;
             foreach(float f in gotSorted)
             {
-                Assert.True(Near(want[i++], f));
+                Assert.Equal(want[i++], f, 6);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// <summary>
 	/// A ConstantFunction returns a constant value for any input when GetValueAt() is called. This allows the user to
 	/// feed in constant values as a ContinuousMap, since many classes that expect a ContinuousMap won't work when
-	/// a bare float, double, or Real is used.
+	/// a bare float or double is used.
 	/// </summary>
 	public class ConstantFunction<TIn, TOut> : ContinuousMap<TIn, TOut>
 	{
