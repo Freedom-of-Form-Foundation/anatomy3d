@@ -1,10 +1,6 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using Numerics = System.Numerics;
+using GlmSharp;
 
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
-using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyRenderer
@@ -20,16 +16,16 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			int vertexCount = mesh.VertexList.Count;
 			
-			Godot.Vector3[] normal_array = new Godot.Vector3[vertexCount];
-			Godot.Vector3[] vertex_array = new Godot.Vector3[vertexCount];
+			Vector3[] normal_array = new Godot.Vector3[vertexCount];
+			Vector3[] vertex_array = new Godot.Vector3[vertexCount];
 			
 			// Populate the arrays from the input mesh data:
 			for (int i = 0; i < vertexCount; i++)
 			{
-				Numerics.Vector3 vertex = mesh.VertexList[i].Position;
-				Numerics.Vector3 normal = mesh.VertexList[i].Normal;
-				vertex_array[i] = new Godot.Vector3(vertex.X, vertex.Y, vertex.Z);
-				normal_array[i] = new Godot.Vector3(normal.X, normal.Y, normal.Z);
+				vec3 vertex = mesh.VertexList[i].Position;
+				vec3 normal = mesh.VertexList[i].Normal;
+				vertex_array[i] = new Vector3(vertex.x, vertex.y, vertex.z);
+				normal_array[i] = new Vector3(normal.x, normal.y, normal.z);
 			}
 			
 			// The index list doesn't need to be converted:

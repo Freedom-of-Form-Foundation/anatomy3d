@@ -14,8 +14,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections;
-using System.Numerics;
+using GlmSharp;
+
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
@@ -67,7 +67,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy
 		/// </summary>
 		public override Surface GetGeometry()
 		{
-			return new Hemisphere(1.0f, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f));
+			return new Hemisphere(1.0, new dvec3(0.0, 0.0, 0.0), new dvec3(0.0, 1.0, 0.0));
 		}
 	}
 }

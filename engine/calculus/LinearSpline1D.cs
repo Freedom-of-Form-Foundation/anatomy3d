@@ -15,8 +15,6 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
-using System.Linq;
 using System;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
@@ -30,14 +28,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// </summary>
 	public class LinearSpline1D : RaytraceableFunction1D
 	{
-		private float[] _parameters;
-		public SortedPointsList<float> Points { get; }
+		private double[] _parameters;
+		public SortedPointsList<double> Points { get; }
 		
 		/// <summary>
 		///     Construct a linear spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
-		/// 		SortedList<float, float> splinePoints = new SortedList<float, float>();
+		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);
@@ -51,30 +49,30 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	A linear spline must have at least two points to be properly defined. If <c>points</c> contains less than
 		/// 	two points, the spline is undefined, so an <c>ArgumentException</c> is thrown.
 		/// </exception>
-		public LinearSpline1D(SortedList<float, float> points)
+		public LinearSpline1D(SortedList<double, double> points)
 		{
 			if (points.Count < 2)
 			{
 				if (points.Count == 1)
 				{
-					throw new ArgumentException("List contains only a single point. A spline must have at least two points.", "points");
+					throw new ArgumentException("List contains only a single point. A spline must have at least two points.", nameof(points));
 				}
 				else
 				{
-					throw new ArgumentException("List is empty. A spline must have at least two points.", "points");
+					throw new ArgumentException("List is empty. A spline must have at least two points.", nameof(points));
 				}
 			}
 			
-			Points = new SortedPointsList<float>(points);
+			Points = new SortedPointsList<double>(points);
 
 			// Calculate the coefficients for each segment of the spline:
-			_parameters = new float[points.Count];
+			_parameters = new double[points.Count];
 
 			// Recursively find the _parameters:
 			for (int i = 1; i < points.Count; i++)
 			{
-				float dx = Points.Key[i] - Points.Key[i - 1];
-				float dy = Points.Value[i] - Points.Value[i - 1];
+				double dx = Points.Key[i] - Points.Key[i - 1];
+				double dy = Points.Value[i] - Points.Value[i - 1];
 
 				_parameters[i] = dy / dx;
 			}
@@ -96,12 +94,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public float GetNthDerivativeAt(float x, uint derivative)
+		public double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
-				throw new ArgumentOutOfRangeException("x","Cannot interpolate outside the interval given by the spline points.");
+				throw new ArgumentOutOfRangeException(nameof(x), "Cannot interpolate outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
@@ -122,28 +120,28 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				i++;
 			}
 
-			float x1 = Points.Key[i-1];
-			float x2 = Points.Key[i];
-			float y1 = Points.Value[i-1];
-			float y2 = Points.Value[i];
+			double x1 = Points.Key[i-1];
+			double x2 = Points.Key[i];
+			double y1 = Points.Value[i-1];
+			double y2 = Points.Value[i];
 			
 			// Calculate and return the interpolated value:
-			float dx = x2 - x1;
-			float dy = y2 - y1;
+			double dx = x2 - x1;
+			double dy = y2 - y1;
 
-			float slope = dy / dx;
+			double slope = dy / dx;
 
-			float local_x = x - x1;
+			double local_x = x - x1;
 
-			float local_y = local_x * slope;
-			float global_y = local_y + y1;
+			double local_y = local_x * slope;
+			double global_y = local_y + y1;
 
 			// Return the result of evaluating a derivative function, depending on the derivative level:
 			switch (derivative)
 			{
 				case 0: return global_y;
 				case 1: return slope;
-				default: return 0.0f;
+				default: return 0.0;
 			}
 		}
 
@@ -154,7 +152,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public override float GetValueAt(float x)
+		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
@@ -166,7 +164,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public float GetDerivativeAt(float x)
+		public double GetDerivativeAt(double x)
 		{
 			return GetNthDerivativeAt(x, 1);
 		}
@@ -176,7 +174,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. \f$q(x)\f$ is the linear spline. The _parameters z0 and c
 		///		can be used to substitute x, such that \f$x = z0 + c t\f$. This is useful for raytracing.
 		/// </summary>
-		public override IEnumerable<float> SolveRaytrace(QuarticFunction surfaceFunction, float z0 = 0.0f, float c = 1.0f)
+		public override IEnumerable<double> SolveRaytrace(QuarticFunction surfaceFunction, double z0 = 0.0, double c = 1.0)
 		{
 			throw new NotImplementedException();
 			return null;

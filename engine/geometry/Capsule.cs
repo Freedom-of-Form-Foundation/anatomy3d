@@ -15,9 +15,10 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
 using System.Linq;
 using System;
+using GlmSharp;
+
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
@@ -56,28 +57,28 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	is therefore a two-dimensional function $h(u, \phi)$ that outputs a distance from the curve at each of
 		/// 	the surface's parametric coordinates.
 		/// </param>
-		public Capsule(Curve centerCurve, ContinuousMap<Vector2, float> heightMap)
+		public Capsule(Curve centerCurve, ContinuousMap<dvec2, double> heightMap)
 		{
-			Vector3 startTangent = -centerCurve.GetTangentAt(0.0f);
-			Vector3 startNormal = centerCurve.GetNormalAt(0.0f);
+			dvec3 startTangent = -centerCurve.GetTangentAt(0.0);
+			dvec3 startNormal = centerCurve.GetNormalAt(0.0);
 			
-			Vector3 endTangent = centerCurve.GetTangentAt(1.0f);
-			Vector3 endNormal = centerCurve.GetNormalAt(1.0f);
+			dvec3 endTangent = centerCurve.GetTangentAt(1.0);
+			dvec3 endNormal = centerCurve.GetNormalAt(1.0);
 			
 			this.shaft = new Cylinder(centerCurve, heightMap);
 			this.startCap = new Hemisphere(
-									new ShiftedMap2D<float>(new Vector2(0.0f, -0.5f * (float)Math.PI), heightMap),
+									new ShiftedMap2D<double>(new dvec2(0.0, -0.5 * Math.PI), heightMap),
 									centerCurve.GetStartPosition(),
 									startTangent,
 									startNormal,
-									-Vector3.Cross(startTangent, startNormal)
+									-dvec3.Cross(startTangent, startNormal)
 								);
 			this.endCap = new Hemisphere(
-									new ShiftedMap2D<float>(new Vector2(0.0f, 1.0f + 0.5f * (float)Math.PI), new Vector2(1.0f, -1.0f), heightMap),
+									new ShiftedMap2D<double>(new dvec2(0.0, 1.0 + 0.5 * Math.PI), new dvec2(1.0, -1.0), heightMap),
 									centerCurve.GetEndPosition(),
 									endTangent,
 									endNormal,
-									-Vector3.Cross(endTangent, endNormal)
+									-dvec3.Cross(endTangent, endNormal)
 								);
 		}
 #endregion Constructors
@@ -94,22 +95,22 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		
 #region Base Class Method Overrides
 		/// <inheritdoc />
-		public override Vector3 GetNormalAt(Vector2 uv)
+		public override dvec3 GetNormalAt(dvec2 uv)
 		{
-			float u = uv.X;
-			float v = uv.Y;
-			
-			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
+			double u = uv.x;
+			double v = uv.y;
+
+			if ((v >= -0.5 * Math.PI) && (v < 0.0))
 			{
-				return startCap.GetNormalAt(new Vector2(u, v + 0.5f * (float)Math.PI));
+				return startCap.GetNormalAt(new dvec2(u, v + 0.5 * Math.PI));
 			}
-			else if ((v >= 0.0f) && (v < 1.0f))
+			else if ((v >= 0.0) && (v < 1.0))
 			{
-				return shaft.GetNormalAt(new Vector2(u, v));
+				return shaft.GetNormalAt(new dvec2(u, v));
 			}
-			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
+			else if ((v >= 1.0) && (v <= 1.0 + 0.5 * Math.PI))
 			{
-				return endCap.GetNormalAt(new Vector2(u, 1.0f + 0.5f * (float)Math.PI - v));
+				return endCap.GetNormalAt(new dvec2(u, 1.0 + 0.5 * Math.PI - v));
 			}
 			else
 			{
@@ -118,22 +119,22 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetPositionAt(Vector2 uv)
+		public override dvec3 GetPositionAt(dvec2 uv)
 		{
-			float u = uv.X;
-			float v = uv.Y;
+			double u = uv.x;
+			double v = uv.y;
 			
-			if ((v >= -0.5f * (float)Math.PI) && (v < 0.0f))
+			if ((v >= -0.5 * Math.PI) && (v < 0.0))
 			{
-				return startCap.GetPositionAt(new Vector2(u, v + 0.5f * (float)Math.PI));
+				return startCap.GetPositionAt(new dvec2(u, v + 0.5 * Math.PI));
 			}
-			else if ((v >= 0.0f) && (v < 1.0f))
+			else if ((v >= 0.0) && (v < 1.0))
 			{
-				return shaft.GetPositionAt(new Vector2(u, v));
+				return shaft.GetPositionAt(new dvec2(u, v));
 			}
-			else if ((v >= 1.0f) && (v <= 1.0f + 0.5f * (float)Math.PI))
+			else if ((v >= 1.0) && (v <= 1.0 + 0.5 * Math.PI))
 			{
-				return endCap.GetPositionAt(new Vector2(u, 1.0f + 0.5f * (float)Math.PI - v));
+				return endCap.GetPositionAt(new dvec2(u, 1.0 + 0.5 * Math.PI - v));
 			}
 			else
 			{
@@ -159,25 +160,25 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			// Recalculate the surface normal between the cylinder and the start cap:
 			for (int i = 0; i < (resolutionU - 1); i++)
 			{
-				Vector3 surfacePosition = startCapList[(resolutionU/4-1)*resolutionU + i + 1].Position;
-				Vector3 du = surfacePosition - startCapList[(resolutionU/4-1)*resolutionU + i + 1 + 1].Position;
-				Vector3 dv = surfacePosition - shaftSlice[i].Position;
+				dvec3 surfacePosition = startCapList[(resolutionU/4-1)*resolutionU + i + 1].Position;
+				dvec3 du = surfacePosition - startCapList[(resolutionU/4-1)*resolutionU + i + 1 + 1].Position;
+				dvec3 dv = surfacePosition - shaftSlice[i].Position;
 				
 				// Calculate the position of the rings of vertices:
-				Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
+				dvec3 surfaceNormal = dvec3.Cross(du.Normalized, dv.Normalized);
 				
-				startCapList[(resolutionU/4-1)*resolutionU + i + 1] = new Vertex(surfacePosition, surfaceNormal);
+				startCapList[(resolutionU/4-1)*resolutionU + i + 1] = new Vertex((vec3)surfacePosition, (vec3)surfaceNormal);
 			}
 			
 			// Stitch the end of the triangles:
-			Vector3 surfacePosition2 = startCapList[(resolutionU/4-1)*resolutionU + resolutionU].Position;
-			Vector3 du2 = surfacePosition2 - startCapList[(resolutionU/4-1)*resolutionU + 1].Position;
-			Vector3 dv2 = surfacePosition2 - shaftSlice[resolutionU].Position;
+			dvec3 surfacePosition2 = startCapList[(resolutionU/4-1)*resolutionU + resolutionU].Position;
+			dvec3 du2 = surfacePosition2 - startCapList[(resolutionU/4-1)*resolutionU + 1].Position;
+			dvec3 dv2 = surfacePosition2 - shaftSlice[resolutionU].Position;
 			
 			// Calculate the position of the rings of vertices:
-			Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
+			dvec3 surfaceNormal2 = dvec3.Cross(du2.Normalized, dv2.Normalized);
 			
-			startCapList[(resolutionU/4-1)*resolutionU + resolutionU] = new Vertex(surfacePosition2, surfaceNormal2);
+			startCapList[(resolutionU/4-1)*resolutionU + resolutionU] = new Vertex((vec3)surfacePosition2, (vec3)surfaceNormal2);
 			
 			return startCapList.Concat(shaftSlice).Concat(endCapList).ToList();
 		}

@@ -15,7 +15,6 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
 using System.Linq;
 using System;
 
@@ -30,16 +29,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// 	therefore 'smoother' than a quadratic spline, but as a result it is not analytically raytracable when used
 	/// 	as a heightmap.
 	/// </summary>
-	public class CubicSpline1D : ContinuousMap<float, float>
+	public class CubicSpline1D : ContinuousMap<double, double>
 	{
-		private float[] parameters;
-		public SortedPointsList<float> Points { get; }
+		private double[] _parameters;
+		public SortedPointsList<double> Points { get; }
 		
 		/// <summary>
 		///     Construct a cubic spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
-		/// 		SortedList<float, float> splinePoints = new SortedList<float, float>();
+		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);
@@ -53,7 +52,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	A cubic spline must have at least two points to be properly defined. If <c>points</c> contains less than
 		/// 	two points, the spline is undefined, so an <c>ArgumentException</c> is thrown.
 		/// </exception>
-		public CubicSpline1D(SortedList<float, float> points)
+		public CubicSpline1D(SortedList<double, double> points)
 		{
 			if (points.Count < 2)
 			{
@@ -67,53 +66,53 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				}
 			}
 			
-			Points = new SortedPointsList<float>(points);
+			Points = new SortedPointsList<double>(points);
 			
 			// Calculate the coefficients of the spline:
-			float[] a = new float[points.Count];
-			float[] b = new float[points.Count];
-			float[] c = new float[points.Count];
-			float[] d = new float[points.Count];
+			double[] a = new double[points.Count];
+			double[] b = new double[points.Count];
+			double[] c = new double[points.Count];
+			double[] d = new double[points.Count];
 			
 			// Set up the boundary condition for a natural spline:
 			{
-				float x2 = 1.0f/(Points.Key[1] - Points.Key[0]);
-				float y2 = Points.Value[1] - Points.Value[0];
-				
-				a[0] = 0.0f;
-				b[0] = 2.0f*x2;
+				double x2 = 1.0/(Points.Key[1] - Points.Key[0]);
+				double y2 = Points.Value[1] - Points.Value[0];
+
+				a[0] = 0.0;
+				b[0] = 2.0*x2;
 				c[0] = x2;
-				d[0] = 3.0f*(y2*x2*x2);
+				d[0] = 3.0*(y2*x2*x2);
 			}
 			
 			// Set up the tridiagonal matrix linear system:
 			for (int i = 1; i < points.Count-1; i++) 
 			{
-				float x1 = 1.0f/(Points.Key[i] - Points.Key[i-1]);
-				float x2 = 1.0f/(Points.Key[i+1] - Points.Key[i]);
+				double x1 = 1.0/(Points.Key[i] - Points.Key[i-1]);
+				double x2 = 1.0/(Points.Key[i+1] - Points.Key[i]);
 				
-				float y1 = Points.Value[i] - Points.Value[i-1];
-				float y2 = Points.Value[i+1] - Points.Value[i];
+				double y1 = Points.Value[i] - Points.Value[i-1];
+				double y2 = Points.Value[i+1] - Points.Value[i];
 				
 				a[i] = x1;
-				b[i] = 2.0f*(x1 + x2);
+				b[i] = 2.0*(x1 + x2);
 				c[i] = x2;
-				d[i] = 3.0f*(y1*x1*x1 + y2*x2*x2);
+				d[i] = 3.0*(y1*x1*x1 + y2*x2*x2);
 			}
 			
 			// Set up the boundary condition for a natural spline:
 			{
-				float x1 = 1.0f/(Points.Key[points.Count-1] - Points.Key[points.Count-2]);
-				float y1 = (Points.Value[points.Count-1] - Points.Value[points.Count-2]);
+				double x1 = 1.0/(Points.Key[points.Count-1] - Points.Key[points.Count-2]);
+				double y1 = (Points.Value[points.Count-1] - Points.Value[points.Count-2]);
 				
 				a[points.Count-1] = x1;
-				b[points.Count-1] = 2.0f*x1;
-				c[points.Count-1] = 0.0f;
-				d[points.Count-1] = 3.0f*(y1*x1*x1);
+				b[points.Count-1] = 2.0*x1;
+				c[points.Count-1] = 0.0;
+				d[points.Count-1] = 3.0*(y1*x1*x1);
 			}
 			
 			// Solve the linear system using the Thomas algorithm:
-			this.parameters = ThomasAlgorithm(a, b, c, d);
+			this._parameters = ThomasAlgorithm(a, b, c, d);
 		}
 
 		/// <summary>
@@ -132,12 +131,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public float GetNthDerivativeAt(float x, uint derivative)
+		public double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
-				throw new ArgumentOutOfRangeException("x","Cannot interpolate outside the interval given by the spline points.");
+				throw new ArgumentOutOfRangeException(nameof(x), "Cannot interpolate outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
@@ -158,27 +157,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				i++;
 			}
 
-			float x1 = Points.Key[i-1];
-			float x2 = Points.Key[i];
-			float y1 = Points.Value[i-1];
-			float y2 = Points.Value[i];
+			double x1 = Points.Key[i-1];
+			double x2 = Points.Key[i];
+			double y1 = Points.Value[i-1];
+			double y2 = Points.Value[i];
 			
 			// Calculate and return the interpolated value:
-			float dx = x2 - x1;
-			float dy = y2 - y1;
+			double dx = x2 - x1;
+			double dy = y2 - y1;
 			
-			float a = parameters[i-1]*dx - dy;
-			float b = -parameters[i]*dx + dy;
-			float t = (x-x1)/dx;
+			double a = _parameters[i-1]*dx - dy;
+			double b = -_parameters[i]*dx + dy;
+			double t = (x-x1)/dx;
 			
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return (1.0f - t)*y1 + t*y2 + t*(1.0f-t)*((1.0f-t)*a + t*b);
-				case 1: return (y2 - y1 + 3.0f*(a-b)*t*t + (2.0f*b - 4.0f*a)*t + a)/dx;
-				case 2: return (a*(6.0f*t - 4.0f) + b*(1.0f-3.0f*t))/(dx*dx);
-				case 3: return 6.0f*(a-b)/(dx*dx*dx);
-				default: return 0.0f;
+				case 0: return (1.0 - t)*y1 + t*y2 + t*(1.0-t)*((1.0-t)*a + t*b);
+				case 1: return (y2 - y1 + 3.0*(a-b)*t*t + (2.0*b - 4.0*a)*t + a)/dx;
+				case 2: return (a*(6.0*t - 4.0) + b*(1.0-3.0*t))/(dx*dx);
+				case 3: return 6.0*(a-b)/(dx*dx*dx);
+				default: return 0.0;
 			}
 		}
 
@@ -189,7 +188,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public override float GetValueAt(float x)
+		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
@@ -201,7 +200,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public float GetDerivativeAt(float x)
+		public double GetDerivativeAt(double x)
 		{
 			return GetNthDerivativeAt(x, 1);
 		}
@@ -209,13 +208,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <summary>
 		///     Find the solution to a tridiagonal matrix linear system Ax = d using the Thomas algorithm.
 		/// </summary>
-		private static float[] ThomasAlgorithm(float[] a, float[] b, float[] c, float[] d)
+		private static double[] ThomasAlgorithm(double[] a, double[] b, double[] c, double[] d)
 		{
 			int size = d.Count();
 			
 			// Perform forward sweep:
-			float[] newC = new float[size];
-			float[] newD = new float[size];
+			double[] newC = new double[size];
+			double[] newD = new double[size];
 			
 			newC[0] = c[0] / b[0];
 			newD[0] = d[0] / b[0];
@@ -226,7 +225,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			}
 			
 			// Perform back substitution:
-			float[] x = new float[size];
+			double[] x = new double[size];
 			
 			x[size-1] = newD[size-1];
 			for (int i = (size - 2); i >= 0; i--) 

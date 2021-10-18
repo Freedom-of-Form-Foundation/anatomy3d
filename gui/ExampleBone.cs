@@ -1,11 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using Numerics = System.Numerics;
+using GlmSharp;
 
-using FreedomOfFormFoundation.AnatomyEngine;
 using Anatomy = FreedomOfFormFoundation.AnatomyEngine.Anatomy;
-using FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones;
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 using FreedomOfFormFoundation.AnatomyEngine.Renderable;
@@ -33,7 +31,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		public void CreateExampleBones(Anatomy.Skeleton skeleton)
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
-			SortedList<float, float> radiusPoints = new SortedList<float, float>();
+			SortedList<double, double> radiusPoints = new SortedList<double, double>();
 			radiusPoints.Add(-3.5f, 0.7f*1.2f);
 			radiusPoints.Add(-1.0f, 0.7f*1.2f);
 			radiusPoints.Add(0.02f, 0.7f*1.2f);
@@ -46,18 +44,18 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			LinearSpline1D boneRadius = new LinearSpline1D(radiusPoints);
 
 			// Define the center curve of the long bone:
-			SortedList<float, Numerics.Vector3> centerPoints = new SortedList<float, Numerics.Vector3>();
-			centerPoints.Add(0.0f, new Numerics.Vector3(0.0f, 0.0f, 2.7f));
-			centerPoints.Add(0.25f, new Numerics.Vector3(-0.3f, -0.5f, 1.0f));
-			centerPoints.Add(0.5f, new Numerics.Vector3(0.3f, 1.0f, 0.0f));
-			centerPoints.Add(0.75f, new Numerics.Vector3(0.8f, 1.0f, -1.0f));
-			centerPoints.Add(1.0f, new Numerics.Vector3(0.6f, -0.5f, -0.9f));
+			SortedList<double, dvec3> centerPoints = new SortedList<double, dvec3>();
+			centerPoints.Add(0.0f, new dvec3(0.0f, 0.0f, 2.7f));
+			centerPoints.Add(0.25f, new dvec3(-0.3f, -0.5f, 1.0f));
+			centerPoints.Add(0.5f, new dvec3(0.3f, 1.0f, 0.0f));
+			centerPoints.Add(0.75f, new dvec3(0.8f, 1.0f, -1.0f));
+			centerPoints.Add(1.0f, new dvec3(0.6f, -0.5f, -0.9f));
 			
 			SpatialCubicSpline boneCenter = new SpatialCubicSpline(centerPoints);
 			
 			// Add first bone:
-			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, 0.0f, 0.5f),
-									   new Numerics.Vector3(0.001f, 10.0f, 0.51f));
+			LineSegment centerLine = new LineSegment(new dvec3(0.0f, 0.0f, 0.5f),
+									   new dvec3(0.001f, 10.0f, 0.51f));
 			
 			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
 			
@@ -66,8 +64,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			//LineSegment centerLine2 = new LineSegment(new Numerics.Vector3(0.0f, -10.0f, 0.5f),
-			//						   new Numerics.Vector3(0.001f, -1.0f, 0.51f));
+			//LineSegment centerLine2 = new LineSegment(new dvec3(0.0f, -10.0f, 0.5f),
+			//						   new dvec3(0.001f, -1.0f, 0.51f));
 			
 			//var bone2 = new Anatomy.Bones.LongBone(centerLine2, 1.1f);
 			//bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards, 3.0f));
@@ -94,8 +92,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		public void CreateExampleJoint(Anatomy.Skeleton skeleton)
 		{
 			// Generate a simple cubic spline that will act as the radius of a long bone:
-			SortedList<float, float> splinePoints = new SortedList<float, float>();
-			float radiusModifier = 0.6f;
+			SortedList<double, double> splinePoints = new SortedList<double, double>();
+			double radiusModifier = 0.6f;
 			splinePoints.Add(-0.1f, radiusModifier*1.1f);
 			splinePoints.Add(0.0f, radiusModifier*1.1f);
 			splinePoints.Add(0.15f, radiusModifier*0.95f);
@@ -108,11 +106,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			LineSegment centerLine = new LineSegment(new Numerics.Vector3(0.0f, -0.5f, 0.0f),
-									   new Numerics.Vector3(0.0f, 1.5f, 0.5f));
+			LineSegment centerLine = new LineSegment(new dvec3(0.0f, -0.5f, 0.0f),
+									   new dvec3(0.0f, 1.5f, 0.5f));
 			
 			// Add a long bone to the character:
-			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(float)Math.PI));
+			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(double)Math.PI));
 			
 			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
 			UVMesh mesh = skeleton.joints[0].GetArticularSurface().GenerateMesh(64, 64);

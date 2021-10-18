@@ -14,34 +14,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Numerics;
-using System;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
 	/// 	<c>ShiftedMap2D<TOut></c> shifts the domain of a 2D map such that the values are taken at
-	/// 	`Shift + Vector2.Multiply(Stretch, uv)`.
+	/// 	`Shift + dvec2.Multiply(Stretch, uv)`.
 	/// </summary>
-	public class ShiftedMap2D<TOut> : ContinuousMap<Vector2, TOut>
+	public class ShiftedMap2D<TOut> : ContinuousMap<dvec2, TOut>
 	{
 		/// <summary>
 		/// 	The vector by which the 2D map is shifted.
 		/// </summary>
-		public Vector2 Shift { get; set; }
+		public dvec2 Shift { get; set; }
 		
 		/// <summary>
 		/// 	The vector by which the 2D map's coordinates are multiplied.
 		/// </summary>
-		public Vector2 Stretch { get; set; }
+		public dvec2 Stretch { get; set; }
 		
 		/// <summary>
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </summary>
-		public ContinuousMap<Vector2, TOut> Function { get; set; }
+		public ContinuousMap<dvec2, TOut> Function { get; set; }
 		
 		/// <summary>
-		///		Constructs a ShiftedMap2D whose input is shifted by a Vector2.
+		///		Constructs a ShiftedMap2D whose input is shifted by a dvec2.
 		/// </summary>
 		/// <param name="shift">
 		/// 	The vector by which the 2D map is shifted.
@@ -49,14 +48,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="function">
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </param>
-		public ShiftedMap2D(Vector2 shift, ContinuousMap<Vector2, TOut> function)
-			: this(shift, new Vector2(1.0f, 1.0f), function)
+		public ShiftedMap2D(dvec2 shift, ContinuousMap<dvec2, TOut> function)
+			: this(shift, new dvec2(1.0, 1.0), function)
 		{
 			
 		}
 		
 		/// <summary>
-		///		Constructs a ShiftedMap2D whose input is shifted by a Vector2 and stretched by another Vector2.
+		///		Constructs a ShiftedMap2D whose input is shifted by a dvec2 and stretched by another dvec2.
 		/// </summary>
 		/// <param name="shift">
 		/// 	The vector by which the 2D map is shifted.
@@ -67,7 +66,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="function">
 		/// 	The ContinuousMap that is shifted and stretched.
 		/// </param>
-		public ShiftedMap2D(Vector2 shift, Vector2 stretch, ContinuousMap<Vector2, TOut> function)
+		public ShiftedMap2D(dvec2 shift, dvec2 stretch, ContinuousMap<dvec2, TOut> function)
 		{
 			this.Shift = shift;
 			this.Stretch = stretch;
@@ -75,9 +74,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <inheritdoc />
-		public override TOut GetValueAt(Vector2 uv)
+		public override TOut GetValueAt(dvec2 uv)
 		{
-			return Function.GetValueAt(Shift + Vector2.Multiply(Stretch, uv));
+			return Function.GetValueAt(Shift + Stretch * uv);
 		}
 	}
 }

@@ -14,9 +14,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
 using System;
+using GlmSharp;
+
 using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
@@ -34,7 +34,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// 	A MoldCastMap projects one surface onto a mold surface, giving the distance between the two surfaces
 	///		on each coordinate point. This map can for example be used to shape the Cylinder and the Capsule surfaces.
 	/// </summary>
-	public class MoldCastMap : ContinuousMap<Vector2, float>
+	public class MoldCastMap : ContinuousMap<dvec2, double>
 	{
 		/// <summary>
 		/// 	The surface from which the rays are cast. A ray is cast out of each point on the surface in the
@@ -52,7 +52,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	has missed the mold surface and shoots off to infinity. When that happens, return the length of
 		/// 	defaultRadius instead, so that the heightmap is still defined.
 		/// </summary>
-		private readonly ContinuousMap<Vector2, float> defaultRadius;
+		private readonly ContinuousMap<dvec2, double> defaultRadius;
 		
 		/// <summary>
 		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
@@ -63,7 +63,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <summary>
 		/// 	The maximum ray length before a ray is considered to be out of bounds.
 		/// </summary>
-		private readonly float maxDistance;
+		private readonly double maxDistance;
 		
 		/// <summary>
 		/// 	Construct a new MoldCastMap from a curve.
@@ -91,10 +91,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </param>
 		public MoldCastMap(Curve raycastCurve,
 								IRaytraceableSurface moldSurface,
-								ContinuousMap<Vector2, float> defaultRadius,
+								ContinuousMap<dvec2, double> defaultRadius,
 								RayCastDirection direction = RayCastDirection.Outwards,
-								float maxDistance = Single.PositiveInfinity)
-			: this(new Capsule(raycastCurve, 0.0f), moldSurface, defaultRadius, direction, maxDistance)
+								double maxDistance = Double.PositiveInfinity)
+			: this(new Capsule(raycastCurve, 0.0), moldSurface, defaultRadius, direction, maxDistance)
 		{
 			
 		}
@@ -124,9 +124,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </param>
 		public MoldCastMap(Surface raycastSurface,
 								IRaytraceableSurface moldSurface,
-								ContinuousMap<Vector2, float> defaultRadius,
+								ContinuousMap<dvec2, double> defaultRadius,
 								RayCastDirection direction = RayCastDirection.Outwards,
-								float maxDistance = Single.PositiveInfinity)
+								double maxDistance = Double.PositiveInfinity)
 		{
 			this.raycastSurface = raycastSurface;
 			this.moldSurface = moldSurface;
@@ -136,12 +136,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <inheritdoc />
-		public override float GetValueAt(Vector2 uv)
+		public override double GetValueAt(dvec2 uv)
 		{
-			float directionSign = (direction == RayCastDirection.Outwards) ? 1.0f : -1.0f;
-			
-			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*Vector3.Normalize(raycastSurface.GetNormalAt(uv)));
-			float intersectionRadius = moldSurface.RayIntersect(ray);
+			double directionSign = (direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
+
+			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
+			double intersectionRadius = moldSurface.RayIntersect(ray);
 			
 			if (Math.Abs(intersectionRadius) <= maxDistance)
 			{
