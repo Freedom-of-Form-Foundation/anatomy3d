@@ -12,6 +12,7 @@ using FreedomOfFormFoundation.AnatomyEngine.Renderable;
 
 namespace FreedomOfFormFoundation.AnatomyRenderer
 {
+	[Tool]
 	public class ExampleBone : MeshInstance
 	{
 		// Called when the node enters the scene tree for the first time.
