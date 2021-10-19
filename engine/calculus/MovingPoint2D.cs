@@ -37,10 +37,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// </summary>
     public class MovingPoint2D: IComparable<MovingPoint2D>,IEquatable<MovingPoint2D>
     {
-        private Real _x, _y;
+        private double _x, _y;
         private Action _changed;
 
-        public Real X
+        public double X
         {
             get => _x;
             set
@@ -51,7 +51,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             }
         }
 
-        public Real Y
+        public double Y
         {
             get => _y;
             set
@@ -68,7 +68,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="changeCallback">Invoked when the point moves.</param>
         /// <param name="x">Starting X position.</param>
         /// <param name="y">Starting Y position.</param>
-        public MovingPoint2D(Action changeCallback, Real x, Real y)
+        public MovingPoint2D(Action changeCallback, double x, double y)
         {
             _x = x;
             _y = y;

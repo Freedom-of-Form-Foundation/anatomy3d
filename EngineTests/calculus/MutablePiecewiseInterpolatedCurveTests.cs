@@ -17,8 +17,8 @@ namespace EngineTests.calculus
     /// </summary>
     public struct LiteralResultPoint
     {
-        public Real X;
-        public List<Real> Derivatives;
+        public double X;
+        public List<double> Derivatives;
 
         public bool IsValid => !(Derivatives is null);
 
@@ -27,7 +27,7 @@ namespace EngineTests.calculus
         /// in this point. The 0th derivative is the value, and is tested both as the 0th derivative and the value.
         /// </summary>
         /// <param name="curve"></param>
-        public void AssertOnCurve(ICurve<Real> curve)
+        public void AssertOnCurve(ICurve<double> curve)
         {
             if (Derivatives.Count == 0)
             {
@@ -61,7 +61,7 @@ namespace EngineTests.calculus
         // Construct a valid MutableLiteralResultPoint representing (0, 0) with all derivatives also 0.
         public MutableLiteralResultPoint(Action mutationCallback)
         {
-            _p = new LiteralResultPoint { X = 0, Derivatives = new List<Real>() };
+            _p = new LiteralResultPoint { X = 0, Derivatives = new List<double>() };
             _mutationCallback = mutationCallback;
         }
 
@@ -75,7 +75,7 @@ namespace EngineTests.calculus
             }
         }
 
-        public Real X
+        public double X
         {
             get => _p.X;
             set
@@ -91,14 +91,14 @@ namespace EngineTests.calculus
         /// yields a 0 and writing to an index past the end causes the array to get copied and extended.
         /// </summary>
         /// <param name="idx"></param>
-        public Real this[int idx]
+        public double this[int idx]
         {
             get => idx < _p.Derivatives.Count ? _p.Derivatives[idx] : 0 ;
             set
             {
                 if (_p.Derivatives.Count <= idx)
                 {
-                    _p.Derivatives.AddRange(Enumerable.Repeat(new Real(0), idx - _p.Derivatives.Count + 1));
+                    _p.Derivatives.AddRange(Enumerable.Repeat(0.0, idx - _p.Derivatives.Count + 1));
                 }
                 _p.Derivatives[idx] = value;
                 _mutationCallback();
@@ -115,13 +115,13 @@ namespace EngineTests.calculus
     /// LiteralCurve is an ICurve defined only at specific exact points, where its value and derivatives are specified
     /// exactly by its control points. At all other points, its value and derivatives are NaN.
     /// </summary>
-    public class LiteralCurve : ICurve<Real>
+    public class LiteralCurve : ICurve<double>
     {
-        private Dictionary<Real, LiteralResultPoint> _points;
+        private Dictionary<double, LiteralResultPoint> _points;
 
         public LiteralCurve(IEnumerable<LiteralResultPoint> points)
         {
-            _points = new Dictionary<Real, LiteralResultPoint>();
+            _points = new Dictionary<double, LiteralResultPoint>();
             foreach (LiteralResultPoint p in points)
             {
                 _points[p.X] = p;
@@ -132,25 +132,25 @@ namespace EngineTests.calculus
         { }
 
 
-        public Real GetValueAt(Real x) => GetDerivativeAt(x, 0);
+        public double GetValueAt(double x) => GetDerivativeAt(x, 0);
 
-        public Real GetDerivativeAt(Real x, uint derivative)
+        public double GetDerivativeAt(double x, uint derivative)
         {
             LiteralResultPoint p;
-            if (!_points.TryGetValue(x, out p)) return Real.NaN;
+            if (!_points.TryGetValue(x, out p)) return double.NaN;
             return derivative < p.Derivatives.Count ? p.Derivatives[(int)derivative] : 0;
         }
 
-        public static MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, Real> NewMutable()
+        public static MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, double> NewMutable()
         {
-            return new MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, Real>(new LiteralCurveFactory(),
+            return new MutablePiecewiseInterpolatedCurve<MutableLiteralResultPoint, double>(new LiteralCurveFactory(),
                 new MutableLiteralResultPointFactory());
         }
     }
 
-    public class LiteralCurveFactory : ICurveFactory<MutableLiteralResultPoint, Real>
+    public class LiteralCurveFactory : ICurveFactory<MutableLiteralResultPoint, double>
     {
-        public ICurve<Real> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) => new LiteralCurve(parameters);
+        public ICurve<double> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) => new LiteralCurve(parameters);
     }
 
     public class MutablePiecewiseInterpolatedCurveTests
@@ -162,9 +162,9 @@ namespace EngineTests.calculus
 
         private static LiteralResultPoint RandomPoint() =>  new LiteralResultPoint
         {
-            X = new Real(Rand.NextDouble()),
-            Derivatives = new List<Real>(from discard2 in Enumerable.Range(0, Rand.Next(1, 25))
-                select new Real(Rand.Next(-10_000_000, 10_000_000)))
+            X = Rand.NextDouble(),
+            Derivatives = new List<double>(from discard2 in Enumerable.Range(0, Rand.Next(1, 25))
+                select (double)Rand.Next(-10_000_000, 10_000_000))
         };
 
         [Theory]
@@ -184,7 +184,7 @@ namespace EngineTests.calculus
                 p.AssertOnCurve(mutableCurve);
             }
 
-            ICurve<Real> fixedCurve = mutableCurve.CurrentCurve();
+            ICurve<double> fixedCurve = mutableCurve.CurrentCurve();
             foreach (var p in points)
             {
                 p.AssertOnCurve(fixedCurve);
@@ -205,7 +205,7 @@ namespace EngineTests.calculus
                 mutablePoints.Add(mutablePoint);
             }
 
-            ICurve<Real> firstCurve = mutableCurve.CurrentCurve();
+            ICurve<double> firstCurve = mutableCurve.CurrentCurve();
             foreach (var p in origPoints)
             {
                 p.AssertOnCurve(firstCurve);
@@ -220,7 +220,7 @@ namespace EngineTests.calculus
             {
                 p.AssertOnCurve(mutableCurve);
             }
-            ICurve<Real> secondCurve = mutableCurve.CurrentCurve();
+            ICurve<double> secondCurve = mutableCurve.CurrentCurve();
             foreach (var p in replacementPoints)
             {
                 p.AssertOnCurve(secondCurve);

@@ -25,9 +25,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// </summary>
     public class MutablePair
     {
-        private Real _location, _value;
+        private double _location, _value;
 
-        public Real Location
+        public double Location
         {
             set
             {
@@ -37,7 +37,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             get => _location;
         }
 
-        public Real Value
+        public double Value
         {
             set
             {
@@ -61,7 +61,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// </summary>
         /// <param name="x">New Location value for the point.</param>
         /// <param name="y">New Value value for the point.</param>
-        public void Set(Real location, Real value)
+        public void Set(double location, double value)
         {
             _location = location;
             _value = value;
