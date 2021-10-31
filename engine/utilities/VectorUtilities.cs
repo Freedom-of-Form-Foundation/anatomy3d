@@ -14,8 +14,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Numerics;
 using System;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
@@ -29,32 +29,65 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// <c>v</c>. The result is not guaranteed to satisfy any properties other than that it is normal to vector
 		/// <c>v</c>, and is normalized.
 		/// </summary>
-		public static Vector3 InventNormal(Vector3 v)
+		public static dvec3 InventNormal(dvec3 v)
 		{
-			// If the vector has infinite or NaN components, throw an error:
-			if (Single.IsNaN(Vector3.Dot(Vector3.One, v)) || Single.IsInfinity(Vector3.Dot(Vector3.One, v)))
+			// If the vector has any infinite or NaN components, throw an error:
+			if (Double.IsNaN(dvec3.Dot(dvec3.Ones, v)) || Double.IsInfinity(dvec3.Dot(dvec3.Ones, v)))
 			{
-				throw new ArgumentException("Vector must not contain infinite or NaN values.", "v");
+				throw new ArgumentException("Vector must not contain infinite or NaN values.", nameof(v));
 			}
 			
 			// TODO: Here it would be nice to add IsNormal instead of an arbitrary comparison, but alas... it's only
 			// supported in .NET 5.0 which we can't target yet.
-			if ((Math.Abs(v.X) < 0.001) && (Math.Abs(v.Y) < 0.001) && (Math.Abs(v.Z) < 0.001))
+			if ((Math.Abs(v.x) < 0.001) && (Math.Abs(v.y) < 0.001) && (Math.Abs(v.z) < 0.001))
 			{
-				throw new ArgumentException("Vector is too small.", "v");
+				throw new ArgumentException("Vector is too small.", nameof(v));
 			}
 			
-			Vector3 normalizedV = Vector3.Normalize(v);
-			Vector3 up = Vector3.UnitZ;
+			dvec3 normalizedV = v.Normalized;
+			dvec3 up = dvec3.UnitZ;
 			
 			// If the vector is pointing in the same direction as the up vector, the cross product can not be trusted.
 			// So we use a different up vector.
-			if (Math.Sign(normalizedV.Z) > 1/Math.Sqrt(2))
+			if (Math.Sign(normalizedV.z) > 1/Math.Sqrt(2))
 			{
-				up = Vector3.UnitY;
+				up = dvec3.UnitY;
 			}
 			
-			return Vector3.Normalize(Vector3.Cross(normalizedV, up));
+			return dvec3.Cross(normalizedV, up).Normalized;
+		}
+
+		/// <summary>
+		/// Invent a new, arbitrary normal to a vector by using a cross product between one of the axis vectors and
+		/// <c>v</c>. The result is not guaranteed to satisfy any properties other than that it is normal to vector
+		/// <c>v</c>, and is normalized.
+		/// </summary>
+		public static vec3 InventNormal(vec3 v)
+		{
+			// If the vector has any infinite or NaN components, throw an error:
+			if (Single.IsNaN(vec3.Dot(vec3.Ones, v)) || Single.IsInfinity(vec3.Dot(vec3.Ones, v)))
+			{
+				throw new ArgumentException("Vector must not contain infinite or NaN values.", nameof(v));
+			}
+
+			// TODO: Here it would be nice to add IsNormal instead of an arbitrary comparison, but alas... it's only
+			// supported in .NET 5.0 which we can't target yet.
+			if ((Math.Abs(v.x) < 0.001) && (Math.Abs(v.y) < 0.001) && (Math.Abs(v.z) < 0.001))
+			{
+				throw new ArgumentException("Vector is too small.", nameof(v));
+			}
+
+			vec3 normalizedV = v.Normalized;
+			vec3 up = vec3.UnitZ;
+
+			// If the vector is pointing in the same direction as the up vector, the cross product can not be trusted.
+			// So we use a different up vector.
+			if (Math.Sign(normalizedV.z) > 1 / Math.Sqrt(2))
+			{
+				up = vec3.UnitY;
+			}
+
+			return vec3.Cross(normalizedV, up).Normalized;
 		}
 	}
 }

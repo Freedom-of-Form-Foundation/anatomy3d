@@ -16,60 +16,58 @@
 
 using System.Collections.Generic;
 using System.Numerics;
-using System.Linq;
 using System;
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
 	/// A CubicFunction defines a cubic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3\f$.
 	/// </summary>
-	public class CubicFunction : ContinuousMap<float, float>
+	public class CubicFunction : ContinuousMap<double, double>
 	{
-		float a0;
-		float a1;
-		float a2;
-		float a3;
+		double _a0;
+		double _a1;
+		double _a2;
+		double _a3;
 		
 		/// <summary>
 		///     A cubic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3\f$.
 		///		See https://en.wikipedia.org/wiki/Cubic_equation for more information.
 		/// </summary>
-		public CubicFunction(float a0, float a1, float a2, float a3)
+		public CubicFunction(double a0, double a1, double a2, double a3)
 		{
-			this.a0 = a0;
-			this.a1 = a1;
-			this.a2 = a2;
-			this.a3 = a3;
+			_a0 = a0;
+			_a1 = a1;
+			_a2 = a2;
+			_a3 = a3;
 		}
 		
-		public float GetNthDerivativeAt(float x, uint derivative)
+		public double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return a0 + a1*x + a2*x*x + a3*x*x*x;
-				case 1: return a1 + 2.0f*a2*x + 3.0f*a3*x*x;
-				case 2: return 2.0f*a2 + 6.0f*a3*x;
-				case 3: return 6.0f*a3;
-				default: return 0.0f;
+				case 0: return _a0 + _a1*x + _a2*x*x + _a3*x*x*x;
+				case 1: return _a1 + 2.0*_a2*x + 3.0*_a3*x*x;
+				case 2: return 2.0*_a2 + 6.0*_a3*x;
+				case 3: return 6.0*_a3;
+				default: return 0.0;
 			}
 		}
 		
-		public override float GetValueAt(float x)
+		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
 		
-		public float GetDerivativeAt(float x)
+		public double GetDerivativeAt(double x)
 		{
 			return GetNthDerivativeAt(x, 1);
 		}
 		
-		public IEnumerable<float> Roots()
+		public IEnumerable<double> Roots()
 		{
-			return CubicFunction.Solve(a0, a1, a2, a3);
+			return Solve(_a0, _a1, _a2, _a3);
 		}
 		
 		/// <summary>
@@ -77,11 +75,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Cubic_equation for the
 		///		algorithm used.
 		/// </summary>
-		public static IEnumerable<float> Solve(float d, float c, float b, float a)
+		public static IEnumerable<double> Solve(double d, double c, double b, double a)
 		{
 			if(Math.Abs(a) <= 0.005f)
 			{
-				foreach (float v in QuadraticFunction.Solve(d, c, b))
+				foreach (double v in QuadraticFunction.Solve(d, c, b))
 				{
 					yield return v;
 				}
@@ -110,9 +108,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			foreach (Complex root in roots)
 			{
-				if(Math.Abs(root.Imaginary) <= 0.05f)
+				if(Math.Abs(root.Imaginary) <= 0.05)
 				{
-					yield return (float)root.Real;
+					yield return root.Real;
 				}
 			}
 		}

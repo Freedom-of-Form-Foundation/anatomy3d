@@ -16,10 +16,7 @@
 
 using System.Collections.Generic;
 using System.Numerics;
-using System.Linq;
 using System;
-using System.Runtime.CompilerServices;
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -28,19 +25,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$. See https://en.wikipedia.org/wiki/Quartic_function
 	///	for more information.
 	/// </summary>
-	public class QuarticFunction : ContinuousMap<float, float>
+	public class QuarticFunction : ContinuousMap<double, double>
 	{
-		public float a0 { get; }
-		public float a1 { get; }
-		public float a2 { get; }
-		public float a3 { get; }
-		public float a4 { get; }
+		public double a0 { get; }
+		public double a1 { get; }
+		public double a2 { get; }
+		public double a3 { get; }
+		public double a4 { get; }
 		
 		/// <summary>
 		///     A quartic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$.
 		///		See https://en.wikipedia.org/wiki/Quartic_function for more information.
 		/// </summary>
-		public QuarticFunction(float a0, float a1, float a2, float a3, float a4)
+		public QuarticFunction(double a0, double a1, double a2, double a3, double a4)
 		{
 			this.a0 = a0;
 			this.a1 = a1;
@@ -49,32 +46,32 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			this.a4 = a4;
 		}
 		
-		public float GetNthDerivativeAt(float x, uint derivative)
+		public double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
 				case 0: return a0 + a1*x + a2*x*x + a3*x*x*x + a4*x*x*x*x;
-				case 1: return a1 + 2.0f*a2*x + 3.0f*a3*x*x + 4.0f*a4*x*x*x;
-				case 2: return 2.0f*a2 + 6.0f*a3*x + 12.0f*a4*x*x;
-				case 3: return 6.0f*a3 + 24.0f*a4*x;
-				case 4: return 24.0f*a4;
-				default: return 0.0f;
+				case 1: return a1 + 2.0*a2*x + 3.0*a3*x*x + 4.0*a4*x*x*x;
+				case 2: return 2.0*a2 + 6.0*a3*x + 12.0*a4*x*x;
+				case 3: return 6.0*a3 + 24.0*a4*x;
+				case 4: return 24.0*a4;
+				default: return 0.0;
 			}
 		}
 		
 		/// <inheritdoc />
-		public override float GetValueAt(float x)
+		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
 		
-		public float GetDerivativeAt(float x)
+		public double GetDerivativeAt(double x)
 		{
 			return GetNthDerivativeAt(x, 1);
 		}
 		
-		public IEnumerable<float> Roots()
+		public IEnumerable<double> Roots()
 		{
 			return QuarticFunction.Solve(a0, a1, a2, a3, a4);
 		}
@@ -84,11 +81,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Quartic_function for the
 		///		algorithm used.
 		/// </summary>
-		public static IEnumerable<float> Solve(float e2, float d2, float c2, float b2, float a2)
+		public static IEnumerable<double> Solve(double e2, double d2, double c2, double b2, double a2)
 		{
-			if(Math.Abs(a2) <= 0.005f)
+			if(Math.Abs(a2) <= 0.005)
 			{
-				foreach (float v in CubicFunction.Solve(e2, d2, c2, b2))
+				foreach (double v in CubicFunction.Solve(e2, d2, c2, b2))
 				{
 					yield return v;
 				}
@@ -132,9 +129,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			foreach (Complex root in roots)
 			{
-				if(Math.Abs(root.Imaginary) <= 0.005f)
+				if(Math.Abs(root.Imaginary) <= 0.005)
 				{
-					yield return (float)root.Real;
+					yield return root.Real;
 				}
 			}
 		}

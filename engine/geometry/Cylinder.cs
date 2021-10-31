@@ -15,9 +15,10 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
 using System;
 using System.Linq;
+using GlmSharp;
+
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
@@ -48,12 +49,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="radius">
 		/// 	<inheritdoc cref="Cylinder.Radius"/>
 		/// </param>
-		public Cylinder(Curve centerCurve, float radius)
+		public Cylinder(Curve centerCurve, double radius)
 		{
 			this.CenterCurve = centerCurve;
-			this.Radius = new ConstantFunction<Vector2, float>(radius);
-			this.StartAngle = 0.0f;
-			this.EndAngle = 2.0f * (float)Math.PI;
+			this.Radius = new ConstantFunction<dvec2, double>(radius);
+			this.StartAngle = 0.0;
+			this.EndAngle = 2.0 * Math.PI;
 		}
 		
 		/// <summary>
@@ -69,18 +70,18 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	and <c>endAngle</c>. For example, if <c>startAngle = 0.0f</c> and <c>endAngle = Math.PI</c>, one would
 		/// 	get a cylinder that is sliced in half.
 		/// </summary>
-		/// <param name="centerLine">
+		/// <param name="centerCurve">
 		/// 	<inheritdoc cref="SymmetricCylinder.CenterCurve"/>
 		/// </param>
 		/// <param name="radius">
 		/// 	<inheritdoc cref="SymmetricCylinder.Radius"/>
 		/// </param>
-		public Cylinder(Curve centerCurve, ContinuousMap<Vector2, float> radius)
+		public Cylinder(Curve centerCurve, ContinuousMap<dvec2, double> radius)
 		{
 			this.CenterCurve = centerCurve;
 			this.Radius = radius;
-			this.StartAngle = 0.0f;
-			this.EndAngle = 2.0f * (float)Math.PI;
+			this.StartAngle = 0.0;
+			this.EndAngle = 2.0 * (double)Math.PI;
 		}
 		
 		/// <summary>
@@ -96,7 +97,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	and <c>endAngle</c>. For example, if <c>startAngle = 0.0f</c> and <c>endAngle = Math.PI</c>, one would
 		/// 	get a cylinder that is sliced in half.
 		/// </summary>
-		/// <param name="centerLine">
+		/// <param name="centerCurve">
 		/// 	<inheritdoc cref="Cylinder.CenterCurve"/>
 		/// </param>
 		/// <param name="radius">
@@ -114,7 +115,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	the start point of the cylinder's central axis and \f$t=1\f$ is the end point of the cylinder's central
 		/// 	axis. This allows one to vary the angles of the pie-slice along the length of the shaft.
 		/// </param>
-		public Cylinder(Curve centerCurve, ContinuousMap<Vector2, float> radius, ContinuousMap<float, float> startAngle, ContinuousMap<float, float> endAngle)
+		public Cylinder(Curve centerCurve, ContinuousMap<dvec2, double> radius, ContinuousMap<double, double> startAngle, ContinuousMap<double, double> endAngle)
 		{
 			this.CenterCurve = centerCurve;
 			this.Radius = radius;
@@ -124,7 +125,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 #endregion Constructors
 
 #region Properties
-		protected ContinuousMap<Vector2, float> radius2D;
+		protected ContinuousMap<dvec2, double> radius2D;
 		
 		/// <summary>
 		/// 	The radius of the cylinder at each point on the central axis. Mathematically, <c>radius</c> is a
@@ -132,7 +133,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	the start point of the cylinder's central axis and \f$t=1\f$ is the end point of the cylinder's central
 		/// 	axis.
 		/// </summary>
-		public ContinuousMap<Vector2, float> Radius
+		public ContinuousMap<dvec2, double> Radius
 		{
 			get { return radius2D; }
 			set { radius2D = value; }
@@ -148,16 +149,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	one-dimensional function \f$\alpha(t)\f$ defined on the domain \f$t \in [0, 1]\f$, where \f$t=0\f$ is
 		/// 	the start point of the cylinder's central axis and \f$t=1\f$ is the end point of the cylinder's central
 		/// 	axis. This allows one to vary the angles of the pie-slice along the length of the shaft.
-		/// <summary>
-		public ContinuousMap<float, float> StartAngle { get; set; }
+		/// </summary>
+		public ContinuousMap<double, double> StartAngle { get; set; }
 		
 		/// <summary>
 		/// 	The end angle of the pie-slice at each point on the central axis. <c>endAngle</c> is a
 		/// 	one-dimensional function \f$\beta(t)\f$ defined on the domain \f$t \in [0, 1]\f$, where \f$t=0\f$ is
 		/// 	the start point of the cylinder's central axis and \f$t=1\f$ is the end point of the cylinder's central
 		/// 	axis. This allows one to vary the angles of the pie-slice along the length of the shaft.
-		/// <summary>
-		public ContinuousMap<float, float> EndAngle { get; set; }
+		/// </summary>
+		public ContinuousMap<double, double> EndAngle { get; set; }
 #endregion Properties
 
 #region Static Methods
@@ -180,28 +181,28 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 
 #region Base Class Method Overrides
 		/// <inheritdoc />
-		public override Vector3 GetNormalAt(Vector2 uv)
+		public override dvec3 GetNormalAt(dvec2 uv)
 		{
-			float u = uv.X;
-			float v = uv.Y;
+			double u = uv.x;
+			double v = uv.y;
 			
-			Vector3 curveTangent = Vector3.Normalize(CenterCurve.GetTangentAt(v));
-			Vector3 curveNormal = Vector3.Normalize(CenterCurve.GetNormalAt(v));
-			Vector3 curveBinormal = Vector3.Cross(curveTangent, curveNormal);
+			dvec3 curveTangent = CenterCurve.GetTangentAt(v).Normalized;
+			dvec3 curveNormal = CenterCurve.GetNormalAt(v).Normalized;
+			dvec3 curveBinormal = dvec3.Cross(curveTangent, curveNormal);
 			
-			float startAngle = StartAngle.GetValueAt(v);
-			float endAngle = EndAngle.GetValueAt(v);
+			double startAngle = StartAngle.GetValueAt(v);
+			double endAngle = EndAngle.GetValueAt(v);
 			
-			return (float)Math.Cos(u)*curveNormal + (float)Math.Sin(u)*curveBinormal;
+			return Math.Cos(u)*curveNormal + Math.Sin(u)*curveBinormal;
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetPositionAt(Vector2 uv)
+		public override dvec3 GetPositionAt(dvec2 uv)
 		{
-			float v = uv.Y;
+			double v = uv.y;
 				
-			Vector3 translation = CenterCurve.GetPositionAt(v);
-			float radius = Radius.GetValueAt(uv);
+			dvec3 translation = CenterCurve.GetPositionAt(v);
+			double radius = Radius.GetValueAt(uv);
 			
 			return translation + radius*GetNormalAt(uv);
 		}
@@ -211,28 +212,28 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			var roughs = ParallelEnumerable.Range(0, resolutionV + 1).AsOrdered().SelectMany((j =>
 			{
-				float v = (float) j / (float) resolutionV;
+				double v = (double) j / (double) resolutionV;
 
 				// Find the values at each ring:
-				Vector3 curveTangent = Vector3.Normalize(CenterCurve.GetTangentAt(v));
-				Vector3 curveNormal = Vector3.Normalize(CenterCurve.GetNormalAt(v));
-				Vector3 curveBinormal = Vector3.Cross(curveTangent, curveNormal);
+				dvec3 curveTangent = CenterCurve.GetTangentAt(v).Normalized;
+				dvec3 curveNormal = CenterCurve.GetNormalAt(v).Normalized;
+				dvec3 curveBinormal = dvec3.Cross(curveTangent, curveNormal);
 
-				Vector3 translation = CenterCurve.GetPositionAt(v);
+				dvec3 translation = CenterCurve.GetPositionAt(v);
 
-				float startAngle = StartAngle.GetValueAt(v);
-				float endAngle = EndAngle.GetValueAt(v);
+				double startAngle = StartAngle.GetValueAt(v);
+				double endAngle = EndAngle.GetValueAt(v);
 
 				return Enumerable.Range(0, resolutionU).Select((i) =>
 				{
-					float u = startAngle + (endAngle - startAngle) * (float) i / (float) resolutionU;
+					double u = startAngle + (endAngle - startAngle) * (double) i / (double) resolutionU;
 
-					float radius = Radius.GetValueAt(new Vector2(u, v));
+					double radius = Radius.GetValueAt(new dvec2(u, v));
 
 					// Calculate the position of the rings of vertices:
-					Vector3 surfaceNormal = (float) Math.Cos(u) * curveNormal + (float) Math.Sin(u) * curveBinormal;
-					Vector3 surfacePosition = translation + radius * surfaceNormal;
-					return new Vertex(surfacePosition, surfaceNormal);
+					dvec3 surfaceNormal = (double) Math.Cos(u) * curveNormal + (double) Math.Sin(u) * curveBinormal;
+					dvec3 surfacePosition = translation + radius * surfaceNormal;
+					return new Vertex((vec3)surfacePosition, (vec3)surfaceNormal);
 				});
 			}));
 
@@ -243,25 +244,25 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			{
 				for (int i = 0; i < (resolutionU - 1); i++)
 				{
-					Vector3 surfacePosition = output[(j-1)*resolutionU + i].Position;
-					Vector3 du = surfacePosition - output[(j-1)*resolutionU + i + 1].Position;
-					Vector3 dv = surfacePosition - output[(j)*resolutionU + i].Position;
+					dvec3 surfacePosition = output[(j-1)*resolutionU + i].Position;
+					dvec3 du = surfacePosition - output[(j-1)*resolutionU + i + 1].Position;
+					dvec3 dv = surfacePosition - output[(j)*resolutionU + i].Position;
 					
 					// Calculate the position of the rings of vertices:
-					Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
+					dvec3 surfaceNormal = dvec3.Cross(du.Normalized, dv.Normalized);
 					
-					output[(j-1)*resolutionU + i] = new Vertex(surfacePosition, surfaceNormal);
+					output[(j-1)*resolutionU + i] = new Vertex((vec3)surfacePosition, (vec3)surfaceNormal);
 				}
 				
 				// Stitch the end of the triangles:
-				Vector3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU-1].Position;
-				Vector3 du2 = surfacePosition2 - output[(j-1)*resolutionU].Position;
-				Vector3 dv2 = surfacePosition2 - output[(j)*resolutionU + resolutionU-1].Position;
+				dvec3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU-1].Position;
+				dvec3 du2 = surfacePosition2 - output[(j-1)*resolutionU].Position;
+				dvec3 dv2 = surfacePosition2 - output[(j)*resolutionU + resolutionU-1].Position;
 				
 				// Calculate the position of the rings of vertices:
-				Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
+				dvec3 surfaceNormal2 = dvec3.Cross(du2.Normalized, dv2.Normalized);
 				
-				output[(j-1)*resolutionU + resolutionU-1] = new Vertex(surfacePosition2, surfaceNormal2);
+				output[(j-1)*resolutionU + resolutionU-1] = new Vertex((vec3)surfacePosition2, (vec3)surfaceNormal2);
 			}
 			
 			return output;

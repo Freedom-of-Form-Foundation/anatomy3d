@@ -17,13 +17,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-    /// <summary>
-    /// MutableCubicSpline1D uses MutablePiecewiseInterpolatedCurve to implement moveable point behavior for CubicSpline1D.
-    /// </summary>
     public class MutableCubicSpline1D : MutablePiecewiseInterpolatedCurve<MutablePair, double>
     {
         /// <summary>
@@ -41,19 +37,19 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             return mp;
         }
 
-        /// <summary>
-        /// Algorithm for converting a sequence of MutablePair instances at one point in time into an immutable
-        /// CubicSpline1D. Because CubicSpline1D operates on `float`, but this type declares double (because we're
-        /// planning to migrate), we introduce CubicSpline1DAdapter to marshal in and out of double.
-        /// </summary>
-        private struct CubicSpline1DFactory : ICurveFactory<MutablePair, double>
+		/// <summary>
+		/// Algorithm for converting a sequence of MutablePair instances at one point in time into an immutable
+		/// CubicSpline1D. Because CubicSpline1D operates on `float`, but this type declares double (because we're
+		/// planning to migrate), we introduce CubicSpline1DAdapter to marshal in and out of double.
+		/// </summary>
+		private struct CubicSpline1DFactory : ICurveFactory<MutablePair, double>
         {
             public ICurve<double> NewCurve(IEnumerable<MutablePair> parameters)
             {
-                SortedList<float, float> sortedPoints = new SortedList<float, float>();
+                SortedList<double, double> sortedPoints = new SortedList<double, double>();
                 foreach (var point in parameters.OrderBy(point => point.Location))
                 {
-                    sortedPoints.Add((float)point.Location, (float)point.Value);
+                    sortedPoints.Add((double)point.Location, (double)point.Value);
                 }
 
                 CubicSpline1D spline = new CubicSpline1D(sortedPoints);
@@ -61,12 +57,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             }
         }
 
-        /// <summary>
-        /// ICurve{double} view of CubicSpline1D, which doesn't exactly match the ICurve interface and - if it did -
-        /// would be an ICurve{Float} anyway. This wrapper implements the interface by calling the equivalent functions
-        /// on the underlying CubicSpline1D, marshalling between double and float as required.
-        /// </summary>
-        private struct CubicSpline1DAdapter : ICurve<double>
+		/// <summary>
+		/// ICurve{double} view of CubicSpline1D, which doesn't exactly match the ICurve interface and - if it did -
+		/// would be an ICurve{Float} anyway. This wrapper implements the interface by calling the equivalent functions
+		/// on the underlying CubicSpline1D, marshalling between double and float as required.
+		/// </summary>
+		private struct CubicSpline1DAdapter : ICurve<double>
         {
             private CubicSpline1D _spline;
 
@@ -80,11 +76,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
                 _spline = spline;
             }
 
-
-            public double GetValueAt(double x) => _spline.GetValueAt((float)x);
+			public double GetValueAt(double x) => _spline.GetValueAt((float)x);
 
             public double GetDerivativeAt(double x, uint derivative) =>
                 _spline.GetNthDerivativeAt((float)x, derivative);
-        }
-    }
+		}
+	}
 }

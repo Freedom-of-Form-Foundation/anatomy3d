@@ -14,10 +14,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
-using System;
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -32,10 +29,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// <param name="direction">
 	/// 	The direction in which the 1D function is placed onto the 2D domain.
 	/// </param>
-	public class DomainToVector2<TOut> : ContinuousMap<Vector2, TOut>
+	public class DomainToVector2<TOut> : ContinuousMap<dvec2, TOut>
 	{
-		public Vector2 ParameterDirection { get; set; }
-		public ContinuousMap<float, TOut> Function { get; set; }
+		public dvec2 ParameterDirection { get; set; }
+		public ContinuousMap<double, TOut> Function { get; set; }
 		
 		/// <summary>
 		///		Constructs a ContinuousMap taking 2D input values, based on a ContinuousMap that takes 1D input values.
@@ -56,16 +53,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The direction in which the 1D function is placed onto the 2D domain. The magnitude of this vector
 		/// 	has an effect on the scale of the function.
 		/// </param>
-		public DomainToVector2(Vector2 direction, ContinuousMap<float, TOut> function)
+		public DomainToVector2(dvec2 direction, ContinuousMap<double, TOut> function)
 		{
-			this.ParameterDirection = direction;
-			this.Function = function;
+			ParameterDirection = direction;
+			Function = function;
 		}
 		
 		/// <inheritdoc />
-		public override TOut GetValueAt(Vector2 t)
+		public override TOut GetValueAt(dvec2 t)
 		{
-			return Function.GetValueAt(Vector2.Dot(ParameterDirection, t));
+			return Function.GetValueAt(dvec2.Dot(ParameterDirection, t));
 		}
 	}
 }

@@ -14,9 +14,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System;
-using System.Collections;
-using System.Numerics;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
@@ -28,15 +26,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <summary>
 		///		The point from which the ray is cast.
 		/// </summary>
-		public Vector3 StartPosition { get; set; }
+		public dvec3 StartPosition { get; set; }
 		
-		Vector3 direction;
+		dvec3 direction;
 		/// <summary>
 		///		The direction in which the ray is cast. The direction becomes normalized on assignment.
 		/// </summary>
-		public Vector3 Direction {
+		public dvec3 Direction {
 			get { return direction; }
-			set { direction = Vector3.Normalize(value); }
+			set { direction = value.Normalized; }
 		}
 		
 		/// <summary>
@@ -48,10 +46,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="rayDirection">
 		///		The direction in which the ray is cast. The direction becomes normalized on initialization.
 		/// </param>
-		public Ray(Vector3 rayStart, Vector3 rayDirection)
+		public Ray(dvec3 rayStart, dvec3 rayDirection)
 		{
 			StartPosition = rayStart;
-			direction = Vector3.Normalize(rayDirection);
+			direction = rayDirection.Normalized;
 		}
 	}
 }

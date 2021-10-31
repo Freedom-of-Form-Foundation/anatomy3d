@@ -15,51 +15,48 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
-using System.Linq;
 using System;
-using FreedomOfFormFoundation.AnatomyEngine.Geometry;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
 	///     Class <c>QuadraticFunction</c> describes a quadratic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2\f$.
 	/// </summary>
-	public class QuadraticFunction : ContinuousMap<float, float>
+	public class QuadraticFunction : ContinuousMap<double, double>
 	{
-		float a0;
-		float a1;
-		float a2;
+		private readonly double _a0;
+		private readonly double _a1;
+		private readonly double _a2;
 		
 		/// <summary>
 		///     A quadratic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2\f$.
 		/// </summary>
-		public QuadraticFunction(float a0, float a1, float a2)
+		public QuadraticFunction(double a0, double a1, double a2)
 		{
-			this.a0 = a0;
-			this.a1 = a1;
-			this.a2 = a2;
+			_a0 = a0;
+			_a1 = a1;
+			_a2 = a2;
 		}
 		
-		public float GetNthDerivativeAt(float x, uint derivative)
+		public double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return a0 + a1*x + a2*x*x;
-				case 1: return a1 + 2.0f*a2*x;
-				case 2: return 2.0f*a2;
+				case 0: return _a0 + _a1*x + _a2*x*x;
+				case 1: return _a1 + 2.0f*_a2*x;
+				case 2: return 2.0f*_a2;
 				default: return 0.0f;
 			}
 		}
 		
 		/// <inheritdoc />
-		public override float GetValueAt(float x)
+		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
 		
-		public float GetDerivativeAt(float x)
+		public double GetDerivativeAt(double x)
 		{
 			return GetNthDerivativeAt(x, 1);
 		}
@@ -69,20 +66,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///		\f$x\f$ for which the equation is true using the 'abc-formula' using the parameters
 		/// 	in this instance of QuadraticFunction.
 		/// </summary>
-		public IEnumerable<float> Roots()
+		public IEnumerable<double> Roots()
 		{
-			return QuadraticFunction.Solve(a0, a1, a2);
+			return Solve(_a0, _a1, _a2);
 		}
 		
 		/// <summary>
 		///     Solves a general equation \f$a_0 + a_1 x + a_2 x^2 = 0\f$, returning all real values of
 		///		\f$x\f$ for which the equation is true using the 'abc-formula'.
 		/// </summary>
-		public static IEnumerable<float> Solve(float a0, float a1, float a2)
+		public static IEnumerable<double> Solve(double a0, double a1, double a2)
 		{
-			if(Math.Abs(a2) <= 0.005f)
+			if(Math.Abs(a2) <= 0.005)
 			{
-				if(Math.Abs(a1) <= 0.005f)
+				if(Math.Abs(a1) <= 0.005)
 				{
 					// There are no roots found:
 					yield break;
@@ -93,16 +90,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				}
 				yield break;
 			}
+
+			double x1 = 0.5*(-a1 + Math.Sqrt(a1*a1 - 4.0*a0*a2))/a2;
+			double x2 = 0.5*(-a1 - Math.Sqrt(a1*a1 - 4.0*a0*a2))/a2;
 			
-			float x1 = 0.5f*(-a1 + (float)Math.Sqrt(a1*a1 - 4.0f*a0*a2))/a2;
-			float x2 = 0.5f*(-a1 - (float)Math.Sqrt(a1*a1 - 4.0f*a0*a2))/a2;
-			
-			if(Single.IsNaN(x1) == false)
+			if(Double.IsNaN(x1) == false)
 			{
 				yield return x1;
 			}
-			
-			if(Single.IsNaN(x2) == false)
+
+			if(Double.IsNaN(x2) == false)
 			{
 				yield return x2;
 			}

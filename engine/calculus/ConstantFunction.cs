@@ -14,10 +14,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
-using System;
-
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
@@ -27,16 +23,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// </summary>
 	public class ConstantFunction<TIn, TOut> : ContinuousMap<TIn, TOut>
 	{
-		TOut constant;
+		TOut _constant;
 		
 		public ConstantFunction(TOut constant)
 		{
-			this.constant = constant;
+			_constant = constant;
 		}
 		
 		public override TOut GetValueAt(TIn t)
 		{
-			return constant;
+			return _constant;
 		}
 	}
 }

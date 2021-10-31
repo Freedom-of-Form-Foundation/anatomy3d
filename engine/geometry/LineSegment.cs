@@ -14,9 +14,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-using System.Collections.Generic;
-using System.Numerics;
-using System;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 {
@@ -25,61 +23,61 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 	/// </summary>
 	public class LineSegment : Curve
 	{
-		private Vector3 start;
-		private Vector3 end;
-		private Vector3 normal;
+		private dvec3 _start;
+		private dvec3 _end;
+		private dvec3 _normal;
 		
-		public LineSegment(Vector3 start, Vector3 end)
+		public LineSegment(dvec3 start, dvec3 end)
 		{
-			this.start = start;
-			this.end = end;
-			
+			_start = start;
+			_end = end;
+
 			// No normal supplied, pick arbitrary normal vector:
-			this.normal = VectorUtilities.InventNormal(end - start);
+			_normal = VectorUtilities.InventNormal(end - start);
 		}
 		
-		public LineSegment(Vector3 start, Vector3 end, Vector3 normal)
+		public LineSegment(dvec3 start, dvec3 end, dvec3 normal)
 		{
-			this.start = start;
-			this.end = end;
+			_start = start;
+			_end = end;
 			
 			// Ensure that the normal is truly perpendicular to the tangent vector:
-			Vector3 tangent = Vector3.Normalize(end - start);
-			Vector3 up = Vector3.Normalize(Vector3.Cross(tangent, normal));
-			this.normal = Vector3.Normalize(Vector3.Cross(up, tangent));
+			dvec3 tangent = (end - start).Normalized;
+			dvec3 up = dvec3.Cross(tangent, normal).Normalized;
+			_normal = dvec3.Cross(up, tangent).Normalized;
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetPositionAt(float t)
+		public override dvec3 GetPositionAt(double t)
 		{
 			// Simply return the linearly interpolated position between `start` and `end`:
-			return t*end + (1.0f-t)*start;
+			return t*_end + (1.0-t)*_start;
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetTangentAt(float t)
+		public override dvec3 GetTangentAt(double t)
 		{
 			// The tangent vector is always in the direction of the line:
-			return end - start; // TODO: Should this be normalized, or is length information useful?
+			return _end - _start; // TODO: Should this be normalized, or is length information useful?
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetNormalAt(float t)
+		public override dvec3 GetNormalAt(double t)
 		{
 			// The tangent vector is always in the direction of the line:
-			return normal; // TODO: Should this be normalized, or is length information useful?
+			return _normal; // TODO: Should this be normalized, or is length information useful?
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetStartPosition()
+		public override dvec3 GetStartPosition()
 		{
-			return start;
+			return _start;
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetEndPosition()
+		public override dvec3 GetEndPosition()
 		{
-			return end;
+			return _end;
 		}
 	}
 }

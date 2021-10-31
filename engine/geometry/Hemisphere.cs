@@ -15,8 +15,9 @@
  */
 
 using System.Collections.Generic;
-using System.Numerics;
 using System;
+using GlmSharp;
+
 using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
@@ -42,12 +43,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="direction">
 		/// 	The vector that defines which way is 'forward' for the object. Will be normalized on initialization.
 		/// </param>
-		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction)
+		public Hemisphere(ContinuousMap<dvec2, double> radius, dvec3 center, dvec3 direction)
 			: this(radius,
 					center,
 					direction,
-					Vector3.Cross(direction, Vector3.UnitZ),
-					Vector3.Cross(direction, Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ)))
+					dvec3.Cross(direction, dvec3.UnitZ),
+					dvec3.Cross(direction, dvec3.Cross(direction, dvec3.UnitZ).Normalized)
 				)
 		{
 			
@@ -74,7 +75,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// 	The vector that defines which way is 'left' for the object. Should be perpendicular to
 		/// 	<c>direction</c> and <c>normal</c>. Will be normalized on initialization.
 		/// </param>
-		public Hemisphere(ContinuousMap<Vector2, float> radius, Vector3 center, Vector3 direction, Vector3 normal, Vector3 binormal)
+		public Hemisphere(ContinuousMap<dvec2, double> radius, dvec3 center, dvec3 direction, dvec3 normal, dvec3 binormal)
 		{
 			this.Radius = radius;
 			this.Center = center;
@@ -85,43 +86,43 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 #endregion
 		
 #region Properties
-		private ContinuousMap<Vector2, float> Radius { get; set; }
+		private ContinuousMap<dvec2, double> Radius { get; set; }
 		
 		/// <summary>
 		/// 	The position of the hemisphere.
 		/// </summary>
-		public Vector3 Center { get; set; }
+		public dvec3 Center { get; set; }
 		
-		private Vector3 direction;
+		private dvec3 _direction;
 		/// <summary>
 		/// 	The vector that defines which way is 'forward' for the object. Will be normalized on initialization.
 		/// </summary>
-		public Vector3 Direction
+		public dvec3 Direction
 		{
-			get { return direction; }
-			set { direction = Vector3.Normalize(value); }
+			get { return _direction; }
+			set { _direction = value.Normalized; }
 		}
 		
-		private Vector3 pointNormal;
+		private dvec3 _pointNormal;
 		/// <summary>
 		/// 	The vector that defines which way is 'up' for the object. Should be perpendicular to
 		/// 	<c>direction</c> and <c>binormal</c>. Will be normalized on initialization.
 		/// </summary>
-		public Vector3 Normal
+		public dvec3 Normal
 		{
-			get { return pointNormal; }
-			set { pointNormal = Vector3.Normalize(value); }
+			get { return _pointNormal; }
+			set { _pointNormal = value.Normalized; }
 		}
-		private Vector3 pointBinormal;
+		private dvec3 _pointBinormal;
 		
 		/// <summary>
 		/// 	The vector that defines which way is 'left' for the object. Should be perpendicular to
 		/// 	<c>direction</c> and <c>normal</c>. Will be normalized on initialization.
 		/// </summary>
-		public Vector3 Binormal
+		public dvec3 Binormal
 		{
-			get { return pointBinormal; }
-			set { pointBinormal = Vector3.Normalize(value); }
+			get { return _pointBinormal; }
+			set { _pointBinormal = value.Normalized; }
 		}
 #endregion
 
@@ -145,24 +146,24 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 
 #region Base Class Method Overrides
 		/// <inheritdoc />
-		public override Vector3 GetNormalAt(Vector2 uv)
+		public override dvec3 GetNormalAt(dvec2 uv)
 		{
-			float u = uv.X;
-			float v = uv.Y;
+			double u = uv.x;
+			double v = uv.y;
 			
 			// Calculate the position of the rings of vertices:
-			float x = (float)Math.Sin(v) * (float)Math.Cos(u);
-			float y = (float)Math.Sin(v) * (float)Math.Sin(u);
-			float z = (float)Math.Cos(v);
+			double x = Math.Sin(v) * Math.Cos(u);
+			double y = Math.Sin(v) * Math.Sin(u);
+			double z = Math.Cos(v);
 			
 			return x*Normal + y*Binormal + z*Direction;
 		}
 		
 		/// <inheritdoc />
-		public override Vector3 GetPositionAt(Vector2 uv)
+		public override dvec3 GetPositionAt(dvec2 uv)
 		{
-			Vector3 translation = Center;
-			float radius = this.Radius.GetValueAt(uv);
+			dvec3 translation = Center;
+			double radius = this.Radius.GetValueAt(uv);
 			
 			return translation + radius*GetNormalAt(uv);
 		}
@@ -173,40 +174,40 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
 			
 			// Load all required variables:
-			Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
+			dvec3 up = dvec3.UnitZ;
 			
-			Vector3 pointTangent = Direction;
-			Vector3 pointNormal = Normal;
-			Vector3 pointBinormal = Binormal;
+			dvec3 pointTangent = Direction;
+			dvec3 pointNormal = Normal;
+			dvec3 pointBinormal = Binormal;
 			
-			Vector3 translation = Center;
-			
+			dvec3 translation = Center;
+
 			// Get the radius at the top of the hemisphere:
-			float topRadius = this.Radius.GetValueAt(new Vector2(0.0f, 0.5f*(float)Math.PI));
+			double topRadius = Radius.GetValueAt(new dvec2(0.0, 0.5 * Math.PI));
 
 			// Generate the first point at the pole of the hemisphere:
-			output.Add(new Vertex(translation + topRadius*pointTangent, pointTangent));
-			
+			output.Add(new Vertex((vec3)(translation + topRadius * pointTangent), (vec3)pointTangent));
+
 			// Generate rings of the other points:
 			for (int j = 1; j < (resolutionV+1); j++)
 			{
 				for (int i = 0; i < resolutionU; i++)
 				{
 					// First find the normalized uv-coordinates, u = [0, 2pi], v = [0, 1/2pi]:
-					float u = (float)i/(float)resolutionU * 2.0f * (float)Math.PI;
-					float v = (float)j/(float)resolutionV * 0.5f * (float)Math.PI;
+					double u = i/(double)resolutionU * 2.0 * Math.PI;
+					double v = j/(double)resolutionV * 0.5 * Math.PI;
 					
 					// Calculate the position of the rings of vertices:
-					float x = (float)Math.Sin(v) * (float)Math.Cos(u);
-					float y = (float)Math.Sin(v) * (float)Math.Sin(u);
-					float z = (float)Math.Cos(v);
+					double x = Math.Sin(v) * Math.Cos(u);
+					double y = Math.Sin(v) * Math.Sin(u);
+					double z = Math.Cos(v);
 					
-					float radius = this.Radius.GetValueAt(new Vector2(u, v));
+					double radius = Radius.GetValueAt(new dvec2(u, v));
 					
-					Vector3 surfaceNormal = x*pointNormal + y*pointBinormal + z*pointTangent;
-					Vector3 surfacePosition = translation + radius*surfaceNormal;
+					dvec3 surfaceNormal = x*pointNormal + y*pointBinormal + z*pointTangent;
+					dvec3 surfacePosition = translation + radius*surfaceNormal;
 					
-					output.Add(new Vertex(surfacePosition, surfaceNormal));
+					output.Add(new Vertex((vec3)surfacePosition, (vec3)surfaceNormal));
 				}
 			}
 			
@@ -215,25 +216,25 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			{
 				for (int i = 0; i < (resolutionU - 1); i++)
 				{
-					Vector3 surfacePosition = output[(j-1)*resolutionU + i + 1].Position;
-					Vector3 du = surfacePosition - output[(j-1)*resolutionU + i + 1 + 1].Position;
-					Vector3 dv = surfacePosition - output[(j)*resolutionU + i + 1].Position;
+					dvec3 surfacePosition = output[(j-1)*resolutionU + i + 1].Position;
+					dvec3 du = surfacePosition - output[(j-1)*resolutionU + i + 1 + 1].Position;
+					dvec3 dv = surfacePosition - output[(j)*resolutionU + i + 1].Position;
 					
 					// Calculate the position of the rings of vertices:
-					Vector3 surfaceNormal = Vector3.Cross(Vector3.Normalize(du), Vector3.Normalize(dv));
+					dvec3 surfaceNormal = dvec3.Cross(du.Normalized, dv.Normalized);
 					
-					output[(j-1)*resolutionU + i + 1] = new Vertex(surfacePosition, surfaceNormal);
+					output[(j-1)*resolutionU + i + 1] = new Vertex((vec3)surfacePosition, (vec3)surfaceNormal);
 				}
 				
 				// Stitch the end of the triangles:
-				Vector3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU].Position;
-				Vector3 du2 = surfacePosition2 - output[(j-1)*resolutionU + 1].Position;
-				Vector3 dv2 = surfacePosition2 - output[(j)*resolutionU + resolutionU].Position;
+				dvec3 surfacePosition2 = output[(j-1)*resolutionU + resolutionU].Position;
+				dvec3 du2 = surfacePosition2 - output[(j-1)*resolutionU + 1].Position;
+				dvec3 dv2 = surfacePosition2 - output[(j)*resolutionU + resolutionU].Position;
 				
 				// Calculate the position of the rings of vertices:
-				Vector3 surfaceNormal2 = Vector3.Cross(Vector3.Normalize(du2), Vector3.Normalize(dv2));
+				dvec3 surfaceNormal2 = dvec3.Cross(du2.Normalized, dv2.Normalized);
 				
-				output[(j-1)*resolutionU + resolutionU] = new Vertex(surfacePosition2, surfaceNormal2);
+				output[(j-1)*resolutionU + resolutionU] = new Vertex((vec3)surfacePosition2, (vec3)surfaceNormal2);
 			}
 			
 			return output;
