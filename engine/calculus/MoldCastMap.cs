@@ -138,6 +138,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <inheritdoc />
 		public override double GetValueAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double directionSign = (direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
 
 			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);

@@ -42,7 +42,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		public QuarticFunction(double a0, double a1, double a2, double a3, double a4)
 		{
-
+			DebugUtil.AssertAllFinite(new double[]{a0, a1, a2, a3, a4}, "a");
 			this.a0 = a0;
 			this.a1 = a1;
 			this.a2 = a2;
@@ -52,6 +52,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		
 		public double GetNthDerivativeAt(double x, uint derivative)
 		{
+			DebugUtil.AssertFinite(x, nameof(x));
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
@@ -81,45 +82,40 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Solves the equation \f$e + d x + c x^2 + b x^3 + a x^4 = 0\f$, returning all real values of
+		///     Solves the equation \f$c0 + c1 x + c2 x^2 + c3 x^3 + c4 x^4 = 0\f$, returning all real values of
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Quartic_function for the
 		///		algorithm used.
 		/// </summary>
-		public static IEnumerable<double> Solve(double e2, double d2, double c2, double b2, double a2)
+		public static IEnumerable<double> Solve(double c0, double c1, double c2, double c3, double c4)
 		{
-			if(Math.Abs(a2) <= 0.005)
+			DebugUtil.AssertAllFinite(new double[]{c0, c1, c2, c3, c4}, "c");
+			if(Math.Abs(c4) <= 0.005)
 			{
-				foreach (double v in CubicFunction.Solve(e2, d2, c2, b2))
+				foreach (double v in CubicFunction.Solve(c0, c1, c2, c3))
 				{
 					yield return v;
 				}
 				yield break;
 			}
+
+			double ba = c3/c4;
+			double ca = c2/c4;
+			double da = c1/c4;
+			// double ea = c0/c4;
 			
-			double a = a2;
-			double b = b2;
-			double c = c2;
-			double d = d2;
-			double e = e2;
+			double p1 = c2*c2*c2 - 4.5*c3*c2*c1 + 13.5*c4*c1*c1 + 13.5*c3*c3*c0 - 36.0*c4*c2*c0;
 			
-			double ba = b/a;
-			double ca = c/a;
-			double da = d/a;
-			double ea = e/a;
-			
-			double p1 = c*c*c - 4.5*b*c*d + 13.5*a*d*d + 13.5*b*b*e - 36.0*a*c*e;
-			
-			double q = c*c - 3.0*b*d + 12.0*a*e;
+			double q = c2*c2 - 3.0*c3*c1 + 12.0*c4*c0;
 			
 			Complex p2 = p1 + Complex.Sqrt(-q*q*q + p1*p1);
 			
 			Complex pow = Complex.Pow(p2, (1.0/3.0));
 			
-			Complex p3 = q/(3.0*a*pow) + pow/(3.0*a);
+			Complex p3 = q/(3.0*c4*pow) + pow/(3.0*c4);
 			
 			Complex p4 = Complex.Sqrt(ba*ba/4.0 - 2.0*ca/(3.0) + p3);
 			
-			Complex p5 = b*b/(2.0*a*a) - 4.0*c/(3.0*a) - p3;
+			Complex p5 = c3*c3/(2.0*c4*c4) - 4.0*c2/(3.0*c4) - p3;
 			
 			Complex p6 = (-ba*ba*ba + 4.0*ba*ca - 8.0*da)/(4.0*p4);
 			
@@ -135,6 +131,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				if(Math.Abs(root.Imaginary) <= 0.005)
 				{
+					DebugUtil.AssertFinite(root.Real, nameof(root.Real));
 					yield return root.Real;
 				}
 			}
