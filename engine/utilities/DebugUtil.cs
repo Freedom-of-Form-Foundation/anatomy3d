@@ -14,7 +14,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using FreedomOfFormFoundation.AnatomyEngine.Calculus;
 
 namespace FreedomOfFormFoundation.AnatomyEngine
 {
@@ -33,7 +35,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
         /// </summary>
         /// <param name="x">Value to range check.</param>
         /// <param name="varName">Name of variable being checked (use nameof); included in error message. </param>
-        [System.Diagnostics.Conditional("DEBUG")]
+        [Conditional("DEBUG")]
         public static void AssertFinite(double x, string varName)
         {
             Debug.Assert(
@@ -41,6 +43,36 @@ namespace FreedomOfFormFoundation.AnatomyEngine
                 "Transfinite double error",
                 "Variable {0}, expected to be finite, had illegal value {1}.",
                 varName, x);
+        }
+
+        /// <summary>
+        /// AssertAllFinite crashes the program (in debug mode) if any item in items is infinite or NaN.
+        /// It does not object to negative zero.
+        /// </summary>
+        /// <param name="items">Collection of items to range check.</param>
+        /// <param name="varName">Name of variable being checked (use nameof); included in error message.</param>
+        [Conditional("DEBUG")]
+        public static void AssertAllFinite(IEnumerable<double> items, string varName)
+        {
+            uint idx = 0;
+            foreach (double item in items)
+            {
+                AssertFinite(item, $"{varName}[{idx}]");
+                idx++;
+            }
+        }
+
+        /// <summary>
+        /// AssertAllFinite crashes the program (in debug mode) if any element of any point in the SortedPointsList
+        /// is infinite or NaN. It does not object to negative zero.
+        /// </summary>
+        /// <param name="items">Collection of items to range check.</param>
+        /// <param name="varName">Name of variable being checked (use nameof); included in error message.</param>
+        [Conditional("DEBUG")]
+        public static void AssertAllFinite(SortedPointsList<double> items, string varName)
+        {
+            AssertAllFinite(items.Key, $"{varName}.Key");
+            AssertAllFinite(items.Value, $"{varName}.Value");
         }
     }
 }

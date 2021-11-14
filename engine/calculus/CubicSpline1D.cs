@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Diagnostics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -67,6 +68,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			}
 			
 			Points = new SortedPointsList<double>(points);
+			DebugUtil.AssertAllFinite(Points, nameof(Points));
 			
 			// Calculate the coefficients of the spline:
 			double[] a = new double[points.Count];
@@ -133,6 +135,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public double GetNthDerivativeAt(double x, uint derivative)
 		{
+			DebugUtil.AssertFinite(x, nameof(x));
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
@@ -210,6 +213,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		private static double[] ThomasAlgorithm(double[] a, double[] b, double[] c, double[] d)
 		{
+			DebugUtil.AssertAllFinite(a, nameof(a));
+			DebugUtil.AssertAllFinite(b, nameof(b));
+			DebugUtil.AssertAllFinite(c, nameof(c));
+			DebugUtil.AssertAllFinite(d, nameof(d));
+
 			int size = d.Count();
 			
 			// Perform forward sweep:
@@ -223,6 +231,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				newC[i] = c[i] / ( b[i] - a[i]*newC[i-1] );
 				newD[i] = (d[i] - a[i]*newD[i-1]) / ( b[i] - a[i]*newC[i-1] );
 			}
+			DebugUtil.AssertAllFinite(newC, nameof(newC));
+			DebugUtil.AssertAllFinite(newD, nameof(newD));
 			
 			// Perform back substitution:
 			double[] x = new double[size];
@@ -232,7 +242,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				x[i] = newD[i] - newC[i]*x[i+1];
 			}
-			
+
+			DebugUtil.AssertAllFinite(x, nameof(x));
 			return x;
 		}
 	}
