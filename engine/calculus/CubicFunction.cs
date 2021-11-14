@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
+using System.Security.Cryptography;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -44,6 +45,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		
 		public double GetNthDerivativeAt(double x, uint derivative)
 		{
+			DebugUtil.AssertFinite(x, nameof(x));
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
@@ -77,6 +79,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		public static IEnumerable<double> Solve(double d, double c, double b, double a)
 		{
+			DebugUtil.AssertFinite(a, nameof(a));
+			DebugUtil.AssertFinite(b, nameof(b));
+			DebugUtil.AssertFinite(c, nameof(c));
+			DebugUtil.AssertFinite(d, nameof(d));
 			if(Math.Abs(a) <= 0.005f)
 			{
 				foreach (double v in QuadraticFunction.Solve(d, c, b))
@@ -110,6 +116,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				if(Math.Abs(root.Imaginary) <= 0.05)
 				{
+					DebugUtil.AssertFinite(root.Real, nameof(root.Real));
 					yield return root.Real;
 				}
 			}
