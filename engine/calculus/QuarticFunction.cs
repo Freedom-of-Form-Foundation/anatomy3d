@@ -17,6 +17,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.Text;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -39,6 +42,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </summary>
 		public QuarticFunction(double a0, double a1, double a2, double a3, double a4)
 		{
+
 			this.a0 = a0;
 			this.a1 = a1;
 			this.a2 = a2;
