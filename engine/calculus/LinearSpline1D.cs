@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -64,6 +65,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			}
 			
 			Points = new SortedPointsList<double>(points);
+			DebugUtil.AssertAllFinite(Points, nameof(Points));
 
 			// Calculate the coefficients for each segment of the spline:
 			_parameters = new double[points.Count];
@@ -76,6 +78,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
 				_parameters[i] = dy / dx;
 			}
+			DebugUtil.AssertAllFinite(_parameters, nameof(_parameters));
 		}
 
 		/// <summary>
@@ -99,7 +102,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
-				throw new ArgumentOutOfRangeException(nameof(x), "Cannot interpolate outside the interval given by the spline points.");
+				throw new ArgumentOutOfRangeException(nameof(x), $"Cannot interpolate at {x}, which is outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
@@ -139,8 +142,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Return the result of evaluating a derivative function, depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return global_y;
-				case 1: return slope;
+				case 0:
+					DebugUtil.AssertFinite(global_y, nameof(global_y));
+					return global_y;
+				case 1:
+					DebugUtil.AssertFinite(slope, nameof(slope));
+					return slope;
 				default: return 0.0;
 			}
 		}
