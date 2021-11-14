@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
-	public abstract class RaytraceableFunction1D : ContinuousMap<double, double>
+	public abstract class RaytraceableFunction1D : DerivableFunction<double, double>
 	{
 		/// <summary>
 		/// Solves the equation \f$(q(x))^2 = b_0 + b_1 x + b_2 x^2 + b_3 x^3 + b_4 x^4\f$, returning all values of

@@ -72,7 +72,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// <summary>
     /// Mutable2DPointFactory generates MutablePair instances so a MutablePiecewiseInterpolatedCurve can spawn them.
     /// </summary>
-    public struct Mutable2DPointFactory : IMutablePointFactory<MutablePair>
+    public struct MutablePairFactory : IMutablePointFactory<MutablePair>
     {
         public MutablePair NewPoint(Action mutationCallback) => new MutablePair(mutationCallback);
     }

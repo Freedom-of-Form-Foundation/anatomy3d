@@ -23,7 +23,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// <summary>
 	///     Class <c>QuadraticFunction</c> describes a quadratic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2\f$.
 	/// </summary>
-	public class QuadraticFunction : ContinuousMap<double, double>
+	public class QuadraticFunction : DerivableFunction<double, double>
 	{
 		private readonly double _a0;
 		private readonly double _a1;
@@ -41,8 +41,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			_a1 = a1;
 			_a2 = a2;
 		}
-		
-		public double GetNthDerivativeAt(double x, uint derivative)
+
+		/// <inheritdoc />
+		public override double GetNthDerivativeAt(double x, uint derivative)
 		{
 			DebugUtil.AssertFinite(x, nameof(x));
 			// Return a different function depending on the derivative level:
@@ -59,11 +60,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
-		}
-		
-		public double GetDerivativeAt(double x)
-		{
-			return GetNthDerivativeAt(x, 1);
 		}
 		
 		/// <summary>

@@ -148,7 +148,7 @@ namespace EngineTests.calculus
         }
     }
 
-    public class LiteralCurveFactory : ICurveFactory<MutableLiteralResultPoint, double>
+    public class LiteralCurveFactory : IDerivableFunctionFactory<MutableLiteralResultPoint, double>
     {
         public ICurve<double> NewCurve(IEnumerable<MutableLiteralResultPoint> parameters) => new LiteralCurve(parameters);
     }
