@@ -28,7 +28,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$. See https://en.wikipedia.org/wiki/Quartic_function
 	///	for more information.
 	/// </summary>
-	public class QuarticFunction : ContinuousMap<double, double>
+	public class QuarticFunction : DerivableFunction<double, double>
 	{
 		public double a0 { get; }
 		public double a1 { get; }
@@ -50,7 +50,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			this.a4 = a4;
 		}
 		
-		public double GetNthDerivativeAt(double x, uint derivative)
+		public override double GetNthDerivativeAt(double x, uint derivative)
 		{
 			DebugUtil.AssertFinite(x, nameof(x));
 			// Return a different function depending on the derivative level:
@@ -93,7 +93,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			{
 				foreach (double v in CubicFunction.Solve(a0, a1, a2, a3))
 				{
-					yield return v;
+					QuarticFunction f = new QuarticFunction(a0, a1, a2, a3, a4);
+					yield return f.NewtonRaphson(v);
 				}
 				yield break;
 			}
