@@ -29,9 +29,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 	/// 	but not along the radial axis. These properties make this surface perfect to represent a hinge joint
 	/// 	surface. Due to its simplicity, it is raytraceable.
 	/// </summary>
-	public class SymmetricCylinder : Cylinder, IRaytraceableSurface
+	public class SymmetricCylinder : Cylinder, IExtendedRaytraceableSurface
 	{
-#region Constructors
+		#region Constructors
 		/// <summary>
 		/// 	Construct a new <c>SymmetricCylinder</c> around a central axis, the <c>centerLine</c>. The radius at
 		/// 	each point on the central axis is defined by a one-dimensional function <c>radius</c>.
@@ -88,9 +88,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			radius1D = radius;
 			this.centerLine = centerLine;
 		}
-#endregion
+		#endregion
 
-#region Properties
+		#region Properties
 		protected RaytraceableFunction1D radius1D;
 		
 		/// <summary>
@@ -118,11 +118,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				base.CenterCurve = value;
 			}
 		}
-#endregion Properties
+		#endregion Properties
 
-#region IRaytraceableSurface
+		#region IRaytraceableSurface
 		/// <inheritdoc />
-		public double RayIntersect(Ray ray)
+		public RaySurfaceIntersection RayIntersect(Ray ray)
 		{
 			dvec3 rayStart = ray.StartPosition;
 			dvec3 rayDirection = ray.Direction;
@@ -174,40 +174,113 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
-			double minimum = Single.PositiveInfinity;
-			
+
+			RaySurfaceIntersection minimum = new RaySurfaceIntersection(Double.PositiveInfinity, 0.0, 0.0);
+
 			foreach (double i in intersections)
 			{
-				// Calculate the 3d point at which the ray intersects the cylinder:
-				dvec3 intersectionPoint = rayStart + i*rayDirection;
-				
-				// Find the closest point to the intersectionPoint on the centerLine.
-				// Get the vector v from the start of the cylinder to the intersection point:
-				dvec3 v = intersectionPoint - start;
-				
-				// ...And project this vector onto the center line:
-				double t = -dvec3.Dot(intersectionPoint, tangent*length)/(length*length);
-				
-				// Now we have the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
-				
+				// First calculate the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
+				double t = rescaledRay.z + i*newDirection.z;
+
+				// t must be within the bounds of the SymmetricCylinder. t ranges from 0.0 to 1.0, so if it is outside
+				// of this region, the ray does not intersect the cylinder.
+				if (!(t >= 0.0 && t <= 1.0))
+				{
+					break;
+				}
+
 				// Find the angle to the normal of the centerLine, so that we can determine whether the
 				// angle is within the bound of the pie-slice at position t:
+
+				// Calculate the 3d point at which the ray intersects the cylinder:
+				dvec3 intersectionPoint = rayStart + i * rayDirection;
 				dvec3 centerLineNormal = CenterCurve.GetNormalAt(t);
 				dvec3 centerLineBinormal = CenterCurve.GetBinormalAt(t);
 				dvec3 d = intersectionPoint - CenterCurve.GetPositionAt(t);
 				double correctionShift = Math.Sign(dvec3.Dot(d, centerLineBinormal));
-				double phi = (correctionShift * Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0*Math.PI);
-				
+				double phi = (correctionShift*Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0*Math.PI);
+
 				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
 				// otherwise discard:
 				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i >= 0.0)
 				{
-					minimum = Math.Sign(i) * Math.Min(Math.Abs(minimum), Math.Abs(i));
+					if (Math.Abs(i) < Math.Abs(minimum.RayLength))
+					{
+						minimum.RayLength = i;
+						minimum.U = phi;
+						minimum.V = t;
+					}
 				}
 			}
 			
 			return minimum;
 		}
-#endregion IRaytraceableSurface
+		#endregion IRaytraceableSurface
+
+		#region IExtendedRaytraceableSurface
+		/// <inheritdoc />
+		public RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray)
+		{
+			RaySurfaceIntersection intersection = RayIntersect(ray);
+
+			if (Double.IsNaN(intersection.RayLength) == false && Double.IsInfinity(intersection.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0);
+			}
+
+			dvec3 tangent = centerLine.GetTangentAt(0.0);
+
+			dvec3 curveNormal = CenterCurve.GetNormalAt(0.0);
+			dvec3 curveBinormal = CenterCurve.GetBinormalAt(0.0);
+
+			dvec3 planeOrigin1 = GetPositionAt(new dvec2(StartAngle.GetValueAt(0.0), 0.0));
+			double phi1 = StartAngle.GetValueAt(0.0);
+			dvec3 vectorV1 = Math.Sin(phi1) * curveNormal - Math.Cos(phi1) * curveBinormal;
+			CorrugatedPlane extendedPlane1 = new CorrugatedPlane(CenterCurve.GetStartPosition(), tangent, vectorV1, Radius, 1.0);
+
+			RaySurfaceIntersection extendedPlaneIntersection1 = extendedPlane1.RayIntersect(ray);
+
+			double distanceFromBoundary1 = extendedPlaneIntersection1.V;
+
+			if (Double.IsNaN(extendedPlaneIntersection1.RayLength) == false && Double.IsInfinity(extendedPlaneIntersection1.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(extendedPlaneIntersection1.RayLength, distanceFromBoundary1);
+			}
+
+			dvec3 planeOrigin2 = GetPositionAt(new dvec2(EndAngle.GetValueAt(0.0), 0.0));
+			double phi2 = EndAngle.GetValueAt(0.0);
+			dvec3 vectorV2 = -Math.Sin(phi2) * curveNormal + Math.Cos(phi2) * curveBinormal;
+			CorrugatedPlane extendedPlane2 = new CorrugatedPlane(CenterCurve.GetStartPosition(), tangent, vectorV2, Radius, -1.0);
+
+			RaySurfaceIntersection extendedPlaneIntersection2 = extendedPlane2.RayIntersect(ray);
+
+			double distanceFromBoundary2 = extendedPlaneIntersection2.V;
+
+			if (Double.IsNaN(extendedPlaneIntersection2.RayLength) == false && Double.IsInfinity(extendedPlaneIntersection2.RayLength) == false)
+			{
+				return new RayExtendedSurfaceIntersection(extendedPlaneIntersection2.RayLength, distanceFromBoundary2);
+			}
+
+			LineSegment extendedCenterLine = new LineSegment(centerLine.GetStartPosition() - tangent, centerLine.GetEndPosition() + tangent);
+			SortedList<double, double> radiusPoints = new SortedList<double, double>
+						{
+							{ 0.0, 0.0 },
+							{ 0.05, 0.05 },
+							{ 1.0/3.0, Radius.GetValueAt(0.0) },
+							{ 2.0/3.0, Radius.GetValueAt(1.0) },
+							{ 0.95, 0.05 },
+							{ 1.0, 0.0 }
+						};
+
+			QuadraticSpline1D extendedRadius = new QuadraticSpline1D(radiusPoints);
+			SymmetricCylinder extendedCylinder = new SymmetricCylinder(extendedCenterLine, extendedRadius);
+			RaySurfaceIntersection extendedIntersection = extendedCylinder.RayIntersect(ray);
+
+			double distanceFromBoundary = (Math.Abs(extendedIntersection.V * 3.0 - 1.5) - 1.0 / 2.0);
+			distanceFromBoundary = (distanceFromBoundary > 0.0) ? distanceFromBoundary : 0.0;
+
+			return new RayExtendedSurfaceIntersection(extendedIntersection.RayLength, distanceFromBoundary);
+		}
+		#endregion IExtendedRaytraceableSurface
 	}
 }

@@ -88,9 +88,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 					// There are no roots found:
 					yield break;
 				} else {
-					// There is a single root, found from solving the linear equation with a1=0:
-					yield return -a0/a1;
-					
+					// There is a single root, found from solving the linear equation with a1=0. We find a point close
+					// to the root using the linear approximation, after which we approach the true solution using the
+					// Newton-Raphson method:
+					QuadraticFunction f = new QuadraticFunction(a0, a1, a2);
+					yield return f.NewtonRaphson(-a0 / a1);
+
 				}
 				yield break;
 			}

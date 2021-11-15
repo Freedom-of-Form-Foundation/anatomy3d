@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
-using System.Security.Cryptography;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -79,11 +78,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			DebugUtil.AssertFinite(b, nameof(b));
 			DebugUtil.AssertFinite(c, nameof(c));
 			DebugUtil.AssertFinite(d, nameof(d));
-			if(Math.Abs(a) <= 0.005f)
+			if(Math.Abs(a) <= 0.005)
 			{
 				foreach (double v in QuadraticFunction.Solve(d, c, b))
 				{
-					yield return v;
+					CubicFunction f = new CubicFunction(d, c, b, a);
+					yield return f.NewtonRaphson(v);
 				}
 				yield break;
 			}

@@ -115,8 +115,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 			ContinuousMap<dvec2, double> deformations = Radius;
 			foreach (var i in InteractingJoints)
 			{
-				MoldCastMap boneHeightMap = new MoldCastMap(CenterCurve,
-				                                            i.InteractingJoint.GetRaytraceableSurface(),
+				SmoothMoldCastMap boneHeightMap = new SmoothMoldCastMap(CenterCurve,
+				                                            i.InteractingJoint.GetExtendedRaytraceableSurface(),
 				                                            deformations,
 				                                            i.Direction,
 				                                            i.MaxDistance);

@@ -55,4 +55,26 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public TOut GetDerivativeAt(TIn x) => GetNthDerivativeAt(x, 1);
 	}
+
+	public static class DerivableFunctionExtensions
+	{
+		private const int DefaultNewtonRaphsonIterations = 16;
+
+		/// <summary>
+		/// Gradually approach the root of a derivable function using the Newton-Raphson iterative numerical method.
+		/// </summary>
+		/// <param name="start">Point at which to start searching for a root. For best results, this starting point must
+		/// be close to the root.</param>
+		public static double NewtonRaphson(this DerivableFunction<double, double> self,
+			double start,
+			int iterations = DefaultNewtonRaphsonIterations)
+		{
+			double x = start;
+			for (int i = 0; i < iterations; i++)
+			{
+				x = x - self.GetValueAt(x) / self.GetDerivativeAt(start);
+			}
+			return x;
+		}
+	}
 }

@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 using System;
-using System.Diagnostics;
+using GlmSharp;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -172,7 +172,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public override IEnumerable<double> SolveRaytrace(QuarticFunction surfaceFunction, double z0 = 0.0, double c = 1.0)
 		{
 			throw new NotImplementedException();
-			return null;
+		}
+
+		/// <summary>
+		/// 	Solves the Monge Gauge equation \f$\vec{r_0} + t \vec{r_1} = \langle u, v, f(u,v) \rangle\f$, returning
+		///		all values of\f$t\f$ for which the equation is true. \f$f(u, v)\f$ is the quadratic spline.
+		/// </summary>
+		public override IEnumerable<double> SolveRaytracePlanar(dvec3 r0, dvec3 r1)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
