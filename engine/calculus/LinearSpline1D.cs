@@ -97,7 +97,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If 
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
-		public double GetNthDerivativeAt(double x, uint derivative)
+		public override double GetNthDerivativeAt(double x, uint derivative)
 		{
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
@@ -156,24 +156,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///     Get the value of this function \f$q(x)\f$ at the given x-position.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
+		/// 	The value that is sampled must lie between or on the outermost points on which the spline is defined. If
 		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
 		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
-		}
-
-		/// <summary>
-		///     Get the value of the first derivative of this function \f$q'(x)\f$ at the given x-position.
-		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// 	The value that is sampled must lie between the outermost points on which the spline is defined. If
-		/// 	<c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
-		/// </exception>
-		public double GetDerivativeAt(double x)
-		{
-			return GetNthDerivativeAt(x, 1);
 		}
 
 		/// <summary>

@@ -24,7 +24,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// <summary>
 	/// A CubicFunction defines a cubic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3\f$.
 	/// </summary>
-	public class CubicFunction : ContinuousMap<double, double>
+	public class CubicFunction : DerivableFunction<double, double>
 	{
 		double _a0;
 		double _a1;
@@ -42,8 +42,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			_a2 = a2;
 			_a3 = a3;
 		}
-		
-		public double GetNthDerivativeAt(double x, uint derivative)
+
+		/// <inheritdoc />
+		public override double GetNthDerivativeAt(double x, uint derivative)
 		{
 			DebugUtil.AssertFinite(x, nameof(x));
 			// Return a different function depending on the derivative level:
@@ -60,11 +61,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public override double GetValueAt(double x)
 		{
 			return GetNthDerivativeAt(x, 0);
-		}
-		
-		public double GetDerivativeAt(double x)
-		{
-			return GetNthDerivativeAt(x, 1);
 		}
 		
 		public IEnumerable<double> Roots()

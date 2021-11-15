@@ -29,13 +29,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// </summary>
     /// <typeparam name="TControl">Control point type to define the curve.</typeparam>
     /// <typeparam name="TOut">Point type for the output curve. (This will usually be an immutable type.)</typeparam>
-    public class MutablePiecewiseInterpolatedCurve<TControl, TOut>:ICurve<TOut>,IEnumerable<TControl> where TControl:class
+    public class MutablePiecewiseInterpolatedCurve<TControl, TOut>: DerivableFunction<double, TOut>,IEnumerable<TControl> where TControl:class
     {
-        private readonly ICurveFactory<TControl, TOut> _curveFactory;
+        private readonly IDerivableFunctionFactory<TControl, TOut> _curveFactory;
         private readonly IMutablePointFactory<TControl> _pointFactory;
         private readonly List<TControl> _points;
         private readonly object _curveLock;
-        private ICurve<TOut> _currentCurve;
+        private DerivableFunction<double, TOut> _currentCurve;
 
         ///<summary>
         /// Construct a MutablePiecewiseInterpolatedCurve, using a provided algorithm to calculate curves (given a snapshot of control points
@@ -44,7 +44,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="curveFactory">Algorithm for calculating immutable ICurve{TOut} curves from a collection of
         /// TControl points at one specific point in time.</param>
         /// <param name="pointFactory">Factory for TControl points.</param>
-        public MutablePiecewiseInterpolatedCurve(ICurveFactory<TControl, TOut> curveFactory, IMutablePointFactory<TControl> pointFactory)
+        public MutablePiecewiseInterpolatedCurve(IDerivableFunctionFactory<TControl, TOut> curveFactory, IMutablePointFactory<TControl> pointFactory)
         {
             _curveFactory = curveFactory ?? throw new ArgumentNullException(nameof(curveFactory));
             _pointFactory = pointFactory ?? throw new ArgumentNullException(nameof(pointFactory));
@@ -117,7 +117,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// Get an ICurve{TOut} corresponding to the current location of the points in this curve.
         /// </summary>
         /// <returns>An ICurve{TOut} from _curveFactory, from the current points.</returns>
-        public ICurve<TOut> CurrentCurve()
+        public DerivableFunction<double, TOut> CurrentCurve()
         {
             lock (_curveLock)
             {
@@ -148,7 +148,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// </summary>
         /// <param name="x">Location to calculate the value of on the current state of the curve.</param>
         /// <returns>The curve's value at position x.</returns>
-        public TOut GetValueAt(double x) => CurrentCurve().GetValueAt(x);
+        public override TOut GetValueAt(double x) => CurrentCurve().GetValueAt(x);
 
         /// <summary>
         /// Calculate the derivative of the current curve at the specified point. The underlying curve type defines the
@@ -157,7 +157,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <param name="x">Location on the curve to calculate a derivative.</param>
         /// <param name="derivative">Degree of derivation. 0th derivative is the function itself.</param>
         /// <returns>The value of the given derivative of the curve at location x.</returns>
-        public TOut GetDerivativeAt(double x, uint derivative) => CurrentCurve().GetDerivativeAt(x, derivative);
+        public override TOut GetNthDerivativeAt(double x, uint derivative) => CurrentCurve().GetNthDerivativeAt(x, derivative);
 
         /// <summary>
         /// Get an enumerator over the control points on this curve.
@@ -196,55 +196,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
     /// </summary>
     /// <typeparam name="TParameterPoint">Mutable control point type.</typeparam>
     /// <typeparam name="TOutputPoint">Output type for points on the curve that will be calculated.</typeparam>
-    public interface ICurveFactory<in TParameterPoint, out TOutputPoint>
+    public interface IDerivableFunctionFactory<in TParameterPoint, TOutputPoint>
     {
-        /// <summary>
-        /// Calculate an ICurve{TOutputPoint} from the current state of the parameters.
-        /// </summary>
-        /// <param name="parameters">Enumerable of the parameter points on the curve. They are in the order they
-        /// were created; they are not otherwise sorted.</param>
-        /// <returns></returns>
-        ICurve<TOutputPoint> NewCurve(IEnumerable<TParameterPoint> parameters);
-    }
-
-    /// <summary>
-    /// Interface representing an arbitrary curve that calculates values in some output space given a single double
-    /// input parameter.
-    /// </summary>
-    /// <typeparam name="TOut">Type representing the output space of this curve.</typeparam>
-    public interface ICurve<out TOut> {
-        /// <summary>
-        /// Calculate the value of this curve at the provided location.
-        /// </summary>
-        /// <param name="x">Location to calculate at.</param>
-        /// <returns>Value of this curve at x.</returns>
-        TOut GetValueAt(double x);
-        /// <summary>
-        /// Calculate the given derivative of this curve at the provided location. There is no standard for representing
-        /// undefined derivatives; document your decisions.
-        /// </summary>
-        /// <remarks>If a derivative is undefined at a removable discontinuity, removing the discontinuity is probably
-        /// the best choice for computer graphics rendering. If there is a defined limit of the derivative at one side,
-        /// that's probably the best value. If there is a defined limit at both sides but the limit is different,
-        /// pick one. If the derivative really can't be calculated, consider NaN or equivalent, but this may not
-        /// render very well.</remarks>
-        /// <param name="x">Location to calculate the derivative at.</param>
-        /// <param name="derivative">The degree of derivative to calculate.</param>
-        /// <returns>The given derivative of this curve at x.</returns>
-        TOut GetDerivativeAt(double x, uint derivative);
-    }
-
-    // Convenience functions for ICurve.
-    public static class CurveExtensions
-    {
-        /// <summary>
-        /// Calculate the first derivative of this curve at the provided location.
-        /// <see cref="ICurve{TOut}.GetDerivativeAt"/>
-        /// </summary>
-        /// <param name="curve">This curve to calculate a derivative on.</param>
-        /// <param name="x">Location to calculate the curve's first derivative at.</param>
-        /// <typeparam name="TOut">Output point type of the curve.</typeparam>
-        /// <returns>The first derivative of this curve at the specified location.</returns>
-        public static TOut GetDerivativeAt<TOut>(this ICurve<TOut> curve, double x) => curve.GetDerivativeAt(x, 1);
+		/// <summary>
+		/// Calculate an ICurve{TOutputPoint} from the current state of the parameters.
+		/// </summary>
+		/// <param name="parameters">Enumerable of the parameter points on the curve. They are in the order they
+		/// were created; they are not otherwise sorted.</param>
+		/// <returns></returns>
+		DerivableFunction<double, TOutputPoint> NewCurve(IEnumerable<TParameterPoint> parameters);
     }
 }
