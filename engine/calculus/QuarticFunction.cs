@@ -82,40 +82,40 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Solves the equation \f$c0 + c1 x + c2 x^2 + c3 x^3 + c4 x^4 = 0\f$, returning all real values of
+		///     Solves the equation \f$a0 + a1 x + a2 x^2 + a3 x^3 + a4 x^4 = 0\f$, returning all real values of
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Quartic_function for the
 		///		algorithm used.
 		/// </summary>
-		public static IEnumerable<double> Solve(double c0, double c1, double c2, double c3, double c4)
+		public static IEnumerable<double> Solve(double a0, double a1, double a2, double a3, double a4)
 		{
-			DebugUtil.AssertAllFinite(new double[]{c0, c1, c2, c3, c4}, "c");
-			if(Math.Abs(c4) <= 0.005)
+			DebugUtil.AssertAllFinite(new double[]{a0, a1, a2, a3, a4}, "a");
+			if(Math.Abs(a4) <= 0.005)
 			{
-				foreach (double v in CubicFunction.Solve(c0, c1, c2, c3))
+				foreach (double v in CubicFunction.Solve(a0, a1, a2, a3))
 				{
 					yield return v;
 				}
 				yield break;
 			}
 
-			double ba = c3/c4;
-			double ca = c2/c4;
-			double da = c1/c4;
-			// double ea = c0/c4;
+			double ba = a3/a4;
+			double ca = a2/a4;
+			double da = a1/a4;
+			// double ea = a0/a4;
 			
-			double p1 = c2*c2*c2 - 4.5*c3*c2*c1 + 13.5*c4*c1*c1 + 13.5*c3*c3*c0 - 36.0*c4*c2*c0;
+			double p1 = a2*a2*a2 - 4.5*a3*a2*a1 + 13.5*a4*a1*a1 + 13.5*a3*a3*a0 - 36.0*a4*a2*a0;
 			
-			double q = c2*c2 - 3.0*c3*c1 + 12.0*c4*c0;
+			double q = a2*a2 - 3.0*a3*a1 + 12.0*a4*a0;
 			
 			Complex p2 = p1 + Complex.Sqrt(-q*q*q + p1*p1);
 			
 			Complex pow = Complex.Pow(p2, (1.0/3.0));
 			
-			Complex p3 = q/(3.0*c4*pow) + pow/(3.0*c4);
+			Complex p3 = q/(3.0*a4*pow) + pow/(3.0*a4);
 			
 			Complex p4 = Complex.Sqrt(ba*ba/4.0 - 2.0*ca/(3.0) + p3);
 			
-			Complex p5 = c3*c3/(2.0*c4*c4) - 4.0*c2/(3.0*c4) - p3;
+			Complex p5 = a3*a3/(2.0*a4*a4) - 4.0*a2/(3.0*a4) - p3;
 			
 			Complex p6 = (-ba*ba*ba + 4.0*ba*ca - 8.0*da)/(4.0*p4);
 			
