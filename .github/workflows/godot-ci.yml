@@ -3,7 +3,7 @@ on: push
 
 env:
   GODOT_VERSION: 3.3.4
-  GODOT_VERSION_TYPE: stable.godot
+  GODOT_VERSION_TYPE: stable.mono
   EXPORT_NAME: test-project
   PROJECT_FOLDER: gui
 
