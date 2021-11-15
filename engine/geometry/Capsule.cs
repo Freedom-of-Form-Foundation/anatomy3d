@@ -97,6 +97,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override dvec3 GetNormalAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double u = uv.x;
 			double v = uv.y;
 
@@ -121,6 +122,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override dvec3 GetPositionAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double u = uv.x;
 			double v = uv.y;
 			
