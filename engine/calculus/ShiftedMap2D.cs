@@ -68,6 +68,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </param>
 		public ShiftedMap2D(dvec2 shift, dvec2 stretch, ContinuousMap<dvec2, TOut> function)
 		{
+			DebugUtil.AssertAllFinite(shift, nameof(shift));
+			DebugUtil.AssertAllFinite(stretch, nameof(stretch));
 			this.Shift = shift;
 			this.Stretch = stretch;
 			this.Function = function;
@@ -76,6 +78,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <inheritdoc />
 		public override TOut GetValueAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			return Function.GetValueAt(Shift + Stretch * uv);
 		}
 	}

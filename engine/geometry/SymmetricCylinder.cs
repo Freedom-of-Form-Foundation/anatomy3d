@@ -126,17 +126,25 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			dvec3 rayStart = ray.StartPosition;
 			dvec3 rayDirection = ray.Direction;
+			DebugUtil.AssertAllFinite(rayStart, nameof(rayStart));
+			DebugUtil.AssertAllFinite(rayDirection, nameof(rayDirection));
 			
 			// Since we raytrace only using a cylindrical surface that is horizontal and at the origin, we
 			// first shift and rotate the ray such that we get the right orientation:
 			dvec3 start = CenterCurve.GetStartPosition();
 			dvec3 end = CenterCurve.GetEndPosition();
+			DebugUtil.AssertAllFinite(start, nameof(start));
+			DebugUtil.AssertAllFinite(end, nameof(end));
 			
 			dvec3 tangent = CenterCurve.GetTangentAt(0.0).Normalized;
 			dvec3 normal = CenterCurve.GetNormalAt(0.0).Normalized;
 			dvec3 binormal = CenterCurve.GetBinormalAt(0.0).Normalized;
+			DebugUtil.AssertAllFinite(tangent, nameof(tangent));
+			DebugUtil.AssertAllFinite(normal, nameof(normal));
+			DebugUtil.AssertAllFinite(binormal, nameof(binormal));
 			
 			double length = dvec3.Distance(start, end);
+			DebugUtil.AssertFinite(length, nameof(length));
 			
 			// CenterCurve is guaranteed to be a LineSegment, since the base property CenterCurve is masked by this
 			// class' CenterCurve property that only accepts a LineSegment, and similarly this class' constructor only

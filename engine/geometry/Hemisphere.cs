@@ -77,6 +77,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// </param>
 		public Hemisphere(ContinuousMap<dvec2, double> radius, dvec3 center, dvec3 direction, dvec3 normal, dvec3 binormal)
 		{
+			DebugUtil.AssertAllFinite(center, nameof(center));
+			DebugUtil.AssertAllFinite(direction, nameof(direction));
+			DebugUtil.AssertAllFinite(normal, nameof(normal));
+			DebugUtil.AssertAllFinite(binormal, nameof(binormal));
 			this.Radius = radius;
 			this.Center = center;
 			this.Direction = direction;

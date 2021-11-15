@@ -51,6 +51,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// </param>
 		public Cylinder(Curve centerCurve, double radius)
 		{
+			DebugUtil.AssertFinite(radius, nameof(radius));
 			this.CenterCurve = centerCurve;
 			this.Radius = new ConstantFunction<dvec2, double>(radius);
 			this.StartAngle = 0.0;
@@ -183,6 +184,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override dvec3 GetNormalAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double u = uv.x;
 			double v = uv.y;
 			
@@ -199,6 +201,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override dvec3 GetPositionAt(dvec2 uv)
 		{
+			DebugUtil.AssertAllFinite(uv, nameof(uv));
 			double v = uv.y;
 				
 			dvec3 translation = CenterCurve.GetPositionAt(v);
@@ -210,6 +213,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <inheritdoc />
 		public override List<Vertex> GenerateVertexList(int resolutionU, int resolutionV)
 		{
+			// If asked to sample at zero points, return an empty list.
+			if (resolutionU <= 0 || resolutionV <= 0)
+			{
+				return new List<Vertex>();
+			}
 			var roughs = ParallelEnumerable.Range(0, resolutionV + 1).AsOrdered().SelectMany((j =>
 			{
 				double v = (double) j / (double) resolutionV;
