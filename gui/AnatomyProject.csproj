@@ -1,11 +1,11 @@
-<Project Sdk="Godot.NET.Sdk/3.2.3">
+<Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <Configurations>Debug;ExportDebug;ExportRelease;UnitTests</Configurations>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;TRACE;DEBUG;TOOLS;</DefineConstants>
+    <DefineConstants>GODOT;TRACE;DEBUG;TOOLS;</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -15,10 +15,10 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'ExportRelease' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;</DefineConstants>
+    <DefineConstants>GODOT;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;TRACE;DEBUG</DefineConstants>
+    <DefineConstants>GODOT;TRACE;DEBUG</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -28,8 +28,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\engine\engine.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="GodotSharp" Version="3.2.3" />
   </ItemGroup>
 </Project>
