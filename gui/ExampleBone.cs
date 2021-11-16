@@ -74,7 +74,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
 			foreach ( var bone in skeleton.bones )
 			{
+#if GODOT_HTML5
+				UVMesh mesh = bone.GetGeometry().GenerateMesh(32, 32);
+#else
 				UVMesh mesh = bone.GetGeometry().GenerateMesh(256, 256);
+#endif
 				
 				// Finally upload the mesh to Godot:
 				MeshInstance newMesh = new MeshInstance();
@@ -111,10 +115,14 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			// Add a long bone to the character:
 			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(double)Math.PI));
-			
+
 			// Generate the geometry vertices of the first bone with resolution U=32 and resolution V=32:
+#if GODOT_HTML5
+			UVMesh mesh = skeleton.joints[0].GetArticularSurface().GenerateMesh(8, 8);
+#else
 			UVMesh mesh = skeleton.joints[0].GetArticularSurface().GenerateMesh(64, 64);
-			
+#endif
+
 			// Finally upload the mesh to Godot:
 			MeshInstance newMesh = new MeshInstance();
 			newMesh.Mesh = new GodotMeshConverter(mesh);
