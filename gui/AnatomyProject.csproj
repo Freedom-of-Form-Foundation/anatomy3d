@@ -1,6 +1,6 @@
 <Project Sdk="Godot.NET.Sdk/3.2.3">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Configurations>Debug;ExportDebug;ExportRelease;UnitTests</Configurations>
     <Platforms>AnyCPU</Platforms>
     <LangVersion>8</LangVersion>
