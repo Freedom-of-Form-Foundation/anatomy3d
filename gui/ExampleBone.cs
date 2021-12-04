@@ -64,12 +64,13 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			//LineSegment centerLine2 = new LineSegment(new dvec3(0.0f, -10.0f, 0.5f),
-			//						   new dvec3(0.001f, -1.0f, 0.51f));
+			LineSegment centerLine2 = new LineSegment(new dvec3(0.0f, -1.5f, 0.5f),
+									   new dvec3(10.0f, -1.5f, 0.5f));
 			
-			//var bone2 = new Anatomy.Bones.LongBone(centerLine2, 1.1f);
-			//bone2.InteractingJoints.Add((skeleton.joints[0], RayCastDirection.Outwards, 3.0f));
-			//skeleton.bones.Add(bone2);
+			var bone2 = new Anatomy.Bones.LongBone(centerLine2, boneRadius);
+			var jointInteraction2 = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f);
+			bone2.InteractingJoints.Add(jointInteraction2);
+			skeleton.bones.Add(bone2);
 			
 			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
 			foreach ( var bone in skeleton.bones )
@@ -106,8 +107,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			QuadraticSpline1D jointSpline = new QuadraticSpline1D(splinePoints);
 
 			// Define the center curve of the long bone:
-			LineSegment centerLine = new LineSegment(new dvec3(0.0f, -0.5f, 0.0f),
-									   new dvec3(0.0f, 1.5f, 0.5f));
+			//LineSegment centerLine = new LineSegment(new dvec3(0.0f, -0.5f, 0.0f),
+			//						new dvec3(0.0f, 1.5f, 0.5f));
+									
+			LineSegment centerLine = new LineSegment(new dvec3(0.0f, 0.0f, -0.5f),
+									new dvec3(0.0f, 0.0f, 1.5f));
 			
 			// Add a long bone to the character:
 			skeleton.joints.Add(new Anatomy.Joints.HingeJoint(centerLine, jointSpline, 0.0f, 1.0f*(double)Math.PI));

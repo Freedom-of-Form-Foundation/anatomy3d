@@ -35,7 +35,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// </summary>
 		/// <param name="x">Value to range check.</param>
 		/// <param name="varName">Name of variable being checked (use nameof); included in error message. </param>
-		[Conditional("DEBUG")]
+		[Conditional("DEBUGNUMERICS")]
 		public static void AssertFinite(double x, string varName)
 		{
 			Debug.Assert(
@@ -51,7 +51,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// </summary>
 		/// <param name="items">Collection of items to range check.</param>
 		/// <param name="varName">Name of variable being checked (use nameof); included in error message.</param>
-		[Conditional("DEBUG")]
+		[Conditional("DEBUGNUMERICS")]
 		public static void AssertAllFinite(IEnumerable<double> items, string varName)
 		{
 			uint idx = 0;
@@ -68,7 +68,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 		/// </summary>
 		/// <param name="items">Collection of items to range check.</param>
 		/// <param name="varName">Name of variable being checked (use nameof); included in error message.</param>
-		[Conditional("DEBUG")]
+		[Conditional("DEBUGNUMERICS")]
 		public static void AssertAllFinite(SortedPointsList<double> items, string varName)
 		{
 			AssertAllFinite(items.Key, $"{varName}.Key");
