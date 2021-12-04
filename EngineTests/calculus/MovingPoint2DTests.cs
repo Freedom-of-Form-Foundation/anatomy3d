@@ -35,12 +35,12 @@ namespace EngineTests.calculus
 
             MovingPoint2D p = new MovingPoint2D(Counter);
             Assert.Equal(0, count);
-            Assert.Equal(new Real(0), p.X);
+            Assert.Equal(0.0, p.X);
             p.X = 250;
-            Assert.Equal(new Real(250), p.X);
+            Assert.Equal(250.0, p.X);
             Assert.Equal(1, count);
             p.X = -1024.125;
-            Assert.Equal(new Real(-1024.125), p.X);
+            Assert.Equal(-1024.125, p.X);
             Assert.Equal(2, count);
         }
 
@@ -56,12 +56,12 @@ namespace EngineTests.calculus
 
             MovingPoint2D p = new MovingPoint2D(Counter);
             Assert.Equal(0, count);
-            Assert.Equal(new Real(0), p.Y);
+            Assert.Equal(0, p.Y);
             p.Y = 250;
-            Assert.Equal(new Real(250), p.Y);
+            Assert.Equal(250, p.Y);
             Assert.Equal(1, count);
             p.Y = -1024.125;
-            Assert.Equal(new Real(-1024.125), p.Y);
+            Assert.Equal(-1024.125, p.Y);
             Assert.Equal(2, count);
         }
 
