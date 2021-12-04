@@ -48,6 +48,7 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="geometry" />
+      <Folder Include="Properties" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
