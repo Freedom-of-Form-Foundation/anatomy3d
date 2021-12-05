@@ -4,6 +4,7 @@
     <Configurations>Debug;ExportDebug;ExportRelease;UnitTests</Configurations>
     <Platforms>AnyCPU</Platforms>
     <LangVersion>8</LangVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
