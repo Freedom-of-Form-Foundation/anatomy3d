@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Diagnostics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -39,7 +38,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///     Construct a cubic spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
-		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
+		/// 		SortedList{double, double} splinePoints = new SortedList{double, double}();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);

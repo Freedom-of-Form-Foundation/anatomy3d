@@ -59,8 +59,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         /// <summary>
         /// Set both Location and Value with only one callback.
         /// </summary>
-        /// <param name="x">New Location value for the point.</param>
-        /// <param name="y">New Value value for the point.</param>
+        /// <param name="location">New Location value for the point.</param>
+        /// <param name="value">New Value value for the point.</param>
         public void Set(double location, double value)
         {
             _location = location;

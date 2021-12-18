@@ -28,13 +28,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// </summary>
 		public dvec3 StartPosition { get; set; }
 		
-		dvec3 direction;
+		dvec3 _direction;
 		/// <summary>
 		///		The direction in which the ray is cast. The direction becomes normalized on assignment.
 		/// </summary>
 		public dvec3 Direction {
-			get { return direction; }
-			set { direction = value.Normalized; }
+			get => _direction;
+			set => _direction = value.Normalized;
 		}
 		
 		/// <summary>
@@ -49,7 +49,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public Ray(dvec3 rayStart, dvec3 rayDirection)
 		{
 			StartPosition = rayStart;
-			direction = rayDirection.Normalized;
+			_direction = rayDirection.Normalized;
 		}
 	}
 }

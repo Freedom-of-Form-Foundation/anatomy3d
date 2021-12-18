@@ -16,7 +16,6 @@
 
 using System.Collections.Generic;
 using System;
-using System.Diagnostics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -29,14 +28,13 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// </summary>
 	public class LinearSpline1D : RaytraceableFunction1D
 	{
-		private double[] _parameters;
 		public SortedPointsList<double> Points { get; }
 		
 		/// <summary>
 		///     Construct a linear spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
-		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
+		/// 		SortedList{double, double} splinePoints = new SortedList{double, double}();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);
@@ -68,7 +66,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			DebugUtil.AssertAllFinite(Points, nameof(Points));
 
 			// Calculate the coefficients for each segment of the spline:
-			_parameters = new double[points.Count];
+			var parameters = new double[points.Count];
 
 			// Recursively find the _parameters:
 			for (int i = 1; i < points.Count; i++)
@@ -76,9 +74,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				double dx = Points.Key[i] - Points.Key[i - 1];
 				double dy = Points.Value[i] - Points.Value[i - 1];
 
-				_parameters[i] = dy / dx;
+				parameters[i] = dy / dx;
 			}
-			DebugUtil.AssertAllFinite(_parameters, nameof(_parameters));
+			DebugUtil.AssertAllFinite(parameters, nameof(parameters));
 		}
 
 		/// <summary>
@@ -134,17 +132,17 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 
 			double slope = dy / dx;
 
-			double local_x = x - x1;
+			double localX = x - x1;
 
-			double local_y = local_x * slope;
-			double global_y = local_y + y1;
+			double localY = localX * slope;
+			double globalY = localY + y1;
 
 			// Return the result of evaluating a derivative function, depending on the derivative level:
 			switch (derivative)
 			{
 				case 0:
-					DebugUtil.AssertFinite(global_y, nameof(global_y));
-					return global_y;
+					DebugUtil.AssertFinite(globalY, nameof(globalY));
+					return globalY;
 				case 1:
 					DebugUtil.AssertFinite(slope, nameof(slope));
 					return slope;

@@ -68,28 +68,28 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		}
 		
 		/// <summary>
-		///     Solves the equation \f$d + c x + b x^2 + a x^3 = 0\f$, returning all real values of
+		///     Solves the equation \f$a0 + a1 x + a2 x^2 + a3 x^3 = 0\f$, returning all real values of
 		///		\f$x\f$ for which the equation is true. See https://en.wikipedia.org/wiki/Cubic_equation for the
 		///		algorithm used.
 		/// </summary>
-		public static IEnumerable<double> Solve(double d, double c, double b, double a)
+		public static IEnumerable<double> Solve(double a0, double a1, double a2, double a3)
 		{
-			DebugUtil.AssertFinite(a, nameof(a));
-			DebugUtil.AssertFinite(b, nameof(b));
-			DebugUtil.AssertFinite(c, nameof(c));
-			DebugUtil.AssertFinite(d, nameof(d));
-			if(Math.Abs(a) <= 0.005)
+			DebugUtil.AssertFinite(a3, nameof(a3));
+			DebugUtil.AssertFinite(a2, nameof(a2));
+			DebugUtil.AssertFinite(a1, nameof(a1));
+			DebugUtil.AssertFinite(a0, nameof(a0));
+			if(Math.Abs(a3) <= 0.005)
 			{
-				foreach (double v in QuadraticFunction.Solve(d, c, b))
+				foreach (double v in QuadraticFunction.Solve(a0, a1, a2))
 				{
-					CubicFunction f = new CubicFunction(d, c, b, a);
+					CubicFunction f = new CubicFunction(a0, a1, a2, a3);
 					yield return f.NewtonRaphson(v);
 				}
 				yield break;
 			}
 			
-			double delta0 = b*b - 3.0*a*c;
-			double delta1 = 2.0*b*b*b - 9.0*a*b*c + 27.0*a*a*d;
+			double delta0 = a2*a2 - 3.0*a3*a1;
+			double delta1 = 2.0*a2*a2*a2 - 9.0*a3*a2*a1 + 27.0*a3*a3*a0;
 			
 			Complex p1 = Complex.Sqrt(delta1*delta1 - 4.0*delta0*delta0*delta0);
 			
@@ -97,15 +97,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// zero, we must choose the opposite sign to make it nonzero:
 			Complex p2 = delta1 + p1;
 			
-			Complex C = Complex.Pow(0.5*p2, (1.0/3.0));
-			
+			Complex c = Complex.Pow(0.5*p2, (1.0/3.0));
+
 			Complex xi = -0.5 + 0.5*Complex.Sqrt(-3.0);
-			
+
 			List<Complex> roots = new List<Complex>
 			{
-				-1.0/(3.0*a)*(b + C + delta0/C),
-				-1.0/(3.0*a)*(b + xi*C + delta0/(xi*C)),
-				-1.0/(3.0*a)*(b + xi*xi*C + delta0/(xi*xi*C)),
+				-1.0/(3.0*a3)*(a2 + c + delta0/c),
+				-1.0/(3.0*a3)*(a2 + xi*c + delta0/(xi*c)),
+				-1.0/(3.0*a3)*(a2 + xi*xi*c + delta0/(xi*xi*c)),
 			};
 			
 			foreach (Complex root in roots)

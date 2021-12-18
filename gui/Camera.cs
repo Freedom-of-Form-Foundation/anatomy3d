@@ -29,18 +29,18 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		/// <summary>
 		/// 	The target position that the camera is currently looking at.
 		/// </summary>
-		private Vector3 focusPosition;
+		private Vector3 _focusPosition;
 		
 		/// <summary>
 		/// 	The angular position from which the camera looks at the target.
 		/// 	x is the horizontal orientation, y is the vertical orientation.
 		/// </summary>
-		private Vector2 angularPosition;
+		private Vector2 _angularPosition;
 		
 		/// <summary>
 		/// 	The distance between the camera and the target.
 		/// </summary>
-		private float distanceFromFocus = 10.0f;
+		private float _distanceFromFocus = 10.0f;
 		
 		/// <summary>
 		/// 	The speed at which scrolling will move the camera closer or further away from
@@ -68,8 +68,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 		/// </summary>
 		public override void _Ready()
 		{
-			focusPosition = new Vector3(0.0f, 0.0f, 0.0f);
-			angularPosition = new Vector2(0.0f, 0.5f*Mathf.Pi);
+			_focusPosition = new Vector3(0.0f, 0.0f, 0.0f);
+			_angularPosition = new Vector2(0.0f, 0.5f*Mathf.Pi);
 		}
 		
 		/// <summary>
@@ -83,11 +83,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 				if (eventMouseButton.IsPressed()){
 					if (eventMouseButton.ButtonIndex == (int)ButtonList.WheelUp){
 						// Divide by the zoom factor to zoom in:
-						distanceFromFocus /= zoomFactor;
+						_distanceFromFocus /= zoomFactor;
 					}
 					if (eventMouseButton.ButtonIndex == (int)ButtonList.WheelDown){
 						// Multiply by the zoom factor to zoom out:
-						distanceFromFocus *= zoomFactor;
+						_distanceFromFocus *= zoomFactor;
 					}
 				}
 			}
@@ -97,30 +97,30 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 				{
 					// If the user moves the cursor while holding the scrollwheel button and holding
 					// the Shift key, move the focus (target) position:
-					Vector3 screenNormal = (Translation - focusPosition).Normalized();
+					Vector3 screenNormal = (Translation - _focusPosition).Normalized();
 					Vector3 screenRight = screenNormal.Cross(Vector3.Up).Normalized();
 					Vector3 screenUp = -screenNormal.Cross(screenRight).Normalized();
-					float speed = movementSpeed*distanceFromFocus;
-					focusPosition += speed*eventMouseMotion.Relative.x*screenRight;
-					focusPosition += speed*eventMouseMotion.Relative.y*screenUp;
+					float speed = movementSpeed*_distanceFromFocus;
+					_focusPosition += speed*eventMouseMotion.Relative.x*screenRight;
+					_focusPosition += speed*eventMouseMotion.Relative.y*screenUp;
 				} else if (Input.IsMouseButtonPressed(3))
 				{
 					// If the user moves the cursor while holding the scrollwheel button without
 					// modifiers, rotate the camera around the target:
-					angularPosition.x -= horizontalSpeed*eventMouseMotion.Relative.x;
-					angularPosition.y -= verticalSpeed*eventMouseMotion.Relative.y;
+					_angularPosition.x -= horizontalSpeed*eventMouseMotion.Relative.x;
+					_angularPosition.y -= verticalSpeed*eventMouseMotion.Relative.y;
 				}
 			}
 			
 			// Implement Gimbal lock:
-			double u = angularPosition.x;
-			double v = Mathf.Max(Mathf.Min(0.999f*Mathf.Pi, angularPosition.y), 0.001f);
+			double u = _angularPosition.x;
+			double v = Mathf.Max(Mathf.Min(0.999f*Mathf.Pi, _angularPosition.y), 0.001f);
 			
 			// Calculate the 3D camera position from the angular position:
-			Vector3 position = distanceFromFocus*(new Vector3((float)(Math.Sin(v)*Math.Sin(u)), (float)Math.Cos(v), (float)(Math.Sin(v)*Math.Cos(u))));
+			Vector3 position = _distanceFromFocus*(new Vector3((float)(Math.Sin(v)*Math.Sin(u)), (float)Math.Cos(v), (float)(Math.Sin(v)*Math.Cos(u))));
 			
 			// Set the camera's position and rotation:
-			LookAtFromPosition(focusPosition + position, focusPosition, Vector3.Up );
+			LookAtFromPosition(_focusPosition + position, _focusPosition, Vector3.Up );
 		}
 	}
 }

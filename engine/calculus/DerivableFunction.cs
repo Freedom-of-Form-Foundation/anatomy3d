@@ -17,10 +17,11 @@
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	/// Interface representing an arbitrary curve that calculates values in some output space given a single double
-	/// input parameter.
+	/// Interface representing an function curve that calculates values in some output space given values in some
+	/// input space. Derivatives of this function can be calculated.
 	/// </summary>
-	/// <typeparam name="TOut">Type representing the output space of this curve.</typeparam>
+	/// <typeparam name="TIn">Type representing the input space of this function.</typeparam>
+	/// <typeparam name="TOut">Type representing the output space of this function.</typeparam>
 	public abstract class DerivableFunction<TIn, TOut> : ContinuousMap<TIn, TOut>
 	{
 		/// <summary>
@@ -35,21 +36,20 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <param name="x">Location to calculate the derivative at.</param>
 		/// <param name="derivative">The degree of derivative to calculate.</param>
 		/// <returns>The given derivative of this curve at x.</returns>
-		/// <exception cref="ArgumentOutOfRangeException">
+		/// <exception cref="System.ArgumentOutOfRangeException">
 		/// 	The value that is sampled must lie between or on the outermost points on which the function is defined.
 		/// 	If <c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
 		public abstract TOut GetNthDerivativeAt(TIn x, uint derivative);
 
 		/// <summary>
-		/// Calculate the first derivative of this curve at the provided location.
+		/// Calculate the first derivative of this derivable function at the provided location.
 		/// <see cref="ICurve{TOut}.GetDerivativeAt"/>
 		/// </summary>
-		/// <param name="curve">This curve to calculate a derivative on.</param>
 		/// <param name="x">Location to calculate the curve's first derivative at.</param>
 		/// <typeparam name="TOut">Output point type of the curve.</typeparam>
 		/// <returns>The first derivative of this curve at the specified location.</returns>
-		/// <exception cref="ArgumentOutOfRangeException">
+		/// <exception cref="System.ArgumentOutOfRangeException">
 		/// 	The value that is sampled must lie between or on the outermost points on which the function is defined.
 		/// 	If <c>x</c> is outside that domain, an <c>ArgumentOutOfRangeException</c> is thrown.
 		/// </exception>
@@ -63,8 +63,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// <summary>
 		/// Gradually approach the root of a derivable function using the Newton-Raphson iterative numerical method.
 		/// </summary>
+		/// <param name="self"> Function to calculate a root for.</param>
 		/// <param name="start">Point at which to start searching for a root. For best results, this starting point must
 		/// be close to the root.</param>
+		/// <param name="iterations"> Number of iterations of Newton-Raphson approximation to use.</param>
 		public static double NewtonRaphson(this DerivableFunction<double, double> self,
 			double start,
 			int iterations = DefaultNewtonRaphsonIterations)
