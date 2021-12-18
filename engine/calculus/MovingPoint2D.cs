@@ -84,7 +84,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         }
 
         /// <inheritdoc/>
-        public int CompareTo(MovingPoint2D other)
+        public int CompareTo(MovingPoint2D? other)
         {
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
@@ -113,7 +113,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
             return Comparer<MovingPoint2D>.Default.Compare(left, right) >= 0;
         }
 
-        public bool Equals(MovingPoint2D other)
+        public bool Equals(MovingPoint2D? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
