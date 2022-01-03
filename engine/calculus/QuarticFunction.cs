@@ -17,9 +17,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.Text;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
@@ -30,11 +27,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 	/// </summary>
 	public class QuarticFunction : DerivableFunction<double, double>
 	{
-		public double a0 { get; }
-		public double a1 { get; }
-		public double a2 { get; }
-		public double a3 { get; }
-		public double a4 { get; }
+		public double A0 { get; }
+		public double A1 { get; }
+		public double A2 { get; }
+		public double A3 { get; }
+		public double A4 { get; }
 		
 		/// <summary>
 		///     A quartic function defined by \f$q(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + a_4 x^4\f$.
@@ -43,11 +40,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		public QuarticFunction(double a0, double a1, double a2, double a3, double a4)
 		{
 			DebugUtil.AssertAllFinite(new double[]{a0, a1, a2, a3, a4}, "a");
-			this.a0 = a0;
-			this.a1 = a1;
-			this.a2 = a2;
-			this.a3 = a3;
-			this.a4 = a4;
+			this.A0 = a0;
+			this.A1 = a1;
+			this.A2 = a2;
+			this.A3 = a3;
+			this.A4 = a4;
 		}
 		
 		public override double GetNthDerivativeAt(double x, uint derivative)
@@ -56,11 +53,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			// Return a different function depending on the derivative level:
 			switch (derivative)
 			{
-				case 0: return a0 + a1*x + a2*x*x + a3*x*x*x + a4*x*x*x*x;
-				case 1: return a1 + 2.0*a2*x + 3.0*a3*x*x + 4.0*a4*x*x*x;
-				case 2: return 2.0*a2 + 6.0*a3*x + 12.0*a4*x*x;
-				case 3: return 6.0*a3 + 24.0*a4*x;
-				case 4: return 24.0*a4;
+				case 0: return A0 + A1*x + A2*x*x + A3*x*x*x + A4*x*x*x*x;
+				case 1: return A1 + 2.0*A2*x + 3.0*A3*x*x + 4.0*A4*x*x*x;
+				case 2: return 2.0*A2 + 6.0*A3*x + 12.0*A4*x*x;
+				case 3: return 6.0*A3 + 24.0*A4*x;
+				case 4: return 24.0*A4;
 				default: return 0.0;
 			}
 		}
@@ -70,15 +67,10 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		{
 			return GetNthDerivativeAt(x, 0);
 		}
-		
-		public double GetDerivativeAt(double x)
-		{
-			return GetNthDerivativeAt(x, 1);
-		}
-		
+
 		public IEnumerable<double> Roots()
 		{
-			return QuarticFunction.Solve(a0, a1, a2, a3, a4);
+			return QuarticFunction.Solve(A0, A1, A2, A3, A4);
 		}
 		
 		/// <summary>

@@ -36,7 +36,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		///     Construct a quadratic spline using a set of input points.
 		/// 	<example>For example:
 		/// 	<code>
-		/// 		SortedList<double, double> splinePoints = new SortedList<double, double>();
+		/// 		SortedList{double, double} splinePoints = new SortedList{double, double}();
 		/// 		splinePoints.Add(0.0f, 1.1f);
 		/// 		splinePoints.Add(0.3f, 0.4f);
 		/// 		splinePoints.Add(1.0f, 2.0f);
@@ -192,16 +192,16 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 				double a2 = -a*div*div;
 
 				// Substitute z = z0 + c t:
-				double A0 = a0 + a1*z0 + a2*z0*z0;
-				double A1 = (a1 + 2.0*a2*z0)*c;
-				double A2 = a2*c*c;
+				double q0 = a0 + a1*z0 + a2*z0*z0;
+				double q1 = (a1 + 2.0*a2*z0)*c;
+				double q2 = a2*c*c;
 
 				// Find the quartic polynomial to solve:
-				double p0 = surfaceFunction.a0 - A0*A0;
-				double p1 = surfaceFunction.a1 - 2.0*A0*A1;
-				double p2 = surfaceFunction.a2 - (2.0*A0*A2 + A1*A1);
-				double p3 = surfaceFunction.a3 - 2.0*A1*A2;
-				double p4 = surfaceFunction.a4 - A2*A2;
+				double p0 = surfaceFunction.A0 - q0*q0;
+				double p1 = surfaceFunction.A1 - 2.0*q0*q1;
+				double p2 = surfaceFunction.A2 - (2.0*q0*q2 + q1*q1);
+				double p3 = surfaceFunction.A3 - 2.0*q1*q2;
+				double p4 = surfaceFunction.A4 - q2*q2;
 
 				// Solve the quartic polynomial:
 				IEnumerable<double> intersections = QuarticFunction.Solve(p0, p1, p2, p3, p4);

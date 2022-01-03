@@ -82,7 +82,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			this.CenterCurve = centerCurve;
 			this.Radius = radius;
 			this.StartAngle = 0.0;
-			this.EndAngle = 2.0 * (double)Math.PI;
+			this.EndAngle = 2.0 * Math.PI;
 		}
 		
 		/// <summary>
@@ -220,7 +220,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			}
 			var roughs = ParallelEnumerable.Range(0, resolutionV + 1).AsOrdered().SelectMany((j =>
 			{
-				double v = (double) j / (double) resolutionV;
+				double v = j / (double) resolutionV;
 
 				// Find the values at each ring:
 				dvec3 curveTangent = CenterCurve.GetTangentAt(v).Normalized;
@@ -234,12 +234,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 
 				return Enumerable.Range(0, resolutionU).Select((i) =>
 				{
-					double u = startAngle + (endAngle - startAngle) * (double) i / (double) resolutionU;
+					double u = startAngle + (endAngle - startAngle) * i / resolutionU;
 
 					double radius = Radius.GetValueAt(new dvec2(u, v));
 
 					// Calculate the position of the rings of vertices:
-					dvec3 surfaceNormal = (double) Math.Cos(u) * curveNormal + (double) Math.Sin(u) * curveBinormal;
+					dvec3 surfaceNormal = Math.Cos(u) * curveNormal + Math.Sin(u) * curveBinormal;
 					dvec3 surfacePosition = translation + radius * surfaceNormal;
 					return new Vertex((vec3)surfacePosition, (vec3)surfaceNormal);
 				});

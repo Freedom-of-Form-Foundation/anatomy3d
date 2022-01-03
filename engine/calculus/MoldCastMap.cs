@@ -40,30 +40,30 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// 	The surface from which the rays are cast. A ray is cast out of each point on the surface in the
 		/// 	direction of the surface's normal.
 		/// </summary>
-		private readonly Surface raycastSurface;
+		private readonly Surface _raycastSurface;
 		
 		/// <summary>
 		/// 	The surface that defines the mold. Rays that are cast are checked whether they intersect this surface.
 		/// </summary>
-		private readonly IRaytraceableSurface moldSurface;
+		private readonly IRaytraceableSurface _moldSurface;
 		
 		/// <summary>
 		/// 	The height map that is returned when a ray does not intersect the moldSurface. This happens when the ray
 		/// 	has missed the mold surface and shoots off to infinity. When that happens, return the length of
 		/// 	defaultRadius instead, so that the heightmap is still defined.
 		/// </summary>
-		private readonly ContinuousMap<dvec2, double> defaultRadius;
+		private readonly ContinuousMap<dvec2, double> _defaultRadius;
 		
 		/// <summary>
 		/// 	The direction along the normal of the raycastSurface from which to cast each ray. This could either be
 		/// 	outwards from the surface, or in the opposite direction.
 		/// </summary>
-		private readonly RayCastDirection direction;
+		private readonly RayCastDirection _direction;
 		
 		/// <summary>
 		/// 	The maximum ray length before a ray is considered to be out of bounds.
 		/// </summary>
-		private readonly double maxDistance;
+		private readonly double _maxDistance;
 		
 		/// <summary>
 		/// 	Construct a new MoldCastMap from a curve.
@@ -128,27 +128,27 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 								RayCastDirection direction = RayCastDirection.Outwards,
 								double maxDistance = Double.PositiveInfinity)
 		{
-			this.raycastSurface = raycastSurface;
-			this.moldSurface = moldSurface;
-			this.defaultRadius = defaultRadius;
-			this.direction = direction;
-			this.maxDistance = maxDistance;
+			this._raycastSurface = raycastSurface;
+			this._moldSurface = moldSurface;
+			this._defaultRadius = defaultRadius;
+			this._direction = direction;
+			this._maxDistance = maxDistance;
 		}
 		
 		/// <inheritdoc />
 		public override double GetValueAt(dvec2 uv)
 		{
 			DebugUtil.AssertAllFinite(uv, nameof(uv));
-			double directionSign = (direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
+			double directionSign = (_direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
 
-			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
-			double intersectionRadius = moldSurface.RayIntersect(ray);
+			Ray ray = new Ray(_raycastSurface.GetPositionAt(uv), directionSign*_raycastSurface.GetNormalAt(uv).Normalized);
+			double intersectionRadius = _moldSurface.RayIntersect(ray);
 			
-			if (Math.Abs(intersectionRadius) <= maxDistance)
+			if (Math.Abs(intersectionRadius) <= _maxDistance)
 			{
 				return intersectionRadius;
 			} else {
-				return defaultRadius.GetValueAt(uv);
+				return _defaultRadius.GetValueAt(uv);
 			}
 		}
 	}

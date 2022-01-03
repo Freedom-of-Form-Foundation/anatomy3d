@@ -19,7 +19,7 @@ using GlmSharp;
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	/// 	<c>ShiftedMap2D<TOut></c> shifts the domain of a 2D map such that the values are taken at
+	/// 	<c>ShiftedMap2D{TOut}</c> shifts the domain of a 2D map such that the values are taken at
 	/// 	`Shift + dvec2.Multiply(Stretch, uv)`.
 	/// </summary>
 	public class ShiftedMap2D<TOut> : ContinuousMap<dvec2, TOut>

@@ -16,7 +16,6 @@
 
 using System.Collections.Generic;
 using System;
-using System.Diagnostics;
 
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
