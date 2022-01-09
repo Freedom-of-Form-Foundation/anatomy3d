@@ -64,19 +64,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			
 			Points = new SortedPointsList<double>(points);
 			DebugUtil.AssertAllFinite(Points, nameof(Points));
-
-			// Calculate the coefficients for each segment of the spline:
-			var parameters = new double[points.Count];
-
-			// Recursively find the _parameters:
-			for (int i = 1; i < points.Count; i++)
-			{
-				double dx = Points.Key[i] - Points.Key[i - 1];
-				double dy = Points.Value[i] - Points.Value[i - 1];
-
-				parameters[i] = dy / dx;
-			}
-			DebugUtil.AssertAllFinite(parameters, nameof(parameters));
 		}
 
 		/// <summary>

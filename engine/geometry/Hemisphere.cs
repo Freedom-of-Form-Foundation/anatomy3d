@@ -178,8 +178,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			List<Vertex> output = new List<Vertex>(CalculateVertexCount(resolutionU, resolutionV));
 			
 			// Load all required variables:
-			// dvec3 up = dvec3.UnitZ;
-			
 			dvec3 pointTangent = Direction;
 			dvec3 pointNormal = Normal;
 			dvec3 pointBinormal = Binormal;

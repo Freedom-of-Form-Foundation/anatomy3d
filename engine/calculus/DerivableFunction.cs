@@ -17,7 +17,7 @@
 namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 {
 	/// <summary>
-	/// Interface representing an function curve that calculates values in some output space given values in some
+	/// Interface representing a curve function that calculates values in some output space given values in some
 	/// input space. Derivatives of this function can be calculated.
 	/// </summary>
 	/// <typeparam name="TIn">Type representing the input space of this function.</typeparam>
