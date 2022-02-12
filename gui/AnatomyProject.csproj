@@ -5,7 +5,7 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;TRACE;DEBUG;TOOLS;</DefineConstants>
+    <DefineConstants>GODOT;TRACE;DEBUG;TOOLS;</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -15,10 +15,10 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'ExportRelease' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;</DefineConstants>
+    <DefineConstants>GODOT;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'UnitTests' ">
-    <DefineConstants>GODOT;GODOT_WINDOWS;GODOT_PC;TRACE;DEBUG</DefineConstants>
+    <DefineConstants>GODOT;TRACE;DEBUG</DefineConstants>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
