@@ -119,7 +119,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy.Bones
 				                                            i.InteractingJoint.GetExtendedRaytraceableSurface(),
 				                                            deformations,
 				                                            i.Direction,
-				                                            i.MaxDistance);
+				                                            i.MaxDistance,
+															i.SmoothingTypeValue);
 				deformations = boneHeightMap;
 			}
 			

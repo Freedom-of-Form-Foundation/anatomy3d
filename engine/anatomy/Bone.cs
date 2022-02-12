@@ -45,7 +45,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy
 			/// Whether the rays are cast inwardly or outwardly.
 			/// </summary>
 			public RayCastDirection Direction { get; set; }
-			
+
+			/// <summary>
+			/// Whether the rays are cast inwardly or outwardly.
+			/// </summary>
+			public double SmoothingTypeValue { get; set; }
+
 			/// <summary>
 			/// The maximal raycast distance before a ray is discarded; i.e. the maximal distance of the joint's surface
 			/// from the bone's surface. This prevents joints from altering the shape of distant regions of a bone that
@@ -54,11 +59,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Anatomy
 			/// </summary>
 			public float MaxDistance { get; set; }
 			
-			public JointDeformation(Joint interactingJoint, RayCastDirection direction, float maxDistance)
+			public JointDeformation(Joint interactingJoint, RayCastDirection direction, float maxDistance, double smoothingTypeValue)
 			{
 				InteractingJoint = interactingJoint;
 				Direction = direction;
 				MaxDistance = maxDistance;
+				SmoothingTypeValue = smoothingTypeValue;
 			}
 		}
 		

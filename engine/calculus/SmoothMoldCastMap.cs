@@ -60,8 +60,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 								IExtendedRaytraceableSurface moldSurface,
 								ContinuousMap<dvec2, double> defaultRadius,
 								RayCastDirection direction = RayCastDirection.Outwards,
-								double maxDistance = Double.PositiveInfinity)
-			: this(new Capsule(raycastCurve, 0.0), moldSurface, defaultRadius, direction, maxDistance)
+								double maxDistance = Double.PositiveInfinity,
+								double smoothingTypeValue = 0.0)
+			: this(new Capsule(raycastCurve, 0.0), moldSurface, defaultRadius, direction, maxDistance, smoothingTypeValue)
 		{
 			
 		}
@@ -93,11 +94,15 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 								IExtendedRaytraceableSurface moldSurface,
 								ContinuousMap<dvec2, double> defaultRadius,
 								RayCastDirection direction = RayCastDirection.Outwards,
-								double maxDistance = Double.PositiveInfinity)
+								double maxDistance = Double.PositiveInfinity,
+								double smoothingTypeValue = 0.0)
 			: base(raycastSurface, moldSurface, defaultRadius, direction, maxDistance)
 		{
 			this.moldSurface = moldSurface;
+			SmoothingTypeValue = smoothingTypeValue;
 		}
+
+		public double SmoothingTypeValue { get; set; }
 
 		/// <inheritdoc />
 		public override double GetValueAt(dvec2 uv)
@@ -105,7 +110,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 			double directionSign = (direction == RayCastDirection.Outwards) ? 1.0 : -1.0;
 			
 			Ray ray = new Ray(raycastSurface.GetPositionAt(uv), directionSign*raycastSurface.GetNormalAt(uv).Normalized);
-			RayExtendedSurfaceIntersection intersection = moldSurface.ExtendedRayIntersect(ray);
+			RayExtendedSurfaceIntersection intersection = moldSurface.ExtendedRayIntersect(ray, SmoothingTypeValue);
 
 			double x = intersection.DistanceToSurface;
 			double pow = Math.Pow(x * 10.0, 3.0);

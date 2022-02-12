@@ -29,5 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GlmSharp" Version="0.9.8" />
+    <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
   </ItemGroup>
 </Project>

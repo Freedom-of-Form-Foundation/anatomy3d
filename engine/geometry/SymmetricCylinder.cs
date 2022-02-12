@@ -48,9 +48,9 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public SymmetricCylinder(LineSegment centerLine, RaytraceableFunction1D radius)
 			: this(centerLine, radius, 0.0, 2.0 * Math.PI)
 		{
-			
+
 		}
-		
+
 		/// <summary>
 		/// 	Construct a pie-slice of a new <c>SymmetricCylinder</c> around a central axis, the <c>centerLine</c>.
 		/// 	The radius at each point on the central axis is defined by a one-dimensional function <c>radius</c>.
@@ -92,32 +92,37 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 
 		#region Properties
 		protected RaytraceableFunction1D radius1D;
-		
+
 		/// <summary>
 		/// 	<inheritdoc cref="Cylinder.Radius"/>
 		/// </summary>
 		public new RaytraceableFunction1D Radius
 		{
 			get { return radius1D; }
-			set {
+			set
+			{
 				radius1D = value;
 				radius2D = new DomainToVector2<double>(dvec2.UnitY, value);
 			}
 		}
-		
+
 		protected LineSegment centerLine;
-		
+
 		/// <summary>
 		/// 	The line segment that defines the central axis of the cylinder.
 		/// </summary>
 		public new LineSegment CenterCurve
 		{
 			get { return centerLine; }
-			set {
+			set
+			{
 				centerLine = value;
 				base.CenterCurve = value;
 			}
 		}
+
+		public double SmoothingValue { get; set; } = 7.0;
+		public bool UseOldSmoothingMethod { get; set; } = false;
 		#endregion Properties
 
 		#region IRaytraceableSurface
@@ -128,50 +133,50 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			dvec3 rayDirection = ray.Direction;
 			DebugUtil.AssertAllFinite(rayStart, nameof(rayStart));
 			DebugUtil.AssertAllFinite(rayDirection, nameof(rayDirection));
-			
+
 			// Since we raytrace only using a cylindrical surface that is horizontal and at the origin, we
 			// first shift and rotate the ray such that we get the right orientation:
 			dvec3 start = CenterCurve.GetStartPosition();
 			dvec3 end = CenterCurve.GetEndPosition();
 			DebugUtil.AssertAllFinite(start, nameof(start));
 			DebugUtil.AssertAllFinite(end, nameof(end));
-			
+
 			dvec3 tangent = CenterCurve.GetTangentAt(0.0).Normalized;
 			dvec3 normal = CenterCurve.GetNormalAt(0.0).Normalized;
 			dvec3 binormal = CenterCurve.GetBinormalAt(0.0).Normalized;
 			DebugUtil.AssertAllFinite(tangent, nameof(tangent));
 			DebugUtil.AssertAllFinite(normal, nameof(normal));
 			DebugUtil.AssertAllFinite(binormal, nameof(binormal));
-			
+
 			double length = dvec3.Distance(start, end);
 			DebugUtil.AssertFinite(length, nameof(length));
-			
+
 			// CenterCurve is guaranteed to be a LineSegment, since the base property CenterCurve is masked by this
 			// class' CenterCurve property that only accepts a LineSegment, and similarly this class' constructor only
 			// accepts a LineSegment. The following mathematics, which assumes that the central axis is a line segment,
 			// is therefore valid.
 
-			dmat3 rotationMatrix = new dmat3(normal, binormal, tangent/length).Transposed;
-			
+			dmat3 rotationMatrix = new dmat3(normal, binormal, tangent / length).Transposed;
+
 			dvec3 rescaledRay = rotationMatrix * (rayStart - start);
 			dvec3 newDirection = rotationMatrix * rayDirection.Normalized;
-			
+
 
 			double x0 = rescaledRay.x;
 			double y0 = rescaledRay.y;
 			double z0 = rescaledRay.z;
-			
+
 			double a = newDirection.x;
 			double b = newDirection.y;
 			double c = newDirection.z;
-			
+
 			// Raytrace using a cylindrical surface equation x^2 + y^2. The parameters in the following line
 			// represent the coefficients of the expanded cylindrical surface equation, after the substitution
 			// x = x_0 + a t and y = y_0 + b t:
-			QuarticFunction surfaceFunction = new QuarticFunction(x0*x0 + y0*y0, 2.0*(x0*a + y0*b), a*a + b*b, 0.0, 0.0);
-			
+			QuarticFunction surfaceFunction = new QuarticFunction(x0 * x0 + y0 * y0, 2.0 * (x0 * a + y0 * b), a * a + b * b, 0.0, 0.0);
+
 			IEnumerable<double> intersections = Radius.SolveRaytrace(surfaceFunction, z0, c);
-			
+
 			// The previous function returns a list of intersection distances. The value closest to 0.0f represents the
 			// closest intersection point.
 
@@ -180,7 +185,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			foreach (double i in intersections)
 			{
 				// First calculate the parameter t on the surface of the SymmetricCylinder at which the ray intersects.
-				double t = rescaledRay.z + i*newDirection.z;
+				double t = rescaledRay.z + i * newDirection.z;
 
 				// t must be within the bounds of the SymmetricCylinder. t ranges from 0.0 to 1.0, so if it is outside
 				// of this region, the ray does not intersect the cylinder.
@@ -198,11 +203,11 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				dvec3 centerLineBinormal = CenterCurve.GetBinormalAt(t);
 				dvec3 d = intersectionPoint - CenterCurve.GetPositionAt(t);
 				double correctionShift = Math.Sign(dvec3.Dot(d, centerLineBinormal));
-				double phi = (correctionShift*Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0*Math.PI);
+				double phi = (correctionShift * Math.Acos(dvec3.Dot(d, centerLineNormal))) % (2.0 * Math.PI);
 
 				// Determine if the ray is inside the pie-slice of the cylinder that is being displayed,
 				// otherwise discard:
-				if ( phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i >= 0.0)
+				if (phi > StartAngle.GetValueAt(t) && phi < EndAngle.GetValueAt(t) && i >= 0.0)
 				{
 					if (Math.Abs(i) < Math.Abs(minimum.RayLength))
 					{
@@ -212,14 +217,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 					}
 				}
 			}
-			
+
 			return minimum;
 		}
 		#endregion IRaytraceableSurface
 
 		#region IExtendedRaytraceableSurface
 		/// <inheritdoc />
-		public RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray)
+		public RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray, double smoothingTypeValue)
 		{
 			RaySurfaceIntersection intersection = RayIntersect(ray);
 
@@ -227,6 +232,39 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			{
 				return new RayExtendedSurfaceIntersection(intersection.RayLength, 0.0);
 			}
+
+			if (smoothingTypeValue > 0.0)
+			{
+				double d = 0.125 * 1.0;
+				double alpha = 0.0 * Math.PI;
+				dvec2 R_1 = new dvec2(-0.51, -radius1D.GetValueAt(0.0));
+				dvec2 R_2 = new dvec2(1.51, -radius1D.GetValueAt(1.0));
+
+				double smoothingFunction(dvec2 r, double angle, double sign)
+				{
+					return (angle + Math.Atan2(r.x, r.y) - (sign * Math.PI)) / Math.Pow((r.x * r.x) + (r.y * r.y), d);
+				}
+
+				double scalarField2D(dvec2 r, dvec2 r1, dvec2 r2) => -smoothingFunction(r.xy - r1, alpha, 1.0) * smoothingFunction(r.xy - r2, -alpha, -1.0);
+				//double scalarField(dvec3 r) => (scalarField2D(-r.xy, dvec2.UnitX * radius1D.GetValueAt(r.z), -dvec2.UnitX * radius1D.GetValueAt(r.z)) - 7.0) * (scalarField2D(new dvec2(-r.z, -r.y), -R_1, -R_2) - 9.0) - 1.0;
+				double scalarField(dvec3 r) => (scalarField2D(-r.xy, dvec2.UnitX * radius1D.GetValueAt((r.z + 0.5) / 2.0), -dvec2.UnitX * radius1D.GetValueAt((r.z + 0.5) / 2.0)) - smoothingTypeValue - 0.0);
+				double scalarFieldPerpendicular(dvec3 r) => scalarField2D(new dvec2(-r.z, dvec2.Distance(r.xy, default(dvec2))), -R_1, -R_2) - 8.0 - 2.0;
+
+				double scalarField3D(dvec3 r) => scalarField(r) * scalarFieldPerpendicular(r);
+
+				Isosurface extensionSurface = new Isosurface(scalarField3D, 2.0);
+
+				double rayLength = extensionSurface.RayIntersect(ray).RayLength;
+				dvec3 rayPosition = ray.StartPosition + rayLength * ray.Direction;
+				double dist = dvec3.DistanceSqr(rayPosition, new dvec3(0.0, 0.0, 0.5));
+
+				return new RayExtendedSurfaceIntersection(rayLength, 0.01 * Math.Pow(dist, 1.9));
+				//return new RayExtendedSurfaceIntersection(rayLength, 0.0 * Math.Pow(dist, 1.9));
+			}
+
+
+
+		
 
 			dvec3 tangent = centerLine.GetTangentAt(0.0);
 

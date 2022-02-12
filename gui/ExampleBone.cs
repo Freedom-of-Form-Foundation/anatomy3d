@@ -41,7 +41,20 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			radiusPoints.Add(0.98f, 0.7f*0.8f);
 			radiusPoints.Add(4.5f, 0.7f*0.8f);
 			
-			LinearSpline1D boneRadius = new LinearSpline1D(radiusPoints);
+			LinearSpline1D humerusRadius = new LinearSpline1D(radiusPoints);
+			
+			// Generate a simple cubic spline that will act as the radius of a long bone:
+			SortedList<double, double> radiusPoints2 = new SortedList<double, double>();
+			radiusPoints2.Add(-3.5f, 0.7f*0.3f);
+			radiusPoints2.Add(-1.0f, 0.7f*0.3f);
+			radiusPoints2.Add(0.02f, 0.7f*0.3f);
+			radiusPoints2.Add(0.15f, 0.7f*1.0f);
+			radiusPoints2.Add(0.5f, 0.7f*0.7f);
+			radiusPoints2.Add(0.8f, 0.7f*0.76f);
+			radiusPoints2.Add(0.98f, 0.7f*0.8f);
+			radiusPoints2.Add(4.5f, 0.7f*0.8f);
+			
+			LinearSpline1D ulnaRadius = new LinearSpline1D(radiusPoints2);
 
 			// Define the center curve of the long bone:
 			SortedList<double, dvec3> centerPoints = new SortedList<double, dvec3>();
@@ -57,25 +70,25 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			LineSegment centerLine = new LineSegment(new dvec3(0.0f, 0.0f, 0.5f),
 									   new dvec3(0.001f, 10.0f, 0.51f));
 			
-			var bone1 = new Anatomy.Bones.LongBone(centerLine, boneRadius);
+			var bone1 = new Anatomy.Bones.LongBone(centerLine, humerusRadius);
 			
-			var jointInteraction = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f);
+			var jointInteraction = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f, 0.0f);
 			bone1.InteractingJoints.Add(jointInteraction);
 			skeleton.bones.Add(bone1);
 			
 			// Add second bone:
-			LineSegment centerLine2 = new LineSegment(new dvec3(0.0f, -1.5f, 0.5f),
-									   new dvec3(10.0f, -1.5f, 0.5f));
+			LineSegment centerLine2 = new LineSegment(new dvec3(-0.5f, -1.4f, 0.5f),
+									   new dvec3(10.0f, -1.4f, 0.5f));
 			
-			var bone2 = new Anatomy.Bones.LongBone(centerLine2, boneRadius);
-			var jointInteraction2 = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f);
+			var bone2 = new Anatomy.Bones.LongBone(centerLine2, ulnaRadius);
+			var jointInteraction2 = new Anatomy.Bone.JointDeformation(skeleton.joints[0], RayCastDirection.Outwards, 3.0f, 5.0f);
 			bone2.InteractingJoints.Add(jointInteraction2);
 			skeleton.bones.Add(bone2);
 			
 			// Generate the geometry vertices of the first bone with resolution U=128 and resolution V=128:
 			foreach ( var bone in skeleton.bones )
 			{
-				UVMesh mesh = bone.GetGeometry().GenerateMesh(256, 256);
+				UVMesh mesh = bone.GetGeometry().GenerateMesh(256, 128);
 				
 				// Finally upload the mesh to Godot:
 				MeshInstance newMesh = new MeshInstance();

@@ -55,6 +55,6 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		/// <param name="ray">
 		///		The Ray object that defines the starting point and direction of the ray to be cast.
 		/// </param>
-		RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray);
+		RayExtendedSurfaceIntersection ExtendedRayIntersect(Ray ray, double smoothingTypeValue=0.0);
 	}
 }

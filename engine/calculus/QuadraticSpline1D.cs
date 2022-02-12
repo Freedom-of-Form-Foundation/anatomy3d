@@ -107,10 +107,23 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
 		/// </exception>
 		public override double GetNthDerivativeAt(double x, uint derivative)
 		{
+			// TODO: This is a test section
+			if (x < Points.Key[0])
+			{
+				x = Points.Key[0];
+			}
+
+			if (x > Points.Key[Points.Count - 1])
+			{
+				x = Points.Key[Points.Count - 1];
+			}
+			// END TODO.
+
 			// The input parameter must lie between the outer points, and must not be NaN:
 			if (!( x >= Points.Key[0] && x <= Points.Key[Points.Count - 1]))
 			{
-				throw new ArgumentOutOfRangeException(nameof(x), "Cannot interpolate outside the interval given by the spline points.");
+				return 0.0;
+				//throw new ArgumentOutOfRangeException(nameof(x), "Cannot interpolate outside the interval given by the spline points.");
 			}
 			
 			// Find the index `i` of the closest point to the right of the input `x` parameter, which is the right point
