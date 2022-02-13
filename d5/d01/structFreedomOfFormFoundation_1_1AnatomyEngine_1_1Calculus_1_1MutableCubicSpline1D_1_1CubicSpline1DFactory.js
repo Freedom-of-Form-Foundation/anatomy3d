@@ -1,0 +1,4 @@
+var structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Calculus_1_1MutableCubicSpline1D_1_1CubicSpline1DFactory =
+[
+    [ "NewCurve", "d5/d01/structFreedomOfFormFoundation_1_1AnatomyEngine_1_1Calculus_1_1MutableCubicSpline1D_1_1CubicSpline1DFactory.html#acf3e48393a1cd9ffeceb0a7c441af886", null ]
+];
