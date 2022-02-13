@@ -405,3 +405,9 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# MacOS-specific files and directories
+**/.DS_Store
+
+# Jupyter
+**/.ipynb_checkpoints
