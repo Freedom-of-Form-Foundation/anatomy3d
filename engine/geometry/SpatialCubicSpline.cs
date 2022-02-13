@@ -31,10 +31,14 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public CubicSpline1D X { get; }
 		public CubicSpline1D Y { get; }
 		public CubicSpline1D Z { get; }
-		
-		public CubicSpline1D NormalX { get; private set; }
-		public CubicSpline1D NormalY { get; private set; }
-		public CubicSpline1D NormalZ { get; private set; }
+
+		// The normals are initialized during construction, using a method in this class. That method invocation
+		// occurs while these items are nil, so the fields are - formally - nullable. After construction, they are
+		// not null. .NET 5 has an attribute to express that a helper method takes care of this initialization, but
+		// .NET Standard 2.1 does not.
+		public CubicSpline1D? NormalX { get; private set; }
+		public CubicSpline1D? NormalY { get; private set; }
+		public CubicSpline1D? NormalZ { get; private set; }
 		
 #region ArbitraryConstants
 		// Arbitrary number of interpolating steps for calculating the normal.
@@ -105,7 +109,8 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public override dvec3 GetNormalAt(double t)
 		{
 			dvec3 direction = GetTangentAt(t).Normalized;
-			dvec3 normal = new dvec3(NormalX.GetValueAt(t), NormalY.GetValueAt(t), NormalZ.GetValueAt(t));
+			// NormalX, NomrmalY, and NormalZ are not null after initialization.
+			dvec3 normal = new dvec3(NormalX!.GetValueAt(t), NormalY!.GetValueAt(t), NormalZ!.GetValueAt(t));
 			dvec3 up = dvec3.Cross(direction, normal);
 			return dvec3.Cross(up, direction).Normalized;
 		}

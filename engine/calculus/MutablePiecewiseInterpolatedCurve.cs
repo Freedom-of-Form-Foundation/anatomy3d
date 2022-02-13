@@ -35,7 +35,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Calculus
         private readonly IMutablePointFactory<TControl> _pointFactory;
         private readonly List<TControl> _points;
         private readonly object _curveLock;
-        private DerivableFunction<double, TOut> _currentCurve;
+        private DerivableFunction<double, TOut>? _currentCurve;
 
         ///<summary>
         /// Construct a MutablePiecewiseInterpolatedCurve, using a provided algorithm to calculate curves (given a snapshot of control points

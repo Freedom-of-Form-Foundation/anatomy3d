@@ -6,7 +6,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine
 {
 	public class Species
 	{
-		public List<Anatomy.Joint> joints;
-		public List<Anatomy.Bone> bones;
+		public List<Anatomy.Joint> joints = new List<Joint>();
+		public List<Anatomy.Bone> bones = new List<Bone>();
 	}
 }

@@ -53,7 +53,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		{
 			DebugUtil.AssertFinite(radius, nameof(radius));
 			this.CenterCurve = centerCurve;
-			this.Radius = new ConstantFunction<dvec2, double>(radius);
+			radius2D = new ConstantFunction<dvec2, double>(radius);
 			this.StartAngle = 0.0;
 			this.EndAngle = 2.0 * Math.PI;
 		}
@@ -80,7 +80,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public Cylinder(Curve centerCurve, ContinuousMap<dvec2, double> radius)
 		{
 			this.CenterCurve = centerCurve;
-			this.Radius = radius;
+			radius2D = radius;
 			this.StartAngle = 0.0;
 			this.EndAngle = 2.0 * Math.PI;
 		}
@@ -119,7 +119,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 		public Cylinder(Curve centerCurve, ContinuousMap<dvec2, double> radius, ContinuousMap<double, double> startAngle, ContinuousMap<double, double> endAngle)
 		{
 			this.CenterCurve = centerCurve;
-			this.Radius = radius;
+			radius2D = radius;
 			this.StartAngle = startAngle;
 			this.EndAngle = endAngle;
 		}
@@ -191,10 +191,12 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 			dvec3 curveTangent = CenterCurve.GetTangentAt(v).Normalized;
 			dvec3 curveNormal = CenterCurve.GetNormalAt(v).Normalized;
 			dvec3 curveBinormal = dvec3.Cross(curveTangent, curveNormal);
-			
+
+			/*
 			double startAngle = StartAngle.GetValueAt(v);
 			double endAngle = EndAngle.GetValueAt(v);
-			
+			*/
+
 			return Math.Cos(u)*curveNormal + Math.Sin(u)*curveBinormal;
 		}
 		
