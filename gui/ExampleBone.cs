@@ -12,6 +12,8 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 {
 	public class ExampleBone : MeshInstance
 	{
+		List<MeshInstance> BoneMeshes = new List<MeshInstance>();
+		
 		// Called when the node enters the scene tree for the first time.
 		public override void _Ready()
 		{
@@ -45,9 +47,13 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			
 			// Generate a simple cubic spline that will act as the radius of a long bone:
 			SortedList<double, double> radiusPoints2 = new SortedList<double, double>();
-			radiusPoints2.Add(-3.5f, 0.7f*0.3f);
-			radiusPoints2.Add(-1.0f, 0.7f*0.3f);
+			radiusPoints2.Add(-3.5f, 0.7f*0.1f);
+			radiusPoints2.Add(-1.0f, 0.7f*0.1f);
+			radiusPoints2.Add(0.00f, 0.7f*0.2f);
 			radiusPoints2.Add(0.02f, 0.7f*0.3f);
+			radiusPoints2.Add(0.04f, 0.7f*0.5f);
+			radiusPoints2.Add(0.08f, 0.7f*0.7f);
+			radiusPoints2.Add(0.12f, 0.7f*0.9f);
 			radiusPoints2.Add(0.15f, 0.7f*1.0f);
 			radiusPoints2.Add(0.5f, 0.7f*0.7f);
 			radiusPoints2.Add(0.8f, 0.7f*0.76f);
@@ -91,7 +97,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 #if GODOT_HTML5
 				UVMesh mesh = bone.GetGeometry().GenerateMesh(32, 32);
 #else
-				UVMesh mesh = bone.GetGeometry().GenerateMesh(256, 256);
+				UVMesh mesh = bone.GetGeometry().GenerateMesh(128, 128);
 #endif
 				
 				// Finally upload the mesh to Godot:
@@ -100,10 +106,11 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 				
 				// Give each mesh a random color:
 				var boneMaterial = (SpatialMaterial)GD.Load("res://BoneMaterial.tres").Duplicate();
-				boneMaterial.AlbedoColor = new Color(GD.Randf(), GD.Randf(), GD.Randf(), GD.Randf());
+				boneMaterial.AlbedoColor = new Color(GD.Randf(), 0.8f, 0.8f, 1.0f);
 				newMesh.SetSurfaceMaterial(0, boneMaterial);
 				
 				AddChild(newMesh);
+				BoneMeshes.Add(newMesh);
 			}
 		}
 		
@@ -146,6 +153,32 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			newMesh.SetSurfaceMaterial(0, (Material)GD.Load("res://JointMaterial.tres"));
 			
 			AddChild(newMesh);
+		}
+		
+		/// <summary>
+		/// 	Called when there is some user input event.
+		/// </summary>
+		public override void _Input(InputEvent @event)
+		{
+			if (BoneMeshes.Count < 2)
+			{
+				return;
+			}
+			
+			if (@event is InputEventMouseButton eventMouseButton)
+			{
+				// If there is a scrollwheel event, zoom the camera in or out:
+				if (eventMouseButton.IsPressed() && Input.IsKeyPressed((int)KeyList.Control)){
+					if (eventMouseButton.ButtonIndex == (int)ButtonList.WheelUp){
+						// Divide by the zoom factor to zoom in:
+						BoneMeshes[1].RotateZ(0.1f);
+					}
+					if (eventMouseButton.ButtonIndex == (int)ButtonList.WheelDown){
+						// Multiply by the zoom factor to zoom out:
+						BoneMeshes[1].RotateZ(-0.1f);
+					}
+				}
+			}
 		}
 	}
 }

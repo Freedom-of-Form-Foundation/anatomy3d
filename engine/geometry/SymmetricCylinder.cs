@@ -248,7 +248,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				double scalarField2D(dvec2 r, dvec2 r1, dvec2 r2) => -smoothingFunction(r.xy - r1, alpha, 1.0) * smoothingFunction(r.xy - r2, -alpha, -1.0);
 				//double scalarField(dvec3 r) => (scalarField2D(-r.xy, dvec2.UnitX * radius1D.GetValueAt(r.z), -dvec2.UnitX * radius1D.GetValueAt(r.z)) - 7.0) * (scalarField2D(new dvec2(-r.z, -r.y), -R_1, -R_2) - 9.0) - 1.0;
 				double scalarField(dvec3 r) => (scalarField2D(-r.xy, dvec2.UnitX * radius1D.GetValueAt((r.z + 0.5) / 2.0), -dvec2.UnitX * radius1D.GetValueAt((r.z + 0.5) / 2.0)) - smoothingTypeValue - 0.0);
-				double scalarFieldPerpendicular(dvec3 r) => scalarField2D(new dvec2(-r.z, dvec2.Distance(r.xy, default(dvec2))), -R_1, -R_2) - 8.0 - 2.0;
+				double scalarFieldPerpendicular(dvec3 r) => scalarField2D(new dvec2(-r.z, dvec2.Distance(r.xy, default(dvec2))), -R_1, -R_2) - 8.0 - 0.0;
 
 				double scalarField3D(dvec3 r) => scalarField(r) * scalarFieldPerpendicular(r);
 
@@ -258,7 +258,7 @@ namespace FreedomOfFormFoundation.AnatomyEngine.Geometry
 				dvec3 rayPosition = ray.StartPosition + rayLength * ray.Direction;
 				double dist = dvec3.DistanceSqr(rayPosition, new dvec3(0.0, 0.0, 0.5));
 
-				return new RayExtendedSurfaceIntersection(rayLength, 0.01 * Math.Pow(dist, 1.9));
+				return new RayExtendedSurfaceIntersection(rayLength, 0.02 * Math.Pow(dist, 1.9));
 				//return new RayExtendedSurfaceIntersection(rayLength, 0.0 * Math.Pow(dist, 1.9));
 			}
 

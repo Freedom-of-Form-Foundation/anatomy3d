@@ -80,7 +80,7 @@ namespace FreedomOfFormFoundation.AnatomyRenderer
 			if (@event is InputEventMouseButton eventMouseButton)
 			{
 				// If there is a scrollwheel event, zoom the camera in or out:
-				if (eventMouseButton.IsPressed()){
+				if (eventMouseButton.IsPressed() && !Input.IsKeyPressed((int)KeyList.Control)){
 					if (eventMouseButton.ButtonIndex == (int)ButtonList.WheelUp){
 						// Divide by the zoom factor to zoom in:
 						distanceFromFocus /= zoomFactor;
