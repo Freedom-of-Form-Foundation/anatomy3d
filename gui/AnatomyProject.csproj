@@ -29,7 +29,4 @@
   <ItemGroup>
     <ProjectReference Include="..\engine\engine.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="GodotSharp" Version="3.2.3" />
-  </ItemGroup>
 </Project>
